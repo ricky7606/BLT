@@ -67,6 +67,7 @@ class Qnalist extends Controller
 			}
 		}
 		$this->assign('list',$qna_list);
+		$this->assign('userid',Cookie::get('userid'));
 		if(Cookie::has('userid')){
 			$this->assign('header_type', 'user');
 			$this->assign('userid', Cookie::get('userid'));
