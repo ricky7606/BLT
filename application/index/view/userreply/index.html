@@ -48,7 +48,7 @@
                 {case value = "5"}<span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">这个答案已经被拒绝。</span>{/case}
                 {case value = "6"}<span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">这个答案已经被拒绝。</span><button type="button" class="btn btn-default" style="width: auto; height:40px; background-color:#C63; color:#FFF;" onclick="arbitrate('{$reply.pendingid}');this.disabled='disabled'" id="arbitrateBtn{$i}"><span class="am-icon-balance-scale am-icon-sm" style="color:#FFF;"></span> 我要申请仲裁</button>{/case}
                 {case value = "7"}<span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">这个答案已经被拒绝。正在仲裁处理中。</span>{/case}
-                {case value = "8"}<span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">这个答案已经被拒绝。仲裁处理结束。</span>{/case}
+                {case value = "8"}<span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">这个答案已经被拒绝。仲裁处理结束。{if condition="$reply.arbitrateCoins>0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> 获得悬赏：{$reply.arbitrateCoins}{/if}{if condition="$reply.arbitrate_comment != ''"} <i class="am-icon-commenting-o" style="color:#900;" title="{$reply.arbitrate_comment}"></i>{/if}</span>{/case}
                 {/switch}
                 </div>
                 {/in}

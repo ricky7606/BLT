@@ -151,7 +151,7 @@
                 <div style="padding-right:15px;"><span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">已拒绝这个回答，正在仲裁处理中</span></div>
                 {/case}
                 {case value = '8'}
-                <div style="padding-right:15px;"><span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">已拒绝这个回答，仲裁结束</span></div>
+                <div style="padding-right:15px;"><span class="am-icon-thumbs-o-down am-icon-sm" style="color:#900;"></span> <span style="color:#900; font-weight:bold;">已拒绝这个回答，仲裁结束。{if condition="$reply_qna.arbitrateCoins>0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> 支付悬赏：{$reply_qna.arbitrateCoins}{/if}{if condition="$reply_qna.arbitrate_comment != ''"} <i class="am-icon-commenting-o" style="color:#900;" title="{$reply_qna.arbitrate_comment}"></i>{/if}</span></div>
                 {/case}
                 {/switch}
                 </div>
