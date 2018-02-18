@@ -117,14 +117,7 @@
                 <div style="clear:both;"></div>
                 {volist name="qnaid['reply']" id="reply_qna" key="j"}
             	<div style="padding-left:60px;"><img src="{if condition="$reply_qna.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_qna.reply_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;"><a class="header_title"  href="/index/userreplydetail?userid={$reply_qna.userid}" target="_blank">{$reply_qna.reply_username}</a>
-<!--
-                <span class="small_grey_text" style="margin-left:20px;">{$reply_qna.create_date}</span>
-                {if condition="$reply_qna.attentionid == ''"}
-                <button type="button" class="btn btn-default le_button" style="margin-left:10px" id="attBtn{$i}" onclick="attUser('{$qnaid.qna_userid}','{$i}');this.disabled='disabled';"><i class="am-icon-plus am-icon-sm" style="font-size: 0.8em"></i> 关注TA</button>
-                {else /}
-                <button type="button" class="btn btn-default le_button" style="width:auto;"><i style="font-size: 0.8em" class="am-icon-user-plus am-icon-sm"></i> 已关注</button>
-                {/if}
-            -->
+
                 </div>
                 {if condition="$reply_qna.thumb_img neq ''"}
                 <div style="width:1200px;padding-top: 10px" id="reply_text_{$j}" class="content_html">
