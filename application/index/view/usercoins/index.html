@@ -39,12 +39,12 @@
             <div class="content_section">
             	<div style='width:100%; padding:20px; height:60px; font-size:1em;'>
                 <i class="am-icon-download"></i> <a href="/Beelinton-qt.exe">点此下载电脑版比邻币钱包进行比邻币的管理和交易</a><br />
-                <span class="am-icon-bitcoin am-icon-sm" style="color:#FC0;"></span> 当前拥有比邻币：<b>{$userinfo.coins}</b>  <span class="am-icon-bitcoin am-icon-sm" style="color:#999; margin-left:30px;"></span> 冻结中的比邻币：<b>{$userinfo.frozen_coins}</b>
+                <span class="am-icon-bitcoin" style="color:#FC0;"></span> 当前拥有比邻币：<b>{$userinfo.coins}</b>  <span class="am-icon-bitcoin" style="color:#999; margin-left:30px;"></span> 冻结中的比邻币：<b>{$userinfo.frozen_coins}</b>
                 <div style="float: right"> <a href="javascript:void(0);" data-reveal-id="coins_box" data-animation="fade" class="btn btn-default user_button_blue_small">我要提现</a> <a href="/index/userwallet" class="btn btn-default user_button_blue_small">钱包管理</a>
                 </div>
                 </div>
-                <div style="height:50px"></div> 
-                {if condition="$userinfo.transaction_reminder>0"}<div style="width:100%; padding-left:20px; text-align:left; color:#900;"><span class="am-icon-line-chart am-icon-sm" style="color:#06C; margin-left:10px;"></span> 共有{$userinfo.transaction_reminder}条新交易记录</div>{/if}
+                <div style="clear:both;height:10px"></div> 
+                {if condition="$userinfo.transaction_reminder>0"}<div style="width:100%; padding-left:20px; text-align:left; color:#900;"><span class="am-icon-line-chart" style="color:#06C; margin-left:10px;"></span> 共有{$userinfo.transaction_reminder}条新交易记录</div>{/if}
                 <div style="padding:20px; padding-top:10px;">
                 <table width="1000" class="table" style="font-size: 0.9em">
                   <thead>
@@ -150,4 +150,5 @@
 </div>
 <input type="hidden" name="availablecoins" id="availablecoins" value="{$userinfo.available_coins}">
 <script src="/static/js/user_coins.js"></script>
+<script src="/static/js/math.js"></script>
 <script type="text/javascript" src="/static/js/jquery.reveal.qna.js"></script>
