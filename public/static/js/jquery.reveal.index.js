@@ -22,6 +22,18 @@
 		$("html,body").css({overflow:"hidden"}); //禁用滚动条
 	});
 
+	$('a[report-reveal-id]').live('click', function(e) {
+		e.preventDefault();
+		var modalLocation = $(this).attr('report-reveal-id');
+		var qnaId = $(this).attr('data-qna-id');
+		var type = $(this).attr('data-type');
+		$("#qnaid").val($('#'+qnaId).val());
+		$("#qna_type").val(type);
+		
+		$('#'+modalLocation).reveal($(this).data());
+		$("html,body").css({overflow:"hidden"}); //禁用滚动条
+	});
+
 /*---------------------------
  Extend and Execute
 ----------------------------*/

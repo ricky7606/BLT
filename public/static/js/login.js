@@ -6,7 +6,7 @@ xcsoft.tipsCss = {
 //隐藏、显示速度 ，默认 fast
 xcsoft.tipsHide=xcsoft.tipsShow=300;
 
-var isMobileOK=false, isPasswordOK=false, isImgcodeOK=false;
+var isMobileOK=false, isPasswordOK=false, isPassword2OK=false, isImgcodeOK=false, isSmscodeOK=false;
 function refreshVerify() {
 	var ts = Date.parse(new Date())/1000;
 	var img = document.getElementById('verify_img');
@@ -32,6 +32,30 @@ function chkMobile(){
 			yesNoImg('check_mobile','ok');
 			isMobileOK = true;
 			return true;
+		}else{
+			xcsoft.error('手机号码错误',3000);
+			yesNoImg('check_mobile','no');
+			return false;
+		}
+	}else{
+		isMobileOK = false;
+	}
+}
+function chkMobileExist(){
+	var mobile = document.getElementById('mobile').value;
+	if(mobile.length > 0){
+		if(chkCellphone()){
+			$.post('/index/register/chkMobile', {mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+				if(msg=='exists'){
+					yesNoImg('check_mobile','ok');
+					isMobileOK = true;
+					return true;
+				}else{
+					xcsoft.error('该手机号码并未注册',3000);
+					yesNoImg('check_mobile','no');
+					return false;
+				}
+			});		
 		}else{
 			xcsoft.error('手机号码错误',3000);
 			yesNoImg('check_mobile','no');
@@ -80,6 +104,23 @@ function chkPassword(){
 		isPasswordOK = false;
 	}
 }
+function chkPassword2(){
+	var pwd = document.getElementById('password').value;
+	var pwd2 = document.getElementById('password2').value;
+	if(pwd2.length > 0){
+		if(pwd == pwd2){
+			yesNoImg('check_password2','ok');
+			isPassword2OK = true;
+			return true;
+		}else{
+			xcsoft.error('您输入的两次密码不同',3000);
+			yesNoImg('check_password2','no');
+			return false;
+		}
+	}else{
+		isPassword2OK = false;
+	}
+}
 function chkImgcode(){
 	var imgcode = document.getElementById('imgcode').value;
 	if(imgcode.length > 0){
@@ -96,6 +137,24 @@ function chkImgcode(){
         });		
 	}else{
 		isImgcodeOK = false;
+	}
+}
+function chkSmscode(){
+	var smscode = document.getElementById('smscode').value;
+	if(smscode.length > 0){
+        $.post('/index/register/chkSmscode', {smscode:jQuery.trim($('#smscode').val()),mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+			if(msg=='error'){
+				xcsoft.error('短信验证码错误或者超时！',3000);
+				yesNoImg('check_smscode','no');
+				return false;
+			}else{
+				yesNoImg('check_smscode','ok');
+				isSmscodeOK = true;
+				return true;
+			}
+        });		
+	}else{
+		isSmscodeOK = false;
 	}
 }
 function submitForm(){
@@ -130,6 +189,68 @@ function submitForm(){
 		});
 	}
 }
+function resetpwd1(){
+	var ok_login = false;
+	document.getElementById("loginbtn").disabled = true;
+	if(isMobileOK && isImgcodeOK && isSmscodeOK){
+		var ok_login = true;
+	}else{
+		chkMobile();
+		chkImgcode();
+		chkSmscode();
+		if(!(isMobileOK && isSmscodeOK && isImgcodeOK)){
+			ok_login = false;
+			document.getElementById("loginbtn").disabled = false;
+			xcsoft.error('请正确填写手机号码图形验证码及短信验证码',3000);
+			return false;
+		}else{
+			ok_login = true;
+		}
+	}
+	if(ok_login){
+		$.post('/index/login/checkReset', {mobile:jQuery.trim($('#mobile').val()),imgcode:jQuery.trim($('#imgcode').val()),smscode:jQuery.trim($('#smscode').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+			if(msg=='ok'){
+				setTimeout("window.location.href='/index/login/forgetpassword2'", 0 ); 
+				return true;
+			}else{
+				xcsoft.error(msg,3000);
+				document.getElementById("loginbtn").disabled = false;
+				return false;
+			}
+		});
+	}
+}
+function resetpwd2(){
+	var ok_login = false;
+	document.getElementById("loginbtn").disabled = true;
+	if(isPasswordOK && isPassword2OK){
+		var ok_login = true;
+	}else{
+		chkPassword();
+		chkPassword2();
+		if(!(isPasswordOK && isPassword2OK)){
+			ok_login = false;
+			document.getElementById("loginbtn").disabled = false;
+			xcsoft.error('请正确填写符合要求的密码',3000);
+			return false;
+		}else{
+			ok_login = true;
+		}
+	}
+	if(ok_login){
+		$.post('/index/login/resetPassword', {password:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+			if(msg=='ok'){
+				xcsoft.success('密码已经重设，请重新登录',2000);
+				setTimeout("window.location.href='/index/login'", 2000 ); //3秒后跳转
+				return true;
+			}else{
+				xcsoft.error(msg,3000);
+				document.getElementById("loginbtn").disabled = false;
+				return false;
+			}
+		});
+	}
+}
 function yesNoImg(imgname,isok){
 	var field = document.getElementById(imgname);
 	if(isok == 'ok'){
@@ -139,3 +260,48 @@ function yesNoImg(imgname,isok){
 	}
 	field.style.display = "block";
 }
+function get_mobile_code(){
+	if(isMobileOK && isImgcodeOK){
+		$.post('/index/register/sendSms', {mobile:jQuery.trim($('#mobile').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+			if(msg=='提交成功'){
+				RemainTime();
+			}else{
+				xcsoft.error(msg,3000);
+				return false;
+			}
+		});
+	}else{
+		xcsoft.error('请先完善上方所有的信息',3000);
+		return false;
+	}
+};
+var iTime = 59;
+var Account;
+function RemainTime(){
+	document.getElementById('zphone').disabled = true;
+	var iSecond,sSecond="",sTime="";
+	if (iTime >= 0){
+		iSecond = parseInt(iTime%60);
+		iMinute = parseInt(iTime/60)
+		if (iSecond >= 0){
+			if(iMinute>0){
+				sSecond = iMinute + "分" + iSecond + "秒";
+			}else{
+				sSecond = iSecond + "秒";
+			}
+		}
+		sTime=sSecond;
+		if(iTime==0){
+			clearTimeout(Account);
+			sTime='获取验证码';
+			iTime = 59;
+			document.getElementById('zphone').disabled = false;
+		}else{
+			Account = setTimeout("RemainTime()",1000);
+			iTime=iTime-1;
+		}
+	}else{
+		sTime='没有倒计时';
+	}
+	document.getElementById('zphone').innerText = sTime;
+}	

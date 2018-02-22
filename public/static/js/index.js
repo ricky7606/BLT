@@ -1,4 +1,4 @@
-var isContentOK=false;
+var isContentOK=false, isReportTypeOK=false;
 var E = window.wangEditor
 var editor = new E('#editordiv')
 editor.customConfig.menus = [
@@ -55,6 +55,40 @@ document.getElementById('submitbtn').addEventListener('click', function () {
 	}
 }, false)
 
+document.getElementById('reportbtn').addEventListener('click', function () {
+	chkReportType();
+	if(isReportTypeOK){
+		document.getElementById("reportbtn").disabled = true;
+		$.post('/index/qna/report', {qnaid:jQuery.trim($('#qnaid').val()),report_type:jQuery.trim($('#report_type').val()),qna_type:jQuery.trim($('#qna_type').val()),report_comment:jQuery.trim($('#report_comment').val())}, function(msg) {
+			if(msg=='ok'){
+				xcsoft.success('举报提交成功！',3000);
+				setTimeout("window.location.reload(true)", 1000 ); //3秒后刷新
+				return true;
+			}else{
+				xcsoft.error(msg,3000);
+				document.getElementById("reportbtn").disabled = false;
+				return false;
+			}
+		});
+	}else{
+		document.getElementById("reportbtn").disabled = false;
+		xcsoft.error('请选择举报理由',3000);
+		return false;
+	}
+}, false)
+
+function chkReportComment(){
+	var tmpStr = $("#report_comment").val();
+	tmpStr = cutstr(tmpStr, 200);
+	$("#report_comment").val(tmpStr);
+}
+function chkReportType(){
+	if($("#report_type").val()==""){
+		isReportTypeOK = false;
+	}else{
+		isReportTypeOK = true;
+	}
+}
 function applyQna(btn){
 	document.getElementById('apply'+btn).disabled = true;
 	$.post('/index/index/saveApplyQna', {qnaid:jQuery.trim($('#qnaid'+btn).val())}, function(msg) {

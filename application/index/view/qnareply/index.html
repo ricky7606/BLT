@@ -43,7 +43,7 @@
             </div>
             <div style="height:20px;"></div>
             <div>
-            <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span class="am-icon-star" style="color:#09F;"></span> {$reply_detail.followCount}个收藏 <!--<span class="am-icon-heart" style="color:#09F;"></span> 87个赞--></div>
+            <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span class="am-icon-star" style="color:#09F;"></span> {$reply_detail.followCount}个收藏 <!--<span class="am-icon-heart" style="color:#09F;"></span> 87个赞--> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid1" data-type="qna" style="color:#999;">举报</a>{/if}</div>
             <div class="split_right">
             	{if condition="$reply_detail.formatCoins > 0"}
                 	{if condition="$header_type == 'user'"}
@@ -95,6 +95,7 @@
             {/if}
             {/if}
             {/if}
+            {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该回答" report-reveal-id="report_box" data-animation="fade" data-qna-id="replyid1" data-type="reply" style="color:#999;">举报</a>{/if}
             </div>
             {if condition="$reply_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：{$reply_userinfo.brief}</div>{/if}
             {if condition="$reply_tag_list"} <div style="line-height:50px;" class="tagwrap"><i class="am-icon-tags" style="color:#06C;"></i>  TA的标签： {volist name="reply_tag_list" id="usertag"}{if condition="$i==6"} <span class="tag_more" onclick="showAllTags('reply');" id="reply_tag_more">更多...</span> <span class="tag" id="reply_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /}{if condition="$i>5"} <span class="tag" id="reply_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /} <span class="tag">{$usertag.tag}</span>{/if}{/if}{/volist} <span class="tag_more" onclick="hideAllTags('reply');" id="reply_tag_less" style="display:none;">收起</span></div>{/if}
@@ -120,6 +121,7 @@
             <!-- answer srction end -->
             <input type="hidden" id="qna_title1" value="{$reply_detail.title}"> 
             <input type="hidden" id="qnaid1" value="{$reply_detail.qnaid}"> 
+            <input type="hidden" id="replyid1" value="{$reply_detail.replyid}"> 
             <div style="clear:both;"></div>
             </div>
             <div style="text-align:center;" class="chk_all_answer" onclick="window.location.href='/index/qnadetails?id={$reply_detail.qnaid}'"><i class="am-icon-comments"></i> 查看所有回答</div>
@@ -148,8 +150,29 @@
     <button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment"></i> 发布回答</button>
     <a class="close-reveal-modal">&#215;</a>
 </div>
+<div id="report_box" class="reveal-modal" style="width:420px;overflow-y:scroll; overflow-x:hidden; height:360px;">
+    <div id="box_title" class="header_title">违规举报</div>
+    <div style="height:20px;"></div>
+    <div>
+    <select name="report_type" id="report_type" onchange="chkReportType();">
+    <option value="">选择举报类别</option>
+    <option value="1">辱骂、歧视、挑衅、骚扰等语言行为</option>
+    <option value="2">内容抄袭</option>
+    <option value="3">侵犯个人或企业权益</option>
+    <option value="4">垃圾广告信息</option>
+    <option value="5">色情、暴力、血腥等违法违规内容</option>
+    <option value="6">政治敏感内容</option>
+    <option value="7">诱导分享、投票等行为</option>
+    </select>
+    </div>
+    <div style="margin:20px;"><textarea name="report_comment" id="report_comment" style="width:280px;" rows="3" placeholder="举报说明（选填），可填写详细说明，如抄袭的原文链接等。（200字以内）" onblur="chkReportComment();" onkeyup="chkReportComment();"></textarea></div>
+    <div style="margin:20px;"><button type="button" name="reportbtn" id="reportbtn" class="btn btn-default user_button_blue_answer">我要举报</button></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+    <input type="hidden" name="qnaid" id="qnaid" value="" />
+    <input type="hidden" name="qna_type" id="qna_type" value="" />
+</div>
 <input type="hidden" name="content" id="content" value="" />
-<input type="hidden" name="qnaid" id="qnaid" value="" />
 <input type="hidden" name="pendingid" id="pendingid" value="" />
 <input type="hidden" name="content_text" id="content_text" value="" />
 <script src="/static/js/index.js"></script>

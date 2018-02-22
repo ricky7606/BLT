@@ -3,6 +3,7 @@ namespace app\index\controller;
 use think\Controller;
 use think\Request;
 use think\Cookie;
+use think\Session;
 use Qiniu\Auth as Auth;
 use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
@@ -10,6 +11,7 @@ use app\index\model\Qnas;
 use app\index\model\QnasReply;
 use app\index\model\Users;
 use app\index\model\Follow;
+use app\index\model\Report;
 use app\index\model\QnaPendingDetails;
 
 class Qna extends Controller
@@ -205,5 +207,33 @@ class Qna extends Controller
 		}else{
 			return "数据错误";
 		}
+	}
+	
+	public function report(){
+		if(!Cookie::has('userid')){
+			return $this->redirect('/index/login');
+		}
+		session_start();
+		if(!empty($_SESSION['report_time'])){
+			$current_time = date('Y-m-d H:i:s',time());
+			$minute=floor((strtotime($current_time)-strtotime($_SESSION['report_time']))%86400/60);
+			if($minute<10){
+				return "请勿频繁举报";
+			}
+		}
+		$userid = Cookie::get('userid'); 
+		$qnaid = Request::instance()->post('qnaid');
+		$report_type = Request::instance()->post('report_type');
+		$qna_type = Request::instance()->post('qna_type');
+		$report_comment = Request::instance()->post('report_comment');
+		if($qnaid == '' || $report_type == '' || $qna_type == ''){
+			return "数据错误";
+		}
+		$report = new Report();
+		$result = $report->saveReport($userid, $qnaid, $report_type, $qna_type, $report_comment);
+		if($result == "ok"){
+			$_SESSION['report_time'] = date('Y-m-d H:i:s',time());
+		}
+		return $result;
 	}
 }

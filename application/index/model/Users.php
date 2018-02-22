@@ -323,4 +323,13 @@ class Users extends Model {
 			return "手机号码修改失败";
 		}
 	}
+	
+	public function resetPassword($mobile, $password){
+		$result = $this->where('mobile', $mobile)->update(['password' => $password]);
+		if($result){
+			return "ok";
+		}else{
+			return "密码重设失败";
+		}
+	}
 }

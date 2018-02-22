@@ -40,7 +40,6 @@ input { background-color:#f7f8fa;}
         <td width="202" align="left"><input type="text" class="form-control form-inline" name="smscode" id="smscode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入短信中的验证码" onblur="chkSmscode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
         </td>
         <td width="130" align="left"><button type="button" id="zphone" onClick="get_mobile_code();" class="btn btn-default" style="width:120px; height:45px; background-color:#748ba5; color:#FFF;">获取短信码</button></td>
-        <input type="hidden" name="register_token" id="register_token" value="{$register_token}" /></td>
         <td width="48" align="left"><img id="check_smscode" /></td>
       </tr>
       
@@ -57,4 +56,5 @@ input { background-color:#f7f8fa;}
     </table>
 
   </div>
+<input type="hidden" name="register_token" id="register_token" value="{$register_token}" />
 <script type="text/javascript" src="/static/js/register.js"></script>
