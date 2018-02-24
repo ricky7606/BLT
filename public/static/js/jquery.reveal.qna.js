@@ -14,8 +14,10 @@
 		var modalLocation = $(this).attr('data-reveal-id');
 		var qnaTitle = $(this).attr('data-title');
 		var qnaId = $(this).attr('data-id');
+		var replyId = $(this).attr('data-id');
 		var pendingId = $(this).attr('data-pendingid');
 		$("#pendingid").val($('#'+pendingId).val());
+		$("#replyid").val($('#'+replyId).val());
 		$("#qnaid").val($('#'+qnaId).val());
 		$("#qna_title").html($('#'+qnaTitle).val());
 		$('#'+modalLocation).reveal($(this).data());

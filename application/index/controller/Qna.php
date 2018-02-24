@@ -12,6 +12,7 @@ use app\index\model\QnasReply;
 use app\index\model\Users;
 use app\index\model\Follow;
 use app\index\model\Report;
+use app\index\model\ReplyAddition;
 use app\index\model\QnaPendingDetails;
 
 class Qna extends Controller
@@ -94,7 +95,7 @@ class Qna extends Controller
 			$pending = new QnaPendingDetails;
 			$pending_info = $pending->getPendingDetailsByPendingId($pendingid);
 			$pending_status = $pending_info->status;
-			if($pending_status == 1){
+			if($pending_status == 1 || $pending_status == 31){
 				$answer_ok = true;
 			}else{
 				$answer_ok = false;
@@ -108,7 +109,13 @@ class Qna extends Controller
 			}
 			if($content!=""){
 				$qna = new QnasReply;
-				return $qna->saveReplyQna($userid, $content, $content_text, $thumb_img, $qnaid, $pendingid);
+				if($pending_status == 1){
+					return $qna->saveReplyQna($userid, $content, $content_text, $thumb_img, $qnaid, $pendingid);
+				}else{
+					$addition = new ReplyAddition;
+					$reply = $qna->getReplyDetailsByPendingId($pendingid);
+					return $addition->saveAdditionReply($userid, $reply->replyid, $pendingid, $content, $content_text, $thumb_img, 2);
+				}
 			}else{
 				return "数据有误，请检查后重试";
 			}

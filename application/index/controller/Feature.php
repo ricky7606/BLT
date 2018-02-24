@@ -15,6 +15,7 @@ use Qiniu\Auth as Auth;
 use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
 use app\index\model\Users;
+use app\index\model\ReplyAdditionDetails;
 
 class Feature extends Controller
 {
@@ -30,6 +31,7 @@ class Feature extends Controller
 		$att = new Attention;
 		$follow = new Follow;
 		if($reply_list){
+			$addition = new ReplyAdditionDetails;
 			foreach ($reply_list as $n=>$reply){ 
 				if(Cookie::has('userid')){
 					$userid = Cookie::get('userid');
@@ -62,9 +64,10 @@ class Feature extends Controller
 					}
 					$this->assign('userid',$userid);
 				}
-				$reply_list[$n]['formatCoins'] = floatval($reply_list[$n]['qna_coins']);
+				$reply->formatCoins = floatval($reply_list[$n]['qna_coins']);
 				$follow_count = $follow->getFollowCount($reply->qnaid);
-				$reply_list[$n]['followCount'] = $follow_count->followCount;
+				$reply->followCount = $follow_count->followCount;
+				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}
 		if(Cookie::has('userid')){
@@ -73,13 +76,15 @@ class Feature extends Controller
 			$userinfo = $user->getUserInfo(Cookie::get('userid'));
 			$this->assign('userinfo',$userinfo);
 			$this->assign('header_type','user');
+			$this->assign('userid',Cookie::get('userid'));
 		}else{
+			$this->assign('userid','');
 			$this->assign('header_type','normal');
 		}
 		$this->assign('reply_list',$reply_list);
 		if($qna_list){
 			foreach ($qna_list as $n=>$qna){ 
-				$qna_list[$n]['shortTitle'] = getContentText($qna->title,40);
+				$qna_list[$n]['shortTitle'] = getContentText($qna->title,35);
 			}
 		}
 		$this->assign('qna_list',$qna_list);

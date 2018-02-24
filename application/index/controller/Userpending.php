@@ -11,6 +11,8 @@ use app\index\model\QnaPendingDetails;
 use app\index\model\QnasPending;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
+use app\index\model\ReplyAdditionDetails;
+use app\index\model\QnasReplyDetails;
 
 class Userpending extends Controller
 {
@@ -20,10 +22,19 @@ class Userpending extends Controller
 			return $this->redirect('/index/login');
 		}
 		$qna_pending = new QnaPendingDetails;
-		$pending_list = $qna_pending->getPendingDetailsByUserId(Cookie::get('userid'),1);
+		$pending_list = $qna_pending->getPendingDetailsByUserId(Cookie::get('userid'),'1,31');
 		if($pending_list){
+			$reply = new QnasReplyDetails;
+			$addition = new ReplyAdditionDetails;
 			foreach ($pending_list as $n=>$pending){ 
-				$pending_list[$n]['formatCoins'] = floatval($pending->coins);
+				$reply_list = $reply->getReplyDetailsByQnaIdUserId($pending->qnaid,Cookie::get('userid'));
+				$pending->formatCoins = floatval($pending->coins);
+				if($reply_list){
+					foreach($reply_list as $reply){
+						$reply->addition = $addition->getReplyAdditions($reply->replyid);
+					}
+				}
+				$pending->reply = $reply_list;
 			}
 		}
         $this->assign('pending_list',$pending_list);

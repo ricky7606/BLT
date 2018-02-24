@@ -12,6 +12,7 @@ use app\index\model\Attention;
 use app\index\model\Follow;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
+use app\index\model\ReplyAdditionDetails;
 
 class UserReplyDetail extends Controller
 {
@@ -55,6 +56,7 @@ class UserReplyDetail extends Controller
 		$reply = new QnasReplyDetails;
 		$reply_list = $reply->getReplyDetailsByUserId($userid);
 		if($reply_list){
+			$addition = new ReplyAdditionDetails;
 			foreach($reply_list as $n=>$reply){
 				if(Cookie::has('userid')){
 					$follow = new Follow;
@@ -74,7 +76,8 @@ class UserReplyDetail extends Controller
 						$reply_list[$n]['follow'] = -1;
 					}
 				}
-				$reply_list[$n]['formatCoins'] = floatval($reply->qna_coins);
+				$reply->formatCoins = floatval($reply->qna_coins);
+				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}
 		$this->assign('reply_list',$reply_list);
@@ -86,6 +89,7 @@ class UserReplyDetail extends Controller
 			$this->assign('userinfo',$userinfo);
 			$this->assign('login_userid',$login_userid);
 		}else{
+			$this->assign('login_userid','');
 			$this->assign('header_type','normal');
 		}
         return $this->fetch(); 

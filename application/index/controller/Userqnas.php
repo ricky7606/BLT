@@ -32,7 +32,7 @@ class Userqnas extends Controller
 				$reply_list = $reply->getReplyDetailsByQnaId($qna->qnaid);
 				if($reply_list){
 					foreach($reply_list as $reply){
-						$reply->addition = $addition->getReplyAdditions($reply->pendingid);
+						$reply->addition = $addition->getReplyAdditions($reply->replyid);
 						$reply->arbitrateCoins = floatval($reply->arbitrate_qnauser_coins);
 					}
 				}
@@ -143,7 +143,7 @@ class Userqnas extends Controller
 		}else{
 			$content_text = getContentText($content_text,540);
 		}
-		if($replyid != '' && ($addition_type == '1' or $addition_type == '2')){
+		if($replyid != '' && $pendingid != '' && ($addition_type == '1' or $addition_type == '2')){
 			$addition = new ReplyAddition;
 			return $addition->saveAdditionReply(Cookie::get('userid'), $replyid, $pendingid, $content, $content_text, $thumb_img, $addition_type);
 		}else{

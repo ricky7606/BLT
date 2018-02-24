@@ -82,6 +82,17 @@ class QnasReplyDetails extends Model {
         return $reply;   // 返回修改后的数据
 	}
 
+	public function getReplyDetailsByQnaIdUserId($qnaid, $userid){
+		$reply = $this->where('qnaid', $qnaid)
+		->where('userid', $userid)
+		->order('create_date','asc')
+		->select();
+        if (empty($reply)) {                 // 判断是否出错
+            return false;
+        }
+        return $reply;   // 返回修改后的数据
+	}
+
 	public function getTopReplyDetailsByReplyId($replyid, $valuable = false){
 		if($valuable){
 			$reply = $this->where('replyid',$replyid)
@@ -124,7 +135,8 @@ class QnasReplyDetails extends Model {
 			->order('max(create_date)', 'desc')
 			->paginate($limit);
 		}else{
-			$qna_reply_list = $this->group('qnaid')
+			$qna_reply_list = $this->where('share', 1)
+			->group('qnaid')
 			->field('replyid,qnaid,qna_userid,userid,qna_username,reply_username,qna_coins,content,content_text,title,create_date,qna_personal_pic,reply_personal_pic')
 			->order('max(create_date)', 'desc')
 			->paginate($limit);

@@ -3,12 +3,13 @@ namespace app\index\model;
 
 //导入模型类
 use think\Model;
+use app\index\model\Users;
 use app\index\model\QnasPending;
 
-class ReplyAdditionDetails extends Model {
+class ReplyAddition extends Model {
 	
 	// 设置当前模型对应的完整数据表名称
-    protected $table = 'BLT_ReplyAddition';
+    protected $table = 'BLT_reply_addition';
 
 	//在子类重写父类的初始化方法initialize()
 	protected function initialize(){

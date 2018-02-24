@@ -29,7 +29,7 @@ class QnaPendingDetails extends Model {
 
 	public function getPendingDetailsByUserId($userid, $pending_status = 1){
         $new_pending = $this->where('pending_userid',$userid)
-		->where('status',$pending_status)
+		->where('status','in',$pending_status)
 		->field('qnaid,pendingid,qna_userid,qna_username,title,content,content_text,thumb_img,coins,status,attentionid,followid,qna_user_personal_pic')
 		->order('pending_date','asc')
 		->select();          // 查询用户

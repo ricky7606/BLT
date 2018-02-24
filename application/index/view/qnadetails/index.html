@@ -117,6 +117,31 @@
             {if condition="$reply_detail['reply_userinfo']['brief']"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$reply_detail['reply_userinfo']['brief']}</span></div>{/if}
             <div style="height:20px;"></div>
             <div>{$reply_detail.content}</div>
+            
+                <!-- 补充提问和回答 -->
+                {volist name="reply_detail.addition" id="reply_addition" key="a"}
+                {if condition="$reply_addition.addition_type == '1'"}
+                <div style="padding-left:60px;"><span class="am-icon-commenting" style="color:#900;"></span> 补充提问： </div>
+                {else /}
+                <div style="padding-left:60px;"><span class="am-icon-commenting-o" style="color:#06C;"></span> 补充回答： </div>
+                {/if}
+                {if condition="$reply_addition.thumb_img neq ''"}
+                <div style="width:100%" id="content_text_{$i}_{$a}" class="user_content_left">
+                    <div style="width:180px; float:left; padding-left:40px; padding-right:20px; padding-top:10px; text-align:center;" id="thumb_img"><img src="{$reply_addition.thumb_img}" class="thumb_img"></div>
+                    <div style="width:75%; float:left;" class="format_text">
+                    {$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAll('{$i}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                </div>
+                {else /}
+                <div id="content_text_{$i}_{$a}" class="user_content_left format_text" style="padding-left:60px;">{$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAll('{$i}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                {/if}
+                <div id="content_html_{$i}_{$a}" style="display:none; padding-left:60px;" class="content_html format_text">
+                    <div>{$reply_addition.content}</div>
+                    <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll('{$i}_{$a}');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+                </div>
+                <div style="clear:both;"></div>
+                {/volist}
+                <!-- 补充提问和回答结束 -->
+            
             <div style="height:20px;"></div>
             <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$i});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
             </div>
@@ -144,6 +169,9 @@
             <div class="right_banner_box"><img src="/static/images/banner-1.jpg" style="width:100%;" class="banner_img"></div>
             <div class="right_box header_title">
             <p class="header_title">最新提问</p>
+            {volist name="qna_list" id="qnaid"}
+            	<div><a href="/index/qnadetails?id={$qnaid.qnaid}">{$qnaid.shortTitle}</a></div>
+            {/volist}
             </div>
             <div class="right_banner_box"><img src="/static/images/banner-2.jpg" style="width:100%;" class="banner_img"></div>
             <div class="right_box header_title">

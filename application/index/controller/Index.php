@@ -16,6 +16,7 @@ use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
 use app\index\model\Users;
 use app\index\model\Tags;
+use app\index\model\ReplyAdditionDetails;
 
 class Index extends Controller
 {
@@ -39,11 +40,12 @@ class Index extends Controller
 			$this->assign('header_type','normal');
 		}
 		if($reply_list){
+			$follow = new Follow;
+			$att = new Attention;
+			$qna_pending=new QnasPending;
+			$addition = new ReplyAdditionDetails;
 			foreach ($reply_list as $n=>$reply){ 
-				$follow = new Follow;
 				if(Cookie::has('userid')){
-					$att = new Attention;
-					$qna_pending=new QnasPending;
 					$qna_follow = $follow->getFollowByQnaIdUserId($reply->qnaid, $userid);
 					$pending_info = $qna_pending->getPendingByUserId($reply->qnaid, $userid );
 					if($pending_info){
@@ -71,9 +73,10 @@ class Index extends Controller
 						$reply_list[$n]['qna_user_att'] = -1;
 					}
 				}
-				$reply_list[$n]['formatCoins'] = floatval($reply_list[$n]['qna_coins']);
+				$reply->formatCoins = floatval($reply_list[$n]['qna_coins']);
 				$follow_count = $follow->getFollowCount($reply->qnaid);
-				$reply_list[$n]['followCount'] = $follow_count->followCount;
+				$reply->followCount = $follow_count->followCount;
+				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}
 		$this->assign('reply_list',$reply_list);

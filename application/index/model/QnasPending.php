@@ -35,8 +35,10 @@ class QnasPending extends Model {
 	//拒绝回答
 	public function refusePending($pendingid){
 		$this->startTrans();
-		$result = $this->update(['pendingid' => $pendingid, 'status' => 2]);
-		
+		$pending_status = $this->where('pendingid', $pendingid)
+		->field('`status`')
+		->find();
+		$error_flag = false;
 		$pending = new QnaPendingDetails;
 		$pending_info = $pending->getPendingDetailsByPendingId($pendingid);
 		$coins_before = $pending_info->payer_coins;
@@ -44,14 +46,29 @@ class QnasPending extends Model {
 		$payee_userid = $pending_info->pending_userid;
 		$qnaid = $pending_info->qnaid;
 		$coins = $pending_info->coins;
-		$transaction = new Transactions;
-		$result_trans = $transaction->saveTransaction($payer_userid, $coins, 3, $qnaid, $payee_userid, $pendingid);
-		$commission = bcmul($coins, 0.1, 8);
-		$result_trans = $transaction->saveTransaction($payer_userid, $commission, 4, $qnaid, $payee_userid, $pendingid); 
-		$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$payee_userid."\" target=\"_blank\">".$pending_info->pending_username."</a>”刚刚拒绝了回答您的问题：“<a href=\"\\index\\qnadetails?id=".$qnaid."\" target=\"_blank\">".$pending_info->title."</a>”。";
-		$message = new Message;
-		$result_message = $message->saveNewMessage($payer_userid, $message_text);
-		if($result === false || $result_trans === false || $result_message === false){
+		if($pending_status->status == 1){
+			$result = $this->update(['pendingid' => $pendingid, 'status' => 2]);
+			
+			$transaction = new Transactions;
+			$result_trans = $transaction->saveTransaction($payer_userid, $coins, 3, $qnaid, $payee_userid, $pendingid);
+			$commission = bcmul($coins, 0.1, 8);
+			$result_trans = $transaction->saveTransaction($payer_userid, $commission, 4, $qnaid, $payee_userid, $pendingid); 
+			$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$payee_userid."\" target=\"_blank\">".$pending_info->pending_username."</a>”刚刚拒绝了回答您的问题：“<a href=\"\\index\\qnadetails?id=".$qnaid."\" target=\"_blank\">".$pending_info->title."</a>”。";
+			$message = new Message;
+			$result_message = $message->saveNewMessage($payer_userid, $message_text);
+			if($result === false || $result_trans === false || $result_message === false){
+				$error_flag = true;
+			}
+		}elseif($pending_status->status == 31){
+			$result = $this->update(['pendingid' => $pendingid, 'status' => 32]);
+			$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$payee_userid."\" target=\"_blank\">".$pending_info->pending_username."</a>”刚刚拒绝了回答您关于问题：“<a href=\"\\index\\qnadetails?id=".$qnaid."\" target=\"_blank\">".$pending_info->title."</a>”的补充提问。";
+			$message = new Message;
+			$result_message = $message->saveNewMessage($payer_userid, $message_text);
+			if($result === false || $result_message === false){
+				$error_flag = true;
+			}
+		}
+		if($error_flag){
 			$this->rollBack();
 			return "处理失败";
 		}else{

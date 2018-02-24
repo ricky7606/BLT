@@ -27,7 +27,7 @@ class ReplyAdditionDetails extends Model {
 	
 	public function getReplyAdditions($replyid){
         $addition = $this->where('replyid', $replyid)
-		->order('create_date','desc')
+		->order('create_date','asc')
 		->select();          // 查询所有用户的所有字段资料
         if (empty($addition)) {                 // 判断是否出错
             return false;

@@ -67,8 +67,33 @@
             {/if}
             <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
                 <div>{$reply.content}</div>
+                
+                <!-- 补充提问和回答 -->
+                {volist name="reply.addition" id="reply_addition" key="a"}
+                {if condition="$reply_addition.addition_type == '1'"}
+                <div style="padding-left:60px;"><span class="am-icon-commenting" style="color:#900;"></span> 补充提问： </div>
+                {else /}
+                <div style="padding-left:60px;"><span class="am-icon-commenting-o" style="color:#06C;"></span> 补充回答： </div>
+                {/if}
+                {if condition="$reply_addition.thumb_img neq ''"}
+                <div style="width:100%" id="content_text_{$i}_{$a}" class="user_content_left">
+                    <div style="width:180px; float:left; padding-left:40px; padding-right:20px; padding-top:10px; text-align:center;" id="thumb_img"><img src="{$reply_addition.thumb_img}" class="thumb_img"></div>
+                    <div style="width:80%; float:left;" class="format_text">
+                    {$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAll('{$i}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                </div>
+                {else /}
+                <div id="content_text_{$i}_{$a}" class="user_content_left format_text" style="padding-left:60px;">{$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAll('{$i}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                {/if}
+                <div id="content_html_{$i}_{$a}" style="display:none; padding-left:60px;" class="content_html format_text">
+                    <div>{$reply_addition.content}</div>
+                    <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll('{$i}_{$a}');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+                </div>
+                <div style="clear:both;"></div>
+                {/volist}
+                <!-- 补充提问和回答结束 -->
+                
                 <div style="text-align:right;"><span class="am-icon-comments-o" style="color:#06C;"></span> 回答者：
-+                <img src="{if condition="$reply.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply.reply_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;"> <span class="header_title_arctile" style="cursor:pointer;" onclick="window.location.href='/index/userreplydetail?userid={$reply.userid}';">{$reply.reply_username}</span> <span style="font-size:12px; color:#999; padding-left:10px;">({$reply.create_date})</span>
+                <img src="{if condition="$reply.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply.reply_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;"> <span class="header_title_arctile" style="cursor:pointer;" onclick="window.location.href='/index/userreplydetail?userid={$reply.userid}';">{$reply.reply_username}</span> <span style="font-size:12px; color:#999; padding-left:10px;">({$reply.create_date})</span>
                 {if condition="$header_type == 'user'"} 
                 {if condition="$userid != $reply.userid"}
                 {if condition="$reply['reply_user_att'] == '-1'"}

@@ -65,6 +65,7 @@ class QnaReply extends Controller
 			$this->assign('userid',$userid);
 		}else{
 			$this->assign('header_type','normal');
+			$this->assign('userid','');
 		}
 		$follow_count = $follow->getFollowCount($reply_detail->qnaid);
 		$reply_detail['followCount'] = $follow_count->followCount;

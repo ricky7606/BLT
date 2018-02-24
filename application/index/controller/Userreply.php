@@ -7,6 +7,7 @@ use think\Cookie;
 use app\index\model\QnasReplyDetails;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
+use app\index\model\ReplyAdditionDetails;
 
 class Userreply extends Controller
 {
@@ -18,9 +19,11 @@ class Userreply extends Controller
 		$reply = new QnasReplyDetails;
 		$reply_list = $reply->getReplyDetailsByUserId(Cookie::get('userid'));
 		if($reply_list){
+			$addition = new ReplyAdditionDetails;
 			foreach($reply_list as $n=>$reply){
-				$reply_list[$n]['formatCoins'] = floatval($reply->qna_coins);
-				$reply_list[$n]['arbitrateCoins'] = floatval($reply->arbitrate_coins);
+				$reply->formatCoins = floatval($reply->qna_coins);
+				$reply->arbitrateCoins = floatval($reply->arbitrate_coins);
+				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}
         $this->assign('reply_list',$reply_list);

@@ -123,7 +123,8 @@ function chkPassword2(){
 }
 function chkImgcode(){
 	var imgcode = document.getElementById('imgcode').value;
-	if(imgcode.length > 0){
+	if(imgcode.length = 4){
+		/*
         $.post('/index/register/chkImgcode', {imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {
 			if(msg=='error'){
 				xcsoft.error('图形验证码错误或者超时！',3000);
@@ -134,7 +135,9 @@ function chkImgcode(){
 				isImgcodeOK = true;
 				return true;
 			}
-        });		
+        });	
+		*/
+		isImgcodeOK = true;
 	}else{
 		isImgcodeOK = false;
 	}

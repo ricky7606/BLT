@@ -6,12 +6,14 @@ use think\Db;
 use think\Cookie;
 use app\index\model\Qnas;
 use app\index\model\QnasReply;
+use app\index\model\QnasUser;
 use app\index\model\QnasPending;
 use app\index\model\QnasReplyDetails;
 use app\index\model\Attention;
 use app\index\model\Follow;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
+use app\index\model\ReplyAdditionDetails;
 
 class QnaDetails extends Controller
 {
@@ -28,6 +30,7 @@ class QnaDetails extends Controller
 			return $this->redirect('/index');
 		}
 		$userid = Cookie::get('userid');
+		$this->assign('userid',$userid);
 		$att = new Attention;
 		$follow = new Follow;
 		$qna_pending=new QnasPending;
@@ -64,6 +67,7 @@ class QnaDetails extends Controller
 		$reply = new QnasReplyDetails;
 		$reply_list = $reply->getReplyDetailsByQnaId($qnaid); 
 		if($reply_list){
+			$addition = new ReplyAdditionDetails;
 			foreach($reply_list as $n=>$reply){
 				if(Cookie::has('userid')){
 					$qna_pending=new QnasPending;
@@ -89,10 +93,19 @@ class QnaDetails extends Controller
 					}
 				}
 				$reply_userinfo = $user->getUserDetails($reply->userid);
-				$reply_list[$n]['reply_userinfo'] = $reply_userinfo;
+				$reply->reply_userinfo = $reply_userinfo;
+				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}
 		$this->assign('reply_list',$reply_list);
+		$qnauser=new QnasUser();
+		$qna_list=$qnauser->getNewQnas(); 
+		if($qna_list){
+			foreach ($qna_list as $n=>$qna){ 
+				$qna->shortTitle = getContentText($qna->title,35);
+			}
+		}
+		$this->assign('qna_list',$qna_list);
 		if(Cookie::has('userid')){
 			$this->assign('header_type','user');
 			$user->chkReminder($userid);

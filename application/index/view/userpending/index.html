@@ -41,9 +41,9 @@
                 {volist name="pending_list" id="qnaid" empty="<div style='width:100%;text-align:center; height:200px; padding-top:100px; font-size:1em; font-weight:normal;'>暂时没有等待问答</div>"}
             	<div class="user_list_left"><img src="{if condition="$qnaid.qna_user_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$qnaid.qna_user_personal_pic}{/if}" class="user_pic_small" style="margin-right:10px;">  <a class="header_title" href="/index/userreplydetail?userid={$qnaid.qna_userid}" target="_blank">{$qnaid.qna_username}</a>
                 {if condition="$qnaid.followid == ''"}
-                <button type="button" class="btn btn-default le_button" style="margin-left:10px" id="attBtn{$i}" onclick="attUser('{$qnaid.qna_userid}','{$i}');this.disabled='disabled';"><i class="am-icon-plus am-icon-sm" style="font-size: 0.8em"></i> 关注TA</button> 
+                <button type="button" class="btn btn-default le_button" style="margin-left:10px" id="attBtn{$i}" onclick="attUser('{$qnaid.qna_userid}','{$i}');this.disabled='disabled';"><i class="am-icon-plus"></i> 关注TA</button> 
                 {else /}
-                <button type="button" class="btn btn-default user_button_white_small" style="width:auto;"><i style="font-size: 0.8em" class="am-icon-user-plus am-icon-sm"></i> 已关注</button>
+                <button type="button" class="btn btn-default user_button_white_small" style="width:auto;"><i class="am-icon-user-plus"></i> 已关注</button>
                 {/if}</div>
                 <div class="user_list_right">
                 
@@ -66,12 +66,67 @@
                     <div style="text-align:right"><a href="javascript:void(0)"  style="font-size: 0.8em" onclick="hideAll({$i});">收起 <span class="am-icon-angle-up am-icon-sm" style="color:#09F;"></span></a></div>
                 </div>
                 <div style="clear:both;"></div>
-                <div class="answer_section" id="answer_buttons"><span class="am-icon-bitcoin am-icon-sm" style="color:#FC0;" title="悬赏"> {$qnaid['formatCoins']} <a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-pendingid="pendingid{$i}" data-animation="fade" class="btn btn-default user_button_blue_small"><i class="am-icon-comment am-icon-sm"></i> 我要回答</a> <button type="button" class="btn btn-default le_button user_button_noanswer" style="padding:7px" onclick="pending_refuse('{$qnaid.pendingid}'); this.disabled='disabled';"><i class="am-icon-close am-icon-sm"></i> 不感兴趣</button> 
-
-                    {if condition="$qnaid.attentionid == ''"}
-                <button type="button" class="btn btn-default user_button_blue_small" id="followBtn{$i}" onclick="follow('{$qnaid.qnaid}','{$i}');this.disabled='disabled';"><i class="am-icon-star-o am-icon-sm"></i> 收藏问题</button>
+                
+                <!-- 如果是补充提问和回答 -->
+                {if condition="count($qnaid.reply)>0"}
+                <div style="padding-left:60px;font-size: 0.8em" class="header_title"><span class="am-icon-comments-o am-icon-sm" style="color:#06C;"></span> 回答记录 >> </div>
+                <div style="height:10px"></div>
+                <div style="clear:both;"></div>
+                {volist name="qnaid.reply" id="reply_qna" key="j"}
+                {if condition="$reply_qna.thumb_img neq ''"}
+                <div style="width:1200px;padding-top: 10px" id="reply_text_{$i}_{$j}" class="content_html">
+                    <div style="width:180px; float:left; padding-left:40px; padding-right:20px; padding-top:10px; text-align:center;" id="thumb_img"><img src="{$reply_qna.thumb_img}" class="thumb_img"></div>
+                    <div style="width:80%; float:left;" class="format_text">
+                    {$reply_qna.content_text} <a style="font-size: 0.8em" href="javascript:void(0)" onclick="viewReply('{$i}_{$j}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                </div>
                 {else /}
-                <button type="button" class="btn btn-default le_button" style="padding:7px;"><i class="am-icon-star am-icon-sm"></i> 已收藏</button>
+                <div id="reply_text_{$i}_{$j}" class="content_html format_text" style="padding-left:60px;padding-top: 10px">{$reply_qna.content_text} <a style="font-size: 0.8em" href="javascript:void(0)" onclick="viewReply('{$i}_{$j}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                {/if}
+                <div id="reply_html_{$i}_{$j}" style="display:none; padding-left:60px;padding-top: 10px" class="content_html format_text">
+                    <div>{$reply_qna.content}</div>
+                    <div style="text-align:right"><a style="font-size: 0.8em" href="javascript:void(0)" onclick="hideReply('{$i}_{$j}');">收起 <span class="am-icon-angle-up am-icon-sm" style="color:#09F;"></span></a></div>
+                </div>
+                <div style="clear:both; height:10px;"></div>
+                <!-- 补充提问和回答 -->
+                {volist name="reply_qna.addition" id="reply_addition" key="a"}
+                {if condition="$reply_addition.addition_type == '1'"}
+                <div style="padding-left:60px;"><span class="am-icon-commenting" style="color:#900;"></span> 补充提问： </div>
+                {else /}
+                <div style="padding-left:60px;"><span class="am-icon-commenting-o" style="color:#06C;"></span> 补充回答： </div>
+                {/if}
+                {if condition="$reply_addition.thumb_img neq ''"}
+                <div style="width:100%" id="addition_text_{$i}_{$j}_{$a}" class="user_content_left">
+                    <div style="width:180px; float:left; padding-left:40px; padding-right:20px; padding-top:10px; text-align:center;" id="thumb_img"><img src="{$reply_addition.thumb_img}" class="thumb_img"></div>
+                    <div style="width:80%; float:left;" class="format_text">
+                    {$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAddition('{$i}_{$j}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                </div>
+                {else /}
+                <div id="addition_text_{$i}_{$j}_{$a}" class="user_content_left format_text" style="padding-left:60px;">{$reply_addition.content_text} <a href="javascript:void(0)" onclick="viewAddition('{$i}_{$j}_{$a}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                {/if}
+                <div id="addition_html_{$i}_{$j}_{$a}" style="display:none; padding-left:60px;" class="content_html format_text">
+                    <div>{$reply_addition.content}</div>
+                    <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAddition('{$i}_{$j}_{$a}');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+                </div>
+                <div style="clear:both;"></div>
+                {/volist}
+                <!-- 补充提问和回答结束 -->
+                {/volist}
+                {/if}
+
+                <div class="answer_section" id="answer_buttons"><span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"> {$qnaid['formatCoins']} 
+                {switch name="qnaid.status"}
+                {case value = '1'}
+                <a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-pendingid="pendingid{$i}" data-animation="fade" class="btn btn-default user_button_blue_small"><i class="am-icon-comment"></i> 我要回答</a> <button type="button" class="btn btn-default le_button user_button_noanswer" style="padding:7px" onclick="pending_refuse('{$qnaid.pendingid}'); this.disabled='disabled';"><i class="am-icon-close"></i> 不感兴趣</button> 
+                {/case}
+                {case value = '31'}
+                <a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-pendingid="pendingid{$i}" data-animation="fade" class="btn btn-default user_button_blue_small"><i class="am-icon-comment"></i> 我要补充回答</a> <button type="button" class="btn btn-default le_button user_button_noanswer" style="padding:7px" onclick="pending_refuse('{$qnaid.pendingid}'); this.disabled='disabled';"><i class="am-icon-close"></i> 拒绝补充回答</button> 
+                {/case}
+                {/switch}
+
+                {if condition="$qnaid.attentionid == ''"}
+                <button type="button" class="btn btn-default user_button_blue_small" id="followBtn{$i}" onclick="follow('{$qnaid.qnaid}','{$i}');this.disabled='disabled';"><i class="am-icon-star-o"></i> 收藏问题</button>
+                {else /}
+                <button type="button" class="btn btn-default le_button" style="padding:7px;"><i class="am-icon-star"></i> 已收藏</button>
                 {/if}</div>
                 <input type="hidden" id="qna_title{$i}" value="{$qnaid.title}"> 
                 <input type="hidden" id="qnaid{$i}" value="{$qnaid.qnaid}"> 
@@ -90,18 +145,13 @@
     <div class="header_title" id="qna_title"></div>
     <div style="height:20px;"></div>
     <div id="editordiv" class="text">
-    </div><button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment am-icon-sm"></i> 发布回答</button>
+    </div><button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment"></i> 发布回答</button>
     <a class="close-reveal-modal">&#215;</a>
 </div>
-<!--
 <div id="addition_box" class="reveal-modal" style="width:700px;">
-    <div class="header_title">请输入您要求回答者补充回答的原因</div>
-    <div style="height:20px;"></div>
-    <div id="editordiv" class="text">
-    </div><button type="button" name="additionbtn" id="additionbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment am-icon-sm"></i> 发布补充提问</button>
+    <button type="button" name="additionbtn" id="additionbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment am-icon-sm"></i> 发布补充提问</button>
     <a class="close-reveal-modal">&#215;</a>
 </div>
--->
 <input type="hidden" name="content" id="content" value="" />
 <input type="hidden" name="qnaid" id="qnaid" value="" />
 <input type="hidden" name="pendingid" id="pendingid" value="" />

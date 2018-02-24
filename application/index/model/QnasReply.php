@@ -100,6 +100,7 @@ class QnasReply extends Model {
 //	3 - 已回答；
 //	31 - 要求补充回答
 //	32 - 拒绝补充回答
+//	33 - 已补充回答
 //	4 - 回答被采纳；
 //	5 - 回答被拒绝；
 //	6 - 回答被拒绝后进入待处理状态；
@@ -137,6 +138,10 @@ class QnasReply extends Model {
 			$pendingid = $reply_info->pendingid;
 			$payee_coins_before = $reply_info->reply_user_coins;
 			$pending_status_before = $reply_info->pending_status;
+			$status_ok = false;
+			if($pending_status_before == 3 || $pending_status_before == 32 || $pending_status_before == 33){
+				$status_ok = true;
+			}
 			
 					
 			$transaction = new Transactions;
@@ -144,14 +149,14 @@ class QnasReply extends Model {
 				//接受回答创建支付记录及入账记录，pending状态更新为4，拒绝回答将pending状态更新为6，等待回答者处理；
 				$pending_status = 4;
 				//问答支付
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$result_trans = $transaction->saveTransaction($payer_userid, $coins, 5, $qnaid, $payee_userid, $pendingid);
 				if($result_trans === false){
 					$error_flag = true;
 				}
 				}
 				//问答悬赏佣金支付
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$commission = bcmul($coins, 0.1, 8);
 				$result_trans = $transaction->saveTransaction($payer_userid, $commission, 6, $qnaid, $payee_userid, $pendingid);
 				if($result_trans === false){
@@ -160,7 +165,7 @@ class QnasReply extends Model {
 				}
 				//如果分享答案，则返回9.5%佣金
 				if($share==1){
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$refund = bcmul($coins, 0.095, 8);
 				$result_trans = $transaction->saveTransaction($payer_userid, $refund, 8, $qnaid, $payee_userid, $pendingid);
 				if($result_trans === false){
@@ -169,7 +174,7 @@ class QnasReply extends Model {
 				}
 				}
 				//问答入账
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$coins_after = bcadd($payee_coins_before, $coins, 8);
 				$result_trans = $transaction->saveTransaction($payee_userid, $coins, 9, $qnaid, $payer_userid, $pendingid);
 				//通知回答者
@@ -181,7 +186,7 @@ class QnasReply extends Model {
 				}
 				}
 				//问答入账佣金支付
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$commission = bcmul($coins, 0.005, 8);
 				$result_trans = $transaction->saveTransaction($payee_userid, $commission, 7, $qnaid, $payer_userid, $pendingid);
 				if($result_trans === false){
@@ -189,30 +194,15 @@ class QnasReply extends Model {
 				}
 				}
 			}else{
-				//接受回答创建支付记录及入账记录，pending状态更新为4，拒绝回答将pending状态更新为6，等待回答者处理；
+				//接受回答创建支付记录及入账记录，pending状态更新为4，拒绝回答将pending状态更新为6，等待回答者处理，悬赏仍然冻结；
 				$pending_status = 6;
-				//问答解冻
-				if($pending_status_before == 3){	//检查pending状态
-				$result_trans = $transaction->saveTransaction($payer_userid, $coins, 3, $qnaid, $payee_userid, $pendingid);
-				if($result_trans === false){
-					$error_flag = true;
-				}
-				}
-				//问答佣金解冻
-				if($pending_status_before == 3){	//检查pending状态
-				$commission = bcmul($coins, 0.1, 8);
-				$result_trans = $transaction->saveTransaction($payer_userid, $commission, 4, $qnaid, $payee_userid, $pendingid);
-				if($result_trans === false){
-					$error_flag = true;
-				}
-				}
 				//通知回答者
 				$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$payer_userid."\" target=\"_blank\">".$reply_info->qna_username."</a>”刚刚拒绝了您关于问题：“<a href=\"\\index\\qnadetails?id=".$reply_info->qnaid."\" target=\"_blank\">".$reply_info->title."</a>”的答案。如有异议，您可以在十天内提出仲裁。";
 				$message = new Message;
 				$result_message = $message->saveNewMessage($payee_userid, $message_text);
 			}
 			if($pendingid != ''){
-				if($pending_status_before == 3){	//检查pending状态
+				if($status_ok){	//检查pending状态
 				$pending = new QnasPending;
 				$result_pending = $pending->update(['pendingid' => $pendingid, 'status' => $pending_status, 'share' => $share]);
 				if($result_pending === false){
@@ -283,8 +273,17 @@ class QnasReply extends Model {
 
 	public function getReplyDetailsByReplyId($replyid){
         $reply = $this->where('replyid',$replyid)
-		->field('replyid,qnaid,userid,content,content_text,thumb_img,status')
-		->limit(1)
+		->field('replyid,qnaid,userid,content,content_text,thumb_img')
+		->find();          // 查询用户
+        if (empty($reply)) {                 // 判断是否出错
+            return false;
+        }
+        return $reply;   // 返回修改后的数据
+	}
+
+	public function getReplyDetailsByPendingId($pendingid){
+        $reply = $this->where('pendingid',$pendingid)
+		->field('replyid,pendingid,qnaid,userid,content,content_text,thumb_img')
 		->find();          // 查询用户
         if (empty($reply)) {                 // 判断是否出错
             return false;

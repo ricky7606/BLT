@@ -63,7 +63,6 @@ document.getElementById('submitbtn').addEventListener('click', function () {
 	}
 }, false)
 
-/*
 document.getElementById('additionbtn').addEventListener('click', function () {
 	chkContent();
 	if(isContentOK){
@@ -71,7 +70,7 @@ document.getElementById('additionbtn').addEventListener('click', function () {
 		// 读取 html
 		$('#content').val(editor.txt.html());
 		$('#content_text').val(editor.txt.text());
-		$.post('/index/userqnas/saveAdditionReply', {content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),replyid:jQuery.trim($('#replyid').val()),addition_type:jQuery.trim($('#addition_type').val())}, function(msg) {
+		$.post('/index/userqnas/saveAdditionReply', {content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),replyid:jQuery.trim($('#replyid').val()),pendingid:jQuery.trim($('#pendingid').val()),addition_type:jQuery.trim($('#addition_type').val())}, function(msg) {
 			if(msg=='ok'){
 				xcsoft.success('发布成功！',3000);
 				setTimeout("window.location.reload(true)", 3000 ); //3秒后刷新
@@ -88,11 +87,10 @@ document.getElementById('additionbtn').addEventListener('click', function () {
 		return false;
 	}
 }, false)
-*/
 
 function chkContent(){
 	var content = editor.txt.text();
-	if(content.length > 10){
+	if(content.length > 9){
 		isContentOK = true;
 	}else{
 		isContentOK = false;

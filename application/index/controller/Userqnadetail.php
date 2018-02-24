@@ -87,6 +87,7 @@ class UserQnaDetail extends Controller
 			$this->assign('login_userid',$login_userid);
 		}else{
 			$this->assign('header_type','normal');
+			$this->assign('login_userid','');
 		}
         return $this->fetch(); 
 	}
