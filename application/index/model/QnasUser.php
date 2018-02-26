@@ -60,6 +60,7 @@ class QnasUser extends Model {
 	
 	public function searchQnas($keywords){
 		$search_qnas = $this->where('title','like','%'.$keywords.'%')
+		->where('report_disabled', 0)
 		->order('create_date','desc')
 		->paginate(10,false,['query'=>request()->param()]);  
         if (empty($search_qnas)) {                 // 判断是否出错

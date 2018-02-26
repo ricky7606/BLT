@@ -79,13 +79,13 @@ class Qnasearch extends Controller
 		$this->assign('no_result',$no_result);
 		if(Cookie::has('userid')){
 			$this->assign('header_type', 'user');
-			$this->assign('userid', Cookie::get('userid'));
 			$user->chkReminder(Cookie::get('userid'));
 			$userinfo = $user->getUserInfo(Cookie::get('userid'));
 			$this->assign('userinfo',$userinfo);
 		}else{
 			$this->assign('header_type', 'normal'); 
 		}
+		$this->assign('userid', Cookie::get('userid'));
         return $this->fetch();
     }
 }
