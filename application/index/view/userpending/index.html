@@ -114,6 +114,7 @@
                 {/if}
 
                 <div class="answer_section" id="answer_buttons"><span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"> {$qnaid['formatCoins']} 
+                {if condition="$qnaid.report_disabled == 1"}<span style="color:#F00;"><i class="am-icon-warning" style="margin-left:20px; margin-right:20px;"></i> 该提问已被举报处理</span>{/if}
                 {switch name="qnaid.status"}
                 {case value = '1'}
                 <a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-pendingid="pendingid{$i}" data-animation="fade" class="btn btn-default user_button_blue_small"><i class="am-icon-comment"></i> 我要回答</a> <button type="button" class="btn btn-default le_button user_button_noanswer" style="padding:7px" onclick="pending_refuse('{$qnaid.pendingid}'); this.disabled='disabled';"><i class="am-icon-close"></i> 不感兴趣</button> 

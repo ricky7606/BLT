@@ -28,6 +28,7 @@ class QnasUser extends Model {
 		}
 	public function getNewQnas(){
         $new_qnauser = $this->order('create_date','desc')
+		->where('report_disabled', 0)
 		->paginate(10);          
         if (empty($new_qnauser)) {                 // 判断是否出错
             return false;
@@ -37,6 +38,7 @@ class QnasUser extends Model {
 
 	public function getQnasByUserId($userid){
         $qnauser = $this->where('userid',$userid)
+		->where('report_disabled', 0)
 		->order('create_date','desc')
 		->paginate(10);          // 查询所有用户的所有字段资料
         if (empty($qnauser)) {                 // 判断是否出错

@@ -48,7 +48,7 @@ class UserQnaDetail extends Controller
 		$reply = new QnasReplyDetails;
 		$reply_list = $reply->getUpdateReplyDetailsByUserId($userid);
 		foreach($reply_list as $n=>$reply){
-			$reply_list[$n]['shortTitle'] = getContentText($reply->title,40);
+			$reply_list[$n]['shortTitle'] = getContentText($reply->title,36);
 		}
 		$this->assign('reply_list',$reply_list);
 

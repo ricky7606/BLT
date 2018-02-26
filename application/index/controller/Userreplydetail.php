@@ -49,7 +49,7 @@ class UserReplyDetail extends Controller
 		$qna = new QnasUser;
 		$qna_list = $qna->getQnasByUserId($userid);
 		foreach($qna_list as $n=>$qna){
-			$qna_list[$n]['shortTitle'] = getContentText($qna->title,40);
+			$qna_list[$n]['shortTitle'] = getContentText($qna->title,35);
 		}
 		$this->assign('qna_list',$qna_list);
 

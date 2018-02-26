@@ -32,6 +32,8 @@ class QnasReplyDetails extends Model {
 	
 	public function getReplyDetailsByUserId($userid){
         $new_reply = $this->where('userid', $userid)
+		->where('reply_report_disabled', 0)
+		->where('qna_report_disabled', 0)
 		->order('create_date','desc')
 		->select();          // 查询所有用户的所有字段资料
         if (empty($new_reply)) {                 // 判断是否出错
@@ -130,12 +132,16 @@ class QnasReplyDetails extends Model {
 		if($valuable){
 			$qna_reply_list = $this->where('valuable_answer', 1)
 			->where('share', 1)
+			->where('reply_report_disabled', 0)
+			->where('qna_report_disabled', 0)
 			->field('replyid,qnaid,qna_userid,userid,qna_username,reply_username,qna_coins,content,content_text,title,create_date,qna_personal_pic,reply_personal_pic')
 			->group('qnaid')
 			->order('max(create_date)', 'desc')
 			->paginate($limit);
 		}else{
 			$qna_reply_list = $this->where('share', 1)
+			->where('reply_report_disabled', 0)
+			->where('qna_report_disabled', 0)
 			->group('qnaid')
 			->field('replyid,qnaid,qna_userid,userid,qna_username,reply_username,qna_coins,content,content_text,title,create_date,qna_personal_pic,reply_personal_pic')
 			->order('max(create_date)', 'desc')
@@ -151,12 +157,16 @@ class QnasReplyDetails extends Model {
 		if($vauable){
 			$qna_reply_list = $this->where('userid', $userid)
 			->where('valuable_answer', 1)
+			->where('reply_report_disabled', 0)
+			->where('qna_report_disabled', 0)
 			->field('replyid,qnaid,qna_userid,userid,qna_username,reply_username,qna_coins,content,content_text,title,create_date,qna_personal_pic,reply_personal_pic')
 			->group('qnaid')
 			->order('max(create_date)', 'desc')
 			->paginate($limit);
 		}else{
 			$qna_reply_list = $this->where('userid', $userid)
+			->where('reply_report_disabled', 0)
+			->where('qna_report_disabled', 0)
 			->group('qnaid')
 			->paginate($limit);
 		}

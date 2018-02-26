@@ -120,6 +120,7 @@ class Qnas extends Model {
 
 	public function getQnaDetailsByQnaId($qnaid){
         $qna = $this->where('qnaid',$qnaid)
+		->where('report_disabled', 0)
 		->field('qnaid,userid,title,content,content_text,coins,thumb_img,status')
 		->limit(1)
 		->find();          // 查询用户
