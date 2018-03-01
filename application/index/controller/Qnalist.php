@@ -7,6 +7,7 @@ use app\index\model\QnasPending;
 use app\index\model\QnasReply;
 use app\index\model\Follow;
 use app\index\model\Attention;
+use app\index\model\Ads;
 use think\Db;
 use think\Request;
 use think\Cookie;
@@ -78,6 +79,11 @@ class Qnalist extends Controller
 		}else{
 			$this->assign('header_type', 'normal'); 
 		}
+		$ads = new Ads;
+		$ad1 = $ads->getAdsByPosition(1);
+		$ad2 = $ads->getAdsByPosition(2);
+		$this->assign('ad1', $ad1); 
+		$this->assign('ad2', $ad2); 
         return $this->fetch();
     }
 	

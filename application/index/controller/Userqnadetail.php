@@ -12,6 +12,7 @@ use app\index\model\Attention;
 use app\index\model\Follow;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
+use app\index\model\Ads;
 
 class UserQnaDetail extends Controller
 {
@@ -89,6 +90,11 @@ class UserQnaDetail extends Controller
 			$this->assign('header_type','normal');
 			$this->assign('login_userid','');
 		}
+		$ads = new Ads;
+		$ad1 = $ads->getAdsByPosition(1);
+		$ad2 = $ads->getAdsByPosition(2);
+		$this->assign('ad1', $ad1); 
+		$this->assign('ad2', $ad2); 
         return $this->fetch(); 
 	}
 }

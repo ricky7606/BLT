@@ -16,6 +16,7 @@ use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
 use app\index\model\Users;
 use app\index\model\ReplyAdditionDetails;
+use app\index\model\Ads;
 
 class Feature extends Controller
 {
@@ -89,6 +90,11 @@ class Feature extends Controller
 		}
 		$this->assign('qna_list',$qna_list);
 		$this->assign('current_page','feature');
+		$ads = new Ads;
+		$ad1 = $ads->getAdsByPosition(1);
+		$ad2 = $ads->getAdsByPosition(2);
+		$this->assign('ad1', $ad1); 
+		$this->assign('ad2', $ad2); 
         return $this->fetch(); 
 	}
 }

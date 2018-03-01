@@ -13,6 +13,7 @@ use app\index\model\Follow;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
 use app\index\model\ReplyAdditionDetails;
+use app\index\model\Ads;
 
 class UserReplyDetail extends Controller
 {
@@ -92,6 +93,11 @@ class UserReplyDetail extends Controller
 			$this->assign('login_userid','');
 			$this->assign('header_type','normal');
 		}
+		$ads = new Ads;
+		$ad1 = $ads->getAdsByPosition(1);
+		$ad2 = $ads->getAdsByPosition(2);
+		$this->assign('ad1', $ad1); 
+		$this->assign('ad2', $ad2); 
         return $this->fetch(); 
 	}
 }

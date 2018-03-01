@@ -127,11 +127,11 @@
             <div style="text-align:center;" class="chk_all_answer" onclick="window.location.href='/index/qnadetails?id={$reply_detail.qnaid}'"><i class="am-icon-comments"></i> 查看所有回答</div>
             </div>
             <div class="right_column">
-            <div class="right_banner_box"><img src="/static/images/banner-1.jpg" style="width:100%;" class="banner_img"></div>
+            {if condition="$ad1.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad1.ads_id}" {if condition="$ad1.new_window=='1'"}target="_blank"{/if}><img src="{$ad1.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
             <div class="right_box header_title">
             <p class="header_title">最新提问</p>
             </div>
-            <div class="right_banner_box"><img src="/static/images/banner-2.jpg" style="width:100%;" class="banner_img"></div>
+            {if condition="$ad2.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad2.ads_id}" {if condition="$ad2.new_window=='1'"}target="_blank"{/if}><img src="{$ad2.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
             <div class="right_box header_title">
             <p style="color:#666; font-size:12px;">下载比邻Call &middot; <a href="/Beelinton-qt.exe">下载比邻钱包</a><br /><br />联系我们 &copy;2018</p>
             </div>

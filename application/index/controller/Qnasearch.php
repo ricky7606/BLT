@@ -14,6 +14,7 @@ use Qiniu\Auth as Auth;
 use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
 use app\index\model\Users;
+use app\index\model\Ads;
 
 class Qnasearch extends Controller
 {
@@ -86,6 +87,11 @@ class Qnasearch extends Controller
 			$this->assign('header_type', 'normal'); 
 		}
 		$this->assign('userid', Cookie::get('userid'));
+		$ads = new Ads;
+		$ad1 = $ads->getAdsByPosition(1);
+		$ad2 = $ads->getAdsByPosition(2);
+		$this->assign('ad1', $ad1); 
+		$this->assign('ad2', $ad2); 
         return $this->fetch();
     }
 }
