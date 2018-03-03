@@ -9,9 +9,9 @@
  Listener for data-reveal-id attributes
 ----------------------------*/
 
-	$('a[data-reveal-id]').live('click', function(e) {
+	$('a[qna-reveal-id]').live('click', function(e) {
 		e.preventDefault();
-		var modalLocation = $(this).attr('data-reveal-id');
+		var modalLocation = $(this).attr('qna-reveal-id');
 		var qnaTitle = $(this).attr('data-title');
 		var qnaId = $(this).attr('data-id');
 		var pendingId = $(this).attr('data-pendingid');

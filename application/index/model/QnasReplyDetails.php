@@ -69,11 +69,13 @@ class QnasReplyDetails extends Model {
 		if($valuable){
 			$reply = $this->where('qnaid',$qnaid)
 			->where('valuable_answer', 1)
+			->where('reply_report_disabled',0)
 			->limit($limit)
 			->order('create_date','desc')
 			->paginate(5,false,['query'=>request()->param()]);          
 		}else{
 			$reply = $this->where('qnaid',$qnaid)
+			->where('reply_report_disabled',0)
 			->limit($limit)
 			->order('create_date','desc')
 			->paginate(5,false,['query'=>request()->param()]);          

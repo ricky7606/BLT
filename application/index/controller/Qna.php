@@ -100,6 +100,8 @@ class Qna extends Controller
 			}else{
 				$answer_ok = false;
 			}
+		}else{
+			$pending_status = 1;
 		}
 		if($answer_ok){
 			if($thumb_img != ''){
@@ -172,7 +174,7 @@ class Qna extends Controller
 			// 调用 UploadManager 的 putFile 方法进行文件的上传。
 			list($ret, $err) = $uploadMgr->putFile($token, $newname, $filePath[$k]);
 			if($tmpStr==""){
-				$tmpStr="	\"http://images.beelintown.com.cn/$newname-upload_pic\"";
+				$tmpStr="\r\n	\"http://images.beelintown.com.cn/$newname-upload_pic\"";
 			}else{
 				$tmpStr.=",\r\n	\"http://images.beelintown.com.cn/$newname-upload_pic\"";
 			}
@@ -181,10 +183,16 @@ class Qna extends Controller
 		$tmpStr2.="
 		]
 	}"; 
-
+//		$tmpStr = 'http://images.beelintown.com.cn/afesq7c2bxwdh8jn.jpg';
+//		$tmpArr = array($tmpStr);
+//		$tmpArr2 = array('errno'=>0,'data'=>$tmpStr);
+//		$tmpStr2 = json_encode($tmpArr2,JSON_UNESCAPED_SLASHES);
+//		$result = json_decode($tmpStr2);
+//		$tmpStr2 = json_encode($result,JSON_UNESCAPED_SLASHES);
+		
 		return($tmpStr2);
     }
-	
+
 	public function getRandUsers($limit = 6){
 		$userid = Request::instance()->post('userid');
 		$limit = Request::instance()->post('limit');
