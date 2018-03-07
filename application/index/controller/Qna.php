@@ -28,7 +28,7 @@ class Qna extends Controller
         $this->assign('rand_users',$rand_users);
 		$att_users = $user->getAttUsers(Cookie::get('userid'));
         $this->assign('att_users',$att_users);
-		$userinfo = $user->getUserDetails(Cookie::get('userid'));
+		$userinfo = $user->getUserInfo(Cookie::get('userid'));
 		
 		$coins = floatval($userinfo->coins);
 		$frozen_coins = floatval($userinfo->frozen_coins);
@@ -61,7 +61,7 @@ class Qna extends Controller
 			}
 		}
 		$user = new Users;
-		$userinfo = $user->getUserDetails($userid);
+		$userinfo = $user->getUserInfo($userid);
 		if(bcsub($userinfo->coins, $userinfo->frozen_coins) < bcmul($total_invite, $coins)){
 			return '比邻币余额不足';
 		}

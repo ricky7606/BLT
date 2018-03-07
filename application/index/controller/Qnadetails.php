@@ -71,7 +71,6 @@ class QnaDetails extends Controller
 			$addition = new ReplyAdditionDetails;
 			foreach($reply_list as $n=>$reply){
 				if(Cookie::has('userid')){
-					$qna_pending=new QnasPending;
 					$qna_follow = $follow->getFollowByQnaIdUserId($reply->qnaid, $userid);
 					$pending_info = $qna_pending->getPendingByUserId($reply->qnaid, $userid );
 					if($pending_info){
@@ -93,7 +92,7 @@ class QnaDetails extends Controller
 						$reply_list[$n]['reply_user_att'] = -1;
 					}
 				}
-				$reply_userinfo = $user->getUserDetails($reply->userid);
+				$reply_userinfo = $user->getUserInfo($reply->userid);
 				$reply->reply_userinfo = $reply_userinfo;
 				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}

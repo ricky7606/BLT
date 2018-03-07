@@ -76,8 +76,8 @@ class QnaReply extends Controller
 		$this->assign('qna_tag_list',$qna_tag_list);
 		$this->assign('reply_tag_list',$reply_tag_list);
 		$userdetail = new Users;
-		$qna_userinfo = $userdetail->getUserDetails($reply_detail->qna_userid);
-		$reply_userinfo = $userdetail->getUserDetails($reply_detail->userid);
+		$qna_userinfo = $userdetail->getUserInfo($reply_detail->qna_userid);
+		$reply_userinfo = $userdetail->getUserInfo($reply_detail->userid);
 		$this->assign('qna_userinfo',$qna_userinfo);
 		$this->assign('reply_userinfo',$reply_userinfo);
 		$reply_detail['formatCoins'] = floatval($reply_detail->qna_coins);
