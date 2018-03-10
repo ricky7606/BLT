@@ -1,7 +1,6 @@
 {include file="header/index" header_type="$header_type" /}
 <link rel="stylesheet" href="/static/css/reveal.css">
 <script src="/static/js/wangEditor.min.js"></script>
-<script src="/static/js/xss.js"></script>
 <div style="background-color:#F2F2F2;">
     <div style="margin:0 auto; width:1200px;">
         <div style="text-align:left;">
@@ -54,7 +53,7 @@
                         <button type="button" class="btn btn-default button_grey"><i class="am-icon-hourglass-half"></i> 已申请回答</button>
                         {/case}
                         {case value = '1'"}
-                        <a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title0" data-pendingid="pendingid0" data-id="qnaid0" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
+                        <a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title0" data-pendingid="pendingid0" data-id="qnaid0" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
                         {/case}
                         {/switch}
                         <input type="hidden" id="pendingid0" value="{$qnainfo['pendingid']}"> 
@@ -66,7 +65,7 @@
                 {else /}
                 	{if condition="$header_type == 'user'"}
                 	{if condition="$userid != $qnainfo.userid"}
-                	<a href="javascript:void(0);" data-reveal-id="answer_box" data-title="qna_title0" data-id="qnaid0" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
+                	<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title0" data-id="qnaid0" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
                     {/if}
                     {/if}
                 {/if}
