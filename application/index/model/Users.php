@@ -98,27 +98,55 @@ class Users extends Model {
 		// 验证用户Bcrypt加密后的密码
 		$chkPwd = $this->where(function ($query) use ($mobile){
 			$query->where('mobile',$mobile)
-			->field('password,userid,username')
+			->field('password,userid,username,failed_login_times,failed_login_starttime,baned_endtime')
 			->limit(1);
 		})->find();
 		if($chkPwd){
-			if(password_verify($password,$chkPwd->password)){
-				if($isonemonth == 'yes'){
-					Cookie::set('userid',$chkPwd->userid,2678400);
-					Cookie::set('mobile',$mobile,2678400);
-					Cookie::set('username',$chkPwd->username,2678400);
-				}else{
-					Cookie::set('userid',$chkPwd->userid,86400);
-					Cookie::set('mobile',$mobile,86400);
-					Cookie::set('username',$chkPwd->username,86400);
-				}
-				$this->chkReminder($chkPwd->userid);
-				return "ok";
+			if($chkPwd->baned_endtime>date('Y-m-d H:i:s',time())){
+				return "您最近二十四小时内登录失败次数过多，账号被临时禁用中";
 			}else{
-				return "密码错误，请检查后重试";
+				//如果错误次数开始时间超过24小时则清零
+				if(DateDiff("h",$chkPwd->failed_login_starttime,date('Y-m-d H:i:s',time()))>=24){
+					$this->where('mobile', $mobile)->update(['failed_login_times' => 0, 'failed_login_starttime' => NULL, 'baned_endtime' => NULL]);
+				}
+				if(password_verify($password,$chkPwd->password)){
+					if($isonemonth == 'yes'){
+						Cookie::set('userid',$chkPwd->userid,2678400);
+						Cookie::set('mobile',$mobile,2678400);
+						Cookie::set('username',$chkPwd->username,2678400);
+					}else{
+						Cookie::set('userid',$chkPwd->userid,86400);
+						Cookie::set('mobile',$mobile,86400);
+						Cookie::set('username',$chkPwd->username,86400);
+					}
+					$this->chkReminder($chkPwd->userid);
+					//成功登录后错误次数清零
+					$this->where('mobile', $mobile)->update(['failed_login_times' => 0, 'failed_login_starttime' => NULL, 'baned_endtime' => NULL]);
+					return "ok";
+				}else{
+					$chkPwd = $this->where(function ($query) use ($mobile){
+						$query->where('mobile',$mobile)
+						->field('failed_login_times,failed_login_starttime,baned_endtime')
+						->limit(1);
+					})->find();
+					if($chkPwd->failed_login_times==0){
+						$this->where('mobile', $mobile)->update(['failed_login_starttime' => date('Y-m-d H:i:s',time())]);
+					}
+					$this->where('mobile', $mobile)->setInc('failed_login_times',1);
+					$failed_login = $chkPwd->failed_login_times+1;
+					if($failed_login>=10){
+						$this->where('mobile', $mobile)->update(['baned_endtime' => DateAdd("h", 24, date('Y-m-d H:i:s',time()))]);
+						return "您最近二十四小时内登录失败次数过多，账号被临时禁用二十四小时";
+					}elseif($failed_login%3==0){
+						$this->where('mobile', $mobile)->update(['baned_endtime' => DateAdd("n", 10, date('Y-m-d H:i:s',time()))]);
+						return "您最近二十四小时内登录失败次数过多，账号被临时禁用十分钟";
+					}else{
+						return "手机号码或密码错误，请检查后重试。提示：错误登录尝试过多账号会被临时禁用！";
+					}
+				}
 			}
 		}else{
-			return "手机号码未注册，请检查后重试";
+			return "手机号码或密码错误，请检查后重试。提示：错误登录尝试过多账号会被临时禁用！";
 		}
 	}
 	

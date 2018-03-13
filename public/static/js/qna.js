@@ -12,6 +12,7 @@ var originalcoins = $('#originalcoins').val();
 var frozencoins = $('#frozencoins').val();
 $('#available_coins').html(sub(originalcoins,frozencoins));
 var invited_users = new Array();
+var invited_users_html = new Array();
 
 var E = window.wangEditor
 var editor = new E('#editordiv')
@@ -176,86 +177,91 @@ function getRandUsers(){
 }
 
 function inviteUser(username,i,type){
-	if(invited_users.length>9){
-		xcsoft.error("您最多只能邀请10位用户来回答",3000);
-	}else{
-		var new_user = true;
-		$.each(invited_users, function(index,value){
-			if(value==username){
-				new_user = false;
-				return false;
+	chkCoins();
+	if(isCoinsOK){
+		if(invited_users.length>9){
+			xcsoft.error("您最多只能邀请10位用户来回答",3000);
+		}else{
+			var new_user = true;
+			$.each(invited_users, function(index,value){
+				if(value==username){
+					new_user = false;
+					return false;
+				}
+			});
+			if(new_user){
+				invited_users.push(username);
+				invited_users_html.push('<a href="javascript:void(0);" onclick="cancelUser(\''+username+'\');"><i class="am-icon-times-circle"></i> '+username+'</a>');
+				if(type=='att'){
+					$("#att_invitebtn"+i).css({'display' : 'none'});
+					$("#att_cancelbtn"+i).css({'display' : 'block'});
+				}
+				if(type=='invite'){
+					$("#invitebtn"+i).css({'display' : 'none'});
+					$("#cancelbtn"+i).css({'display' : 'block'});
+				}
+				if(type=='search'){
+					$("#search_invitebtn"+i).css({'display' : 'none'});
+					$("#search_cancelbtn"+i).css({'display' : 'block'});
+				}
 			}
-		});
-		if(new_user){
-			invited_users.push(username);
+			$("#invitedUsers").html(invited_users_html.join(", "));
+			$("#invite_user_list:hidden").val(invited_users.join(","));
 			if(type=='att'){
-				$("#att_invitebtn"+i).css({'display' : 'none'});
-				$("#att_cancelbtn"+i).css({'display' : 'block'});
+				for(i=0;i<6;i++){
+					if($('#username'+(i+1)).val() == username) {
+						$("#invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
+				}
+				for(i=0;i<6;i++){
+					if($('#searchusername'+(i+1)).val() == username) {
+						alert($('#searchusername'+(i+1)).val());
+						$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
+				}
 			}
 			if(type=='invite'){
-				$("#invitebtn"+i).css({'display' : 'none'});
-				$("#cancelbtn"+i).css({'display' : 'block'});
+				var total_att_users = $('#total_att_users').val();
+				for(i=0;i<total_att_users;i++){
+					if($('#att_username'+(i+1)).val() == username) {
+						$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
+				}
+				for(i=0;i<6;i++){
+					if($('#searchusername'+(i+1)).val() == username) {
+						alert($('#searchusername'+(i+1)).val());
+						$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
+				}
 			}
 			if(type=='search'){
-				$("#search_invitebtn"+i).css({'display' : 'none'});
-				$("#search_cancelbtn"+i).css({'display' : 'block'});
-			}
-		}
-		$("#invitedUsers").html(invited_users.join(", "));
-		$("#invite_user_list:hidden").val(invited_users.join(","));
-		if(type=='att'){
-			for(i=0;i<6;i++){
-				if($('#username'+(i+1)).val() == username) {
-					$("#invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+				for(i=0;i<6;i++){
+					if($('#username'+(i+1)).val() == username) {
+						$("#invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
 				}
-			}
-			for(i=0;i<6;i++){
-				if($('#searchusername'+(i+1)).val() == username) {
-					alert($('#searchusername'+(i+1)).val());
-					$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
+				var total_att_users = $('#total_att_users').val();
+				for(i=0;i<total_att_users;i++){
+					if($('#att_username'+(i+1)).val() == username) {
+						$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
+						$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
+					}
 				}
 			}
 		}
-		if(type=='invite'){
-			var total_att_users = $('#total_att_users').val();
-			for(i=0;i<total_att_users;i++){
-				if($('#att_username'+(i+1)).val() == username) {
-					$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
-				}
-			}
-			for(i=0;i<6;i++){
-				if($('#searchusername'+(i+1)).val() == username) {
-					alert($('#searchusername'+(i+1)).val());
-					$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
-				}
-			}
-		}
-		if(type=='search'){
-			for(i=0;i<6;i++){
-				if($('#username'+(i+1)).val() == username) {
-					$("#invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#cancelbtn"+(i+1)).css({'display' : 'block'});
-				}
-			}
-			var total_att_users = $('#total_att_users').val();
-			for(i=0;i<total_att_users;i++){
-				if($('#att_username'+(i+1)).val() == username) {
-					$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
-					$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
-				}
-			}
-		}
+		chkCoins();
 	}
-	chkCoins();
 }
 
 function cancelUser(username){
 	invited_users.splice($.inArray(username,invited_users),1);
-	$("#invitedUsers").html(invited_users.join(", "));
+	invited_users_html.splice($.inArray('<a href="javascript:void(0);" onclick="cancelUser(\''+username+'\');"><i class="am-icon-times-circle"></i> '+username+'</a>',invited_users_html),1);
+	$("#invitedUsers").html(invited_users_html.join(", "));
 	if($("#invitedUsers").html()==''){$("#invitedUsers").html('还未邀请任何用户');}
 	$("#invite_user_list:hidden").val(invited_users.join(","));
 	for(i=0;i<6;i++){

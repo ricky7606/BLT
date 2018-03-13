@@ -7,6 +7,7 @@ use app\index\model\QnasPending;
 use app\index\model\QnasReply;
 use app\index\model\QnasReplyDetails;
 use app\index\model\Follow;
+use app\index\model\Likes;
 use app\index\model\Attention;
 use think\Db;
 use think\Request;
@@ -44,9 +45,11 @@ class Index extends Controller
 			$att = new Attention;
 			$qna_pending=new QnasPending;
 			$addition = new ReplyAdditionDetails;
+			$likes = new Likes;
 			foreach ($reply_list as $n=>$reply){ 
 				if(Cookie::has('userid')){
 					$qna_follow = $follow->getFollowByQnaIdUserId($reply->qnaid, $userid);
+					$qna_like = $likes->getLikeByQnaIdUserId($reply->qnaid, $userid);
 					$pending_info = $qna_pending->getPendingByUserId($reply->qnaid, $userid );
 					if($pending_info){
 						$reply_list[$n]['pending_status'] = $pending_info->status;
@@ -59,6 +62,11 @@ class Index extends Controller
 						$reply_list[$n]['follow'] = 1;
 					}else{
 						$reply_list[$n]['follow'] = -1;
+					}
+					if($qna_like){
+						$reply_list[$n]['like'] = 1;
+					}else{
+						$reply_list[$n]['like'] = -1;
 					}
 					$reply_user_att = $att->getAttentionByUserId($reply->userid, $userid);
 					if($reply_user_att){
@@ -76,6 +84,8 @@ class Index extends Controller
 				$reply->formatCoins = floatval($reply_list[$n]['qna_coins']);
 				$follow_count = $follow->getFollowCount($reply->qnaid);
 				$reply->followCount = $follow_count->followCount;
+				$like_count = $likes->getLikeCount($reply->qnaid);
+				$reply->likeCount = $like_count->likeCount;
 				$reply->addition = $addition->getReplyAdditions($reply->replyid);
 			}
 		}

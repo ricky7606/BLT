@@ -125,3 +125,45 @@ function udate($format = 'u', $utimestamp = null) {
 	
 	return date(preg_replace('`(?<!\\\\)u`', $milliseconds, $format), $timestamp);
 }
+
+//获取流水号
+function getSerialNumber (){ 
+	$year_code = array ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','I','S','T','U','V','W','X','Y','Z'); 
+	return $year_code[intval(date('Y'))-2018]. 
+	strtoupper(dechex (date('m'))).date('d'). 
+	substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand (0,99)); 
+}
+
+//获取两个日期的差值
+function DateDiff($part, $begin, $end)
+{
+$diff = strtotime($end) - strtotime($begin);
+switch($part)
+{
+case "y": $retval = bcdiv($diff, (60 * 60 * 24 * 365)); break;
+case "m": $retval = bcdiv($diff, (60 * 60 * 24 * 30)); break;
+case "w": $retval = bcdiv($diff, (60 * 60 * 24 * 7)); break;
+case "d": $retval = bcdiv($diff, (60 * 60 * 24)); break;
+case "h": $retval = bcdiv($diff, (60 * 60)); break;
+case "n": $retval = bcdiv($diff, 60); break;
+case "s": $retval = $diff; break;
+}
+return $retval;
+}
+
+//返回增加的日期时间
+function DateAdd($part, $n, $date)
+{
+switch($part)
+{
+case "y": $val = date("Y-m-d H:i:s", strtotime($date ." +$n year")); break;
+case "m": $val = date("Y-m-d H:i:s", strtotime($date ." +$n month")); break;
+case "w": $val = date("Y-m-d H:i:s", strtotime($date ." +$n week")); break;
+case "d": $val = date("Y-m-d H:i:s", strtotime($date ." +$n day")); break;
+case "h": $val = date("Y-m-d H:i:s", strtotime($date ." +$n hour")); break;
+case "n": $val = date("Y-m-d H:i:s", strtotime($date ." +$n minute")); break;
+case "s": $val = date("Y-m-d H:i:s", strtotime($date ." +$n second")); break;
+}
+return $val;
+}
+

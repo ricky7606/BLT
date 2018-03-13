@@ -10,6 +10,7 @@ use app\index\model\QnasPending;
 use app\index\model\QnasReplyDetails;
 use app\index\model\Attention;
 use app\index\model\Follow;
+use app\index\model\Likes;
 use app\index\model\Users;
 use app\index\model\UserTagDetails;
 use app\index\model\Ads;
@@ -29,10 +30,13 @@ class QnaReply extends Controller
 		}
 		$att = new Attention;
 		$follow = new Follow;
+		$likes = new Likes;
 		if(Cookie::has('userid')){
 			$userid = Cookie::get('userid');
 			$qna_pending=new QnasPending;
 			$qna_follow = $follow->getFollowByQnaIdUserId($reply_detail->qnaid, $userid);
+			$qna_like = $likes->getLikeByQnaIdUserId($reply_detail->qnaid, $userid);
+			$reply_like = $likes->getLikeByQnaIdUserId($reply_detail->replyid, $userid);
 			$pending_info = $qna_pending->getPendingByUserId($reply_detail->qnaid, $userid );
 			if($pending_info){
 				$reply_detail['pending_status'] = $pending_info->status;
@@ -45,6 +49,16 @@ class QnaReply extends Controller
 				$reply_detail['follow'] = 1;
 			}else{
 				$reply_detail['follow'] = -1;
+			}
+			if($qna_like){
+				$reply_detail['qna_like'] = 1;
+			}else{
+				$reply_detail['qna_like'] = -1;
+			}
+			if($reply_like){
+				$reply_detail['reply_like'] = 1;
+			}else{
+				$reply_detail['reply_like'] = -1;
 			}
 			$reply_user_att = $att->getAttentionByUserId($reply_detail->userid, $userid);
 			if($reply_user_att){
@@ -70,6 +84,10 @@ class QnaReply extends Controller
 		}
 		$follow_count = $follow->getFollowCount($reply_detail->qnaid);
 		$reply_detail['followCount'] = $follow_count->followCount;
+		$like_count = $likes->getLikeCount($reply_detail->qnaid);
+		$reply_detail->likeCountQna = $like_count->likeCount;
+		$like_count = $likes->getLikeCount($reply_detail->replyid);
+		$reply_detail->likeCountReply = $like_count->likeCount;
 		$user_tag = new UserTagDetails;
 		$qna_tag_list = $user_tag->getTagListByUserId($reply_detail->qna_userid);
 		$reply_tag_list = $user_tag->getTagListByUserId($reply_detail->userid);

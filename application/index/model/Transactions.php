@@ -77,8 +77,9 @@ class Transactions extends Model {
 //	13 - 提现冻结；
 //	14 - 提现成功（扣除）；
 //	15 - 提现失败（解冻返回）；
+//	16 - 充值
 //	99 - 其它；
-	public function saveTransaction($userid, $coins, $transaction_type, $qnaid = NULL, $reference_userid = NULL, $reference_pendingid = NULL, $wallet = NULL, $comments = NULL){
+	public function saveTransaction($userid, $coins, $transaction_type, $qnaid = NULL, $reference_userid = NULL, $reference_pendingid = NULL, $wallet = NULL, $comments = NULL, $serial_number = NULL){
 		$this->startTrans();
 		$user = new Users;
 		$userinfo = $user->getUserDetails($userid);
@@ -163,6 +164,7 @@ class Transactions extends Model {
 			case 13:
 				$coins_after = $coins_before;
 				$frozen_coins = bcadd($frozen_coins, $coins, 8);
+				$serial_number = getSerialNumber();
 				$result_user = $user->where('userid', $userid)->update(['frozen_coins' => $frozen_coins]);
 				break;
 			//提现成功（扣除）
@@ -195,6 +197,7 @@ class Transactions extends Model {
 		$this->comments = $comments;
 		$this->walletid = $wallet;
 		$this->qnaid = $qnaid;
+		$this->serial_number = $serial_number;
 		$this->transaction_date = udate('Y-m-d H:i:s.u');
 		$result = $this->isUpdate(false)->save();
 		//交易消息提醒

@@ -11,6 +11,7 @@ use app\index\model\Qnas;
 use app\index\model\QnasReply;
 use app\index\model\Users;
 use app\index\model\Follow;
+use app\index\model\Likes;
 use app\index\model\Report;
 use app\index\model\ReplyAddition;
 use app\index\model\QnaPendingDetails;
@@ -218,7 +219,22 @@ class Qna extends Controller
 		if($qnaid != ''){
 			$follow = new Follow;
 			$result = $follow->saveNewFollow($userid, $qnaid);
-		return $result;
+			return $result;
+		}else{
+			return "数据错误";
+		}
+	}
+
+	public function like(){
+		if(!Cookie::has('userid')){
+			return $this->redirect('/index/login');
+		}
+		$userid = Cookie::get('userid');
+		$qnaid = Request::instance()->post('qnaid');
+		if($qnaid != ''){
+			$likes = new Likes;
+			$result = $likes->saveLike($userid, $qnaid);
+			return $result;
 		}else{
 			return "数据错误";
 		}

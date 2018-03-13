@@ -43,7 +43,7 @@
             </div>
             <div style="height:20px;"></div>
             <div>
-            <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span class="am-icon-star" style="color:#09F;"></span> {$reply_detail.followCount}个收藏 <!--<span class="am-icon-heart" style="color:#09F;"></span> 87个赞--> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid1" data-type="qna" style="color:#999;">举报</a>{/if}</div>
+            <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span id="followSpan0" style="cursor:pointer;color:#999;" {if condition="$userid"}{if condition="$userid != $reply_detail.userid"}{if condition="$reply_detail.follow == -1"}onclick="follow('{$reply_detail.qnaid}','0');" title="收藏"{/if}{/if}{/if}><span id="followIcon0" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$reply_detail.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount0" style="color:#999;">{$reply_detail.followCount}</span>个收藏</span> <span id="likeSpan0" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$reply_detail.qnaid}',0);" title='{if condition="$reply_detail.qna_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon0" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$reply_detail.qna_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount0" style="color:#999;">{$reply_detail.likeCountQna}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid1" data-type="qna" style="color:#999;">举报</a>{/if}</div>
             <div class="split_right">
             	{if condition="$reply_detail.formatCoins > 0"}
                 	{if condition="$header_type == 'user'"}
@@ -73,7 +73,7 @@
             {if condition="$header_type == 'user'"}
             {if condition="$userid != $reply_detail.qna_userid"}
             {if condition="$reply_detail['follow'] == '-1'"}
-            <button type="button" class="btn btn-default button_blue" id="followBtn1" onclick="follow('{$reply_detail.qnaid}','1');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏问题</button>
+            <button type="button" class="btn btn-default button_blue" id="followBtn0" onclick="follow('{$reply_detail.qnaid}','0');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏问题</button>
             {else /}
             <button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>
             {/if}
@@ -95,7 +95,7 @@
             {/if}
             {/if}
             {/if}
-            {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该回答" report-reveal-id="report_box" data-animation="fade" data-qna-id="replyid1" data-type="reply" style="color:#999;">举报</a>{/if}
+            <span id="likeSpan1" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$reply_detail.replyid}',1);" title='{if condition="$reply_detail.reply_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon1" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$reply_detail.reply_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount1" style="color:#999;">{$reply_detail.likeCountReply}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该回答" report-reveal-id="report_box" data-animation="fade" data-qna-id="replyid1" data-type="reply" style="color:#999;">举报</a>{/if}
             </div>
             {if condition="$reply_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：{$reply_userinfo.brief}</div>{/if}
             {if condition="$reply_tag_list"} <div style="line-height:50px;" class="tagwrap"><i class="am-icon-tags" style="color:#06C;"></i>  TA的标签： {volist name="reply_tag_list" id="usertag"}{if condition="$i==6"} <span class="tag_more" onclick="showAllTags('reply');" id="reply_tag_more">更多...</span> <span class="tag" id="reply_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /}{if condition="$i>5"} <span class="tag" id="reply_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /} <span class="tag">{$usertag.tag}</span>{/if}{/if}{/volist} <span class="tag_more" onclick="hideAllTags('reply');" id="reply_tag_less" style="display:none;">收起</span></div>{/if}

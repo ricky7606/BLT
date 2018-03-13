@@ -1,3 +1,11 @@
+//为 tips 提示框自定义 CSS,以下为默认
+xcsoft.tipsCss = {
+	height: '60px',
+	fontSize: '16px'
+};
+//隐藏、显示速度 ，默认 fast
+xcsoft.tipsHide=xcsoft.tipsShow=300;
+
 var isContentOK=false, isReportTypeOK=false;
 var E = window.wangEditor
 var editor = new E('#editordiv')
@@ -163,17 +171,45 @@ function hideAll(i){
 function follow(qnaid,i){
 	$.post('/index/qna/follow', {qnaid:qnaid}, function(msg) {
 		if(msg=='ok'){
+			var span = document.getElementById('followSpan'+i);
+			var icon = document.getElementById('followIcon'+i);
+			var count = document.getElementById('followCount'+i);
 			xcsoft.success('收藏成功！',2000);
-			//setTimeout("window.location.reload(true)", 2000 ); //2秒后刷新
 			var btn = document.getElementById('followBtn'+i);
 			btn.className = "btn btn-default button_white";
 			btn.style = "margin-left:30px;";
 			btn.innerHTML = "<i class=\"am-icon-star am-icon-sm\"></i> 已收藏";
 			btn.disabled = "";
 			btn.onclick = "";
+			span.onclick = "";
+			icon.style.color = "#09F";
+			count.innerHTML = parseInt(count.innerHTML)+1;
 			return true;
 		}else{
 			xcsoft.error(msg,3000);
+			return false;
+		}
+	});
+}
+
+function chkLike(qnaid,i){
+	$.post('/index/qna/like', {qnaid:qnaid}, function(msg) {
+		xcsoft.success(msg,2000);
+		if(msg=='点赞成功'||msg=='取消点赞成功'){
+			var span = document.getElementById('likeSpan'+i);
+			var icon = document.getElementById('likeIcon'+i);
+			var count = document.getElementById('likeCount'+i);
+			if(msg=='点赞成功'){
+				span.title = "取消点赞";
+				icon.style.color = "#09F";
+				count.innerHTML = parseInt(count.innerHTML)+1;
+			}else{
+				span.title = "点赞";
+				icon.style.color = "#999";
+				count.innerHTML = parseInt(count.innerHTML)-1;
+			}
+			return true;
+		}else{
 			return false;
 		}
 	});

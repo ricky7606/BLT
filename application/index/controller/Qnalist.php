@@ -6,6 +6,7 @@ use app\index\model\QnasUser;
 use app\index\model\QnasPending;
 use app\index\model\QnasReply;
 use app\index\model\Follow;
+use app\index\model\Likes;
 use app\index\model\Attention;
 use app\index\model\Ads;
 use think\Db;
@@ -24,6 +25,7 @@ class Qnalist extends Controller
 		$qna_list=$qnauser->getNewQnas();  
 		$user = new Users;   
 		$follow = new Follow;
+		$likes = new Likes;
 		$attention = new Attention;
 		if(Cookie::has('userid')){
 			$qna_pending=new QnasPending;
@@ -31,6 +33,7 @@ class Qnalist extends Controller
 				foreach ($qna_list as $n=>$qna){ 
 					$pending_info = $qna_pending->getPendingByUserId($qna->qnaid, Cookie::get('userid'));
 					$follow_info = $follow->getFollowByQnaIdUserId($qna->qnaid, Cookie::get('userid'));
+					$qna_like = $likes->getLikeByQnaIdUserId($qna->qnaid, Cookie::get('userid'));
 					$attention_info = $attention->getAttentionByUserId($qna->userid, Cookie::get('userid'));
 					if($pending_info){
 						$qna_list[$n]['pending_status'] = $pending_info->status;
@@ -44,6 +47,11 @@ class Qnalist extends Controller
 					}else{
 						$qna_list[$n]['follow'] = '-1';
 					}
+					if($qna_like){
+						$qna_list[$n]['qna_like'] = 1;
+					}else{
+						$qna_list[$n]['qna_like'] = -1;
+					}
 					if($attention_info){
 						$qna_list[$n]['attention'] = '1';
 					}else{
@@ -54,6 +62,8 @@ class Qnalist extends Controller
 					$qna_list[$n]['userinfo'] = $user->getUserDetails($qna->userid);
 					$follow_count = $follow->getFollowCount($qna->qnaid);
 					$qna_list[$n]['followCount'] = $follow_count->followCount;
+					$like_count = $likes->getLikeCount($qna->qnaid);
+					$qna_list[$n]->likeCountQna = $like_count->likeCount;
 				}
 			}
 		}else{
@@ -64,6 +74,8 @@ class Qnalist extends Controller
 					$qna_list[$n]['userinfo'] = $user->getUserDetails($qna->userid);
 					$follow_count = $follow->getFollowCount($qna->qnaid);
 					$qna_list[$n]['followCount'] = $follow_count->followCount;
+					$like_count = $likes->getLikeCount($qna->qnaid);
+					$qna_list[$n]->likeCountQna = $like_count->likeCount;
 				}
 			}
 		}
