@@ -47,6 +47,13 @@ class Tags extends Model {
 		}
         return $tmpStr;   // 返回修改后的数据
 	}
+
+	public function getRootTags(){
+		$tag_result = $this->where('level',1)
+		->order('convert(tag using gbk)','asc')
+		->select();
+		return $tag_result;
+	}
 	
 	public function searchTags($tag, $num = 20, $page = 1){
 		$noSearched = false;

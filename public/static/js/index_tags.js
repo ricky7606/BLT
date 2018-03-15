@@ -48,6 +48,7 @@ function chkSearchTag(e){
 
 function searchTags(new_page){
 	$("#tags_recommand").css('display','none');
+	$("#root_tags").css('display','none');
 	$("#tag_searched").css('display','block');
 	$("#tag_searched").html('<img src="/static/images/loading.gif">');
 	if(new_page<0 || new_page == ''){new_page=1;}
@@ -55,14 +56,17 @@ function searchTags(new_page){
 		if(msg == ''){
 			xcsoft.error('没有找到您想要的标签',2000);
 			$("#tags_recommand").css('display','block');
+			$("#root_tags").css('display','block');
 			$("#tag_searched").css('display','none');
 		}else{
 			tmpArr = msg.split('###');
 			tmpArr2 = tmpArr[0].split('___');
 			no_searched = tmpArr2[0];
 			if(no_searched == '1'){
+				$("#root_tags").css('display','none');
 				tmpStr = "<span class='header_title'><span class=\"am-icon-frown-o am-icon-sm\" style=\"color:#900;margin-right=10px;\"></span> 没有找到您想要的标签，但是您可以从我们的标签分类开始查找哦~<br /></span><span style='color:#090;'>(tips: 蓝色的标签表示在该标签下还有子标签哦)<br />";
 			}else{
+				$("#root_tags").css('display','block');
 				tmpStr = "<span  class='header_title'><span class=\"am-icon-smile-o am-icon-sm\" style=\"color:#06C;margin-right=\"10px;\"\"></span> 搜索结果：</span><span style='color:#090;'>(tips: 蓝色的标签表示在该标签下还有子标签哦)<br />";
 			}
 			total_page = tmpArr2[1];

@@ -90,6 +90,10 @@ class Index extends Controller
 			}
 		}
 		$this->assign('reply_list',$reply_list);
+		//获取顶级标签
+		$tags = new Tags;
+		$root_tags = $tags->getRootTags();
+		$this->assign('root_tags',$root_tags);
 //暂时不需要页面右侧的最新提问列表		
 //		$qnauser=new QnasUser();
 //		$qna_list=$qnauser->getNewQnas(); 
