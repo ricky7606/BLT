@@ -22,8 +22,24 @@ class Mobileregister extends Controller
 	}
 	
 	public function regOK(){
+		session_start();
 		$str = udate('Y-m-d H:i:s.u');
         $this->assign('str',$str);
-        return $this->fetch('index2'); 
+        $mobile = $_SESSION['mobile_user_id'];
+		$password = $_SESSION['mobile_password'];
+        $this->assign('userid', $mobile);
+
+        $user = new Users();
+			//登录验证
+		$user->getLogin($mobile, $password, "yes");
+        return $this->fetch('tag'); 
+	}
+
+	public function paper(){
+		return $this->fetch('paper');
+	}
+
+	public function paperSubmit(){
+		return $this->fetch('paperSubmit');
 	}
 }

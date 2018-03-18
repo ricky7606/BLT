@@ -6,6 +6,7 @@ use think\Db;
 use think\Session;
 use app\index\model\Users;
 use think\captcha\Captcha;
+use think\Cookie;
 
 class Register extends Controller
 {
@@ -161,7 +162,14 @@ class Register extends Controller
 			$user = new Users;
 			$result = $user->userRegister($username, $password, $mobile);
 			if($result == "ok"){
+			//if(true){
 				Session::clear();
+				Cookie::delete('userid');
+				Cookie::delete('mobile');
+				Cookie::delete('username');
+				//session_start();
+				$_SESSION['mobile_user_id'] = $mobile;
+				$_SESSION['mobile_password'] = Request::instance()->post('pwd');
 				return "ok";
 			}else{
 				return "注册失败";
