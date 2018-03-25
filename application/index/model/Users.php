@@ -278,6 +278,16 @@ class Users extends Model {
 			return "更新失败";
 		}
 	}
+
+	public function updateRecommend($mobile){
+		$this->recommend = $mobile;
+		$result = $this->isUpdate(true)->save();
+		if($result){
+			return "ok";
+		}else{
+			return "更新失败";
+		}
+	}
 	
 	public function saveNewTag($userid, $tagid){
 		$tag = new UserTags;

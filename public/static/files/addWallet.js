@@ -1,6 +1,6 @@
 document.getElementById('createWallet').addEventListener('click', function () {
 	if(true){
-		$.post('/index/userwallet/createWallet', {wallet_tag:"纸钱包",wallet_address:jQuery.trim($('#key').val())}, function(msg) {
+		$.post('/index/userwallet/createWallet', {recommend:jQuery.trim($('#recommend').val(),wallet_tag:"纸钱包",wallet_address:jQuery.trim($('#key').val())}, function(msg) {
 			if(msg=='ok'){
 				alert('钱包创建成功！');
 				window.location.href='/index';

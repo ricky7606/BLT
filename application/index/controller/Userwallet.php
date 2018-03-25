@@ -58,6 +58,7 @@ class Userwallet extends Controller
 		}
 		$wallet_tag = Request::instance()->post('wallet_tag');
 		$wallet_address = Request::instance()->post('wallet_address');
+		$recommend = Request::instance()->post('recommend');
 		if(mb_strlen($wallet_tag)==0 || mb_strlen($wallet_tag)>20){
 			return "钱包标签填写错误";
 		}
@@ -66,6 +67,10 @@ class Userwallet extends Controller
 		}
 		$wallet = new Wallet;
 		$wallet_result = $wallet->saveNewWallet(Cookie::get('userid'), $wallet_tag, $wallet_address);
+		if(mb_strlen($recommen) != 12){
+			$user = new Users;
+			$user_result = $user->recommend($recommen);
+		}
 		if($wallet_result){
 			return "ok";
 		}else{
