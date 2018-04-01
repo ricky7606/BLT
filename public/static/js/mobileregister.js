@@ -109,6 +109,27 @@ function chkUsername(){
 		return false;
 	}
 }
+
+function chkRecommend(){
+	var recommend = document.getElementById('recommend').value;
+	if(recommend.length > 0){
+			$.post('/index/register/chkUsername', {username:jQuery.trim($('#recommend').val())}, function(msg) {
+				if(msg=='exists'){
+					$("#username").css('border-color','#093');
+					$("#username").css('color','');
+					return true;
+				}else{
+					$("#message").html("推荐人账户不存在，请核实");
+					$("#username").css('border-color','#F00');
+					$("#username").css('color','#F00');
+					$("#result").slideToggle(500, function(){
+						setTimeout("$('#result').slideUp(500)", 2000);
+					});
+					return false;
+				}
+			});
+	}
+}
 function chkMobile(){
 	var mobile = document.getElementById('mobile').value;
 	if(mobile.length > 0){
@@ -260,11 +281,11 @@ function chkSmscode(){
 function submitForm(){
 	document.getElementById("submitbtn").disabled = true;
 	//hack for test
-	if(isUsernameOK && isMobileOK && isPasswordOK && isPassword2OK && isImgcodeOK && isSmscodeOK){
+	if(isUsernameOK && isMobileOK && isPasswordOK && isPassword2OK && isImgcodeOK){
 	//if(true){
 		document.getElementById('error').innerHTML = "";
 		document.getElementById("submitbtn").innerHTML = "提交中，请稍后...";
-		$.post('/index/register/getRegister', {username:jQuery.trim($('#username').val()),mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {			if(msg=='ok'){
+		$.post('/index/register/getRegister', {recommend:jQuery.trim($('#recommend').val()),username:jQuery.trim($('#username').val()),mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {			if(msg=='ok'){
 				alert("信息已经提交，感谢您的注册");
 		
 				window.location.href='/index/mobileregister/regOK';
