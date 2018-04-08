@@ -7,6 +7,8 @@ use think\Session;
 use app\index\model\Users;
 use think\captcha\Captcha;
 use think\Cookie;
+use app\index\model\Transactions;
+use app\index\model\Message;
 
 class Register extends Controller
 {
@@ -144,6 +146,7 @@ class Register extends Controller
 	public function getRegister(){
 		session_start();
 		$username = Request::instance()->post('username');
+		$recommend = Request::instance()->post('recommend');
 		$mobile = Request::instance()->post('mobile');
 		$password = Request::instance()->post('pwd');
 		$password = password_hash($password,PASSWORD_BCRYPT);
@@ -170,6 +173,38 @@ class Register extends Controller
 				//session_start();
 				$_SESSION['mobile_user_id'] = $mobile;
 				$_SESSION['mobile_password'] = Request::instance()->post('pwd');
+
+				if($recommend != ""){
+					$user = new Users();
+					$user->getLogin($mobile, Request::instance()->post('pwd'), "yes");
+
+
+					$target = new Users;
+					$target_userid = $target->getUserIdByUsername($recommend);
+					if($target_userid != false){
+
+						$user = new Users;
+						$user->chkReminder(Cookie::get('userid'));
+						$user_result = $user->updateRecommend(Cookie::get('userid'),$recommend);
+
+
+						$transaction = new Transactions;
+						$result_trans = $transaction->saveTransaction(Cookie::get('userid'), 50, 16);
+						$message_text = "感谢您参与\"推荐好友获得额外比邻币\"的活动，赠送您25个比邻币，也欢迎您邀请您的好友加入比邻小镇！";
+						$message = new Message;
+						$message_result = $message->saveNewMessage(Cookie::get('userid'), $message_text);
+
+
+						$transaction = new Transactions;
+						$result_trans = $transaction->saveTransaction($target_userid, 50, 16);
+
+						$message_text = "您的好友".$username."已经通过您的邀请加入比邻小镇，感谢您的邀请，额外赠送您25个比邻币，也欢迎您继续邀请您的好友";
+						$message = new Message;
+						$message_result = $message->saveNewMessage($target_userid, $message_text);
+
+					}
+				}
+
 				return "ok";
 			}else{
 				return "注册失败";

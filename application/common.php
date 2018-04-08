@@ -109,6 +109,9 @@ function getTransactionDesc($transaction_type){
 		case 15:
 			return "提现失败，解冻返回";
 			break;
+		case 16:
+			return "邀请奖励";
+			break;
 		case 99:
 			return "系统操作扣除";
 			break;

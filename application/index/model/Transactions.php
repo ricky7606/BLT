@@ -179,6 +179,11 @@ class Transactions extends Model {
 				$frozen_coins = bcsub($frozen_coins, $coins, 8);
 				$result_user = $user->where('userid', $userid)->update(['frozen_coins' => $frozen_coins]);
 				break;
+			//invite
+			case 16:
+				$coins_after = bcadd($coins_before, $coins, 8);
+				$result_user = $user->where('userid', $userid)->update(['coins' => $coins_after]);
+				break;
 			//其他原因的系统操作直接扣除比邻币
 			case 99:
 				$coins_after = bcsub($coins_before, $coins, 8);

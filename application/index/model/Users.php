@@ -279,9 +279,8 @@ class Users extends Model {
 		}
 	}
 
-	public function updateRecommend($mobile){
-		$this->recommend = $mobile;
-		$result = $this->isUpdate(true)->save();
+	public function updateRecommend($userid, $mobile){
+		$result =$this->where('userid', $userid)->update(['recommend' => $mobile]);
 		if($result){
 			return "ok";
 		}else{
