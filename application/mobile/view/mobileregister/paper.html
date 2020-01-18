@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>比邻小镇</title>
+	<!--<meta name="description" content="RushWallet is an instant cross-platform bitcoin wallet, controlled by you.">-->
+	<meta name="description" content="Beelington jswallet is an instant cross-platform Beelington wallet, controlled by you.">
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+	<link href="/static/css/css.css" rel="stylesheet" type="text/css">
+   
+	 <style>
+        .container {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body style="zoom: 1;">
+    <nav class="banner navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!--<a class="brand" href="/">
+                <img src="img/logo.png" alt="" style="margin-top: -4px; width: 129px;">-->
+            <a class="KKBrand" href="">
+                比邻轻量级钱包
+            </a>
+            <!--<a class="KKBrand" href="http://kryptokit.com" target="_blank">
+            	by Kryptokit
+            </a>-->
+        </div>
+    </nav>
+
+    <div id="generate" style="display: block;">
+        <section class="dark">
+            <div class="container">
+				<!-- <button class="" id="passBtn"> <span class="hl">Create wallet with password</span> <span class="glyphicon"></span></button> -->
+
+
+				<div id="leadTxt">请在以下区域随机滑动，以此生成密钥</div>
+
+                <div id="tapBox" class="tapBox">
+                	<!--                     <img src="img/ripple.png" alt="" id="tapGif" width="150" class="tapBox">
+ -->
+
+ 					<!--<div id="code"></div>-->
+					<div class="ripples" style="display: none;">  
+					  <div class="ripple ripple-1"></div>
+					  <div class="ripple ripple-2"></div>
+					  <div class="ripple ripple-3"></div>
+					</div>
+
+                    <div id="progressLockBox" style="display: inline-block;">
+                        <div id="progressFill"></div>
+                        <img src="/static/files/progress_lock.png" alt="" id="progressLockImg" class="tapBox" width="236">
+                    </div>
+
+                </div>
+
+
+
+                <div id="createPassword" class="bg-warning">
+
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="createPasswordTxt">
+                        <span class="input-group-btn">
+							<button type="button" class="btn btn-success" id="createWallet" disabled="disabled">Create Wallet</button>
+			      		</span>
+                    </div>
+
+                </div>
+
+                <div id="openPassword" class="bg-warning">
+                    <!-- <label for="exampleInputEmail1">Please enter a password to open this wallet</label> -->
+
+
+					<div class="input-group">
+                        <input type="password" class="form-control" id="openPasswordTxt">
+                        <span class="input-group-btn">
+							<button type="button" class="btn btn-success" id="openWallet" disabled="disabled">Open Wallet</button>
+			      		</span>
+                    </div>
+
+
+                </div>
+
+                <div class="alert alert-danger" id="loginError"></div>
+
+            </div>
+            <!-- <p><a href="address.php">Continue</a></p> -->
+        </section>
+    </div>
+
+
+    
+
+			
+			<!-- /.modal -->
+
+	        
+	        <!-- /.modal -->
+
+
+
+	        
+            <!-- /.modal -->
+
+            
+
+
+			
+			<!-- /.modal -->
+
+	<script>
+	  //(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  //(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  //m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  //})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  //ga('create', 'UA-41277495-1', 'auto');
+	  //ga('send', 'pageview');
+	  
+
+      //(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  //(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  //m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  //})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  //ga('create', 'UA-9673894-3', 'auto');
+	  //ga('send', 'pageview');
+
+	</script>
+
+
+    <audio id="noise"></audio>
+
+    <script src="/static/files/jquery.min.js"></script>
+    <script src="/static/files/jquery-ui.min.js"></script>
+    <script src="/static/files/bootstrap.min.js"></script>
+    <script src="/static/files/bitcoinjs.min.js"></script>
+    <script src="/static/files/bitcointjs.min.js"></script>
+    <script src="/static/files/rw.js"></script>
+    <script src="/static/files/app.js"></script>
+    <script src="/static/files/tx.js"></script>
+    <script src="/static/files/util.js"></script>
+    <script src="/static/files/moment.js"></script>
+    <script src="/static/files/outer.js"></script>
+
+    <script>
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+             $(".outer").hide();
+        });
+        
+    </script>
+
+
+</body></html>

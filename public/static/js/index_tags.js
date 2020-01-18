@@ -46,6 +46,22 @@ function chkSearchTag(e){
 	}
 }
 
+function addCustomTag(){
+	$.post('/index/tag/addCustomTag', {text:jQuery.trim($('#search_tags').val())}, function(msg) {
+		if(msg.substr(0,2) == 'ok'){
+			xcsoft.success('标签添加成功！',2000);
+			tmpArr = msg.split("___");
+			user_tagid = tmpArr[2];
+			$("#no_tag").css('display','none');
+			$("#no_tag_remove").css('display','none');
+			$("#user_tag_list").html($("#user_tag_list").html()+"<span class=\"tag_remove\" id=\"tag_"+user_tagid+"\" onclick=\"delTag('"+user_tagid+"');\">"+tmpArr[1]+"</span> ");
+			$("#search_result").css("display", "none");
+		} else{
+			window.location.href='/index/login';
+		} 
+	});
+}
+
 function searchTags(new_page){
 	$("#tags_recommand").css('display','none');
 	$("#root_tags").css('display','none');
@@ -64,6 +80,7 @@ function searchTags(new_page){
 			no_searched = tmpArr2[0];
 			if(no_searched == '1'){
 				$("#root_tags").css('display','none');
+				$("#search_result").css('display','block');
 				tmpStr = "<span class='header_title'><span class=\"am-icon-frown-o am-icon-sm\" style=\"color:#900;margin-right=10px;\"></span> 没有找到您想要的标签，但是您可以从我们的标签分类开始查找哦~<br /></span><span style='color:#090;'>(tips: 蓝色的标签表示在该标签下还有子标签哦)<br />";
 			}else{
 				$("#root_tags").css('display','block');

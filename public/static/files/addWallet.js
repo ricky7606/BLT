@@ -4,7 +4,7 @@ document.getElementById('createWallet').addEventListener('click', function () {
 		$.post('/index/userwallet/createWallet', {recommend:jQuery.trim($('#recommend').val()),wallet_tag:"纸钱包",wallet_address:jQuery.trim($('#key').val())}, function(msg) {
 			if(msg=='ok'){
 				alert('钱包创建成功！');
-				window.location.href='/index';
+				window.location.href='/mobile';
 				return true;
 			}else{
 				alert(msg);
