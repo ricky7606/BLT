@@ -11,7 +11,7 @@
             <div class="content_box" id="content">
             {volist name="list" id="qnaid" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有问答数据</div>"}
             <div class="header_title split_left">
-            <img src="{if condition="!$qnaid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/index/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span>
+            <img src="{if condition="!$qnaid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/index/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span> <a href="javascript:void(0);" user-reveal-id="tag_box" data-animation="fade" data-user="{$qnaid.username}" data-user-id="{$qnaid['userinfo']['userid']}" data-type="user_tags"><span class="am-icon-tags am-icon-sm header_title_arctile" style="color:#06C;" title="用户标签报告"></span></a>
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $qnaid.userid"}
             {if condition="$qnaid['attention'] == '-1'"}
@@ -22,7 +22,7 @@
             {/if}
             {/if}
             </div>
-            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;">{if condition="$qnaid.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$qnaid.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be qna type icon --></div>
             <div style="clear:both;"></div>
             <div style="height:10px;"></div>
             <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/index/qnadetails?id={$qnaid.qnaid}'">{$qnaid.title}</div>
@@ -45,7 +45,7 @@
             <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span id="followSpan{$i}" style="cursor:pointer;color:#999;" {if condition="$userid"}{if condition="$userid != $qnaid.userid"}{if condition="$qnaid.follow == -1"}onclick="follow('{$qnaid.qnaid}','{$i}');" title="收藏"{/if}{/if}{/if}><span id="followIcon{$i}" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$qnaid.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount{$i}" style="color:#999;">{$qnaid.followCount}</span>个收藏</span> <span id="likeSpan{$i}" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$qnaid.qnaid}',{$i});" title='{if condition="$qnaid.qna_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon{$i}" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$qnaid.qna_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount{$i}" style="color:#999;">{$qnaid.likeCountQna}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid{$i}" data-type="qna" style="color:#999;">举报</a>{/if}</div>
             <div class="split_right">
             	{if condition="$qnaid.coins > 0"}
-                	{if condition="$header_type == 'user'"}
+                	{if condition="$header_type == 'qna_user'"}
                 	{if condition="$userid != $qnaid.userid"}
                     	{if condition="$qnaid['pendingid'] != ''"}
                         {switch name="qnaid['pending_status']"}
@@ -63,16 +63,16 @@
                     {/if}
                     {/if}
                 {else /}
-                	{if condition="$header_type == 'user'"}
+                	{if condition="$header_type == 'qna_user'"}
                 	{if condition="$userid != $qnaid.userid"}
                 	<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
                     {/if}
                     {/if}
                 {/if}
-            {if condition="$header_type == 'user'"}
+            {if condition="$header_type == 'qna_user'"}
             {if condition="$userid != $qnaid.userid"}
             {if condition="$qnaid['follow'] == '-1'"}
-            <button type="button" class="btn btn-default button_blue" id="followBtn{$i}" onclick="follow('{$qnaid.qnaid}','{$i}');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏问题</button>
+            <button type="button" class="btn btn-default button_blue" id="followBtn{$i}" onclick="qna_follow('{$qnaid.qnaid}','{$i}');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏问题</button>
             {else /}
             <button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>
             {/if}
@@ -134,9 +134,8 @@
 <div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px;">
     <div id="box_title" class="header_title">子标签列表</div>
     <div style="height:20px;"></div>
-    <div style="line-height:50px;">当前标签：<span id="current_tag"></span></div>
+    <div style="line-height:50px;"><span id="current_text">当前标签</span>：<span id="current_tag"></span></div>
     <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
-    <div id="notLogin" style="color:#900; display:none;">对不起，您尚未登录，请 <a href="/index/login" style="font-weight:bold;">登录</a> 后添加标签。</div>
     <hr style="color:#999; height:1px; width:90%;">
     <div id="data_list" style="line-height:50px;"></div>
     <div style="height:15px;"></div>
@@ -169,7 +168,8 @@
 <input type="hidden" name="content_text" id="content_text" value="" />
 <input type="hidden" id="userid" value="{$userid}">
 <input type="hidden" id="recommandTags_text" value="">
-<script src="/static/js/index.js"></script>
+<input type="hidden" name="reply_type" id="reply_type" value="detail" />
+<script src="/static/js/index_qna.js?1"></script>
 <script src="/static/js/qnalist_tags.js"></script>
-<script type="text/javascript" src="/static/js/jquery.reveal.index.js"></script>
-<script type="text/javascript" src="/static/js/jquery.reveal.qnalisttag.js"></script>
+<script type="text/javascript" src="/static/js/jquery.reveal.index.js?1"></script>
+<script type="text/javascript" src="/static/js/jquery.reveal.qnalisttag.js?2"></script>

@@ -3,26 +3,26 @@
 td { padding-right:10px; padding-bottom:20px;}
 input { background-color:#f7f8fa;}
 .text { height: 340px; width: 600px; }
-.title { font-size:2em; font-weight:bold;}
+.title { font-size:18px; font-weight:bold;}
 .invitedUsers {color:#03F;white-space:normal;word-break:break-all;}
 </style>
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 <script src="/static/mobile/js/wangEditor.min.js"></script>
 <script type="text/javascript" src="/static/mobile/js/math.js"></script>
 
 
 <div style="height:60px;"></div>
-	<div class="form-group" style="font-size: 1.8em; width: 1200px">
+	<div class="form-group">
     <table width="630" align="center">
       <tr>
-        <td colspan="5" align="center" class="title">我要提问</td>
+        <td colspan="5" align="center" class="title" style="font-size:1.8em; line-height:2.3em;">我要提问</td>
       </tr>
       <tr>
-        <td colspan="4" align="left"><input type="text" class="form-control" name="title" id="title" style="background-color:#f7f8fa; height:2em; font-size: 1.2em" placeholder="问题标题，10-60个中文字符（20-120个英文字符）" /></td>
+        <td colspan="4" align="left"><input type="text" class="form-control" name="title" id="title" style="background-color:#f7f8fa; height:45px; font-size:1.8em;" placeholder="问题标题，10-60个中文字符（20-120个英文字符）" /></td>
         <td width="40" align="right"><img src="/static/images/blank.png" width="30" height="29" id="check_title" /></td>
       </tr>
       <tr>
-        <td colspan="5" align="left">问题描述（可选）</td>
+        <td colspan="5" align="left" style="font-size:1.8em; line-height:2em;">问题描述（可选）</td>
       </tr>
       <tr>
         <td colspan="4" align="left">
@@ -31,33 +31,22 @@ input { background-color:#f7f8fa;}
         </td>
         <td width="40">&nbsp;</td>
       </tr>
-      <tr>
-        <td style="width: 180px" align="left">悬赏比邻币（可选）：</td>
-        <td align="left"><input type="text" class="form-control" name="coins" id="coins" width="4" style="background-color:#f7f8fa; height:2em; font-size: 1.2em; width:240px;" placeholder="请输入比邻币" onblur="clearNoNum(this);chkCoins();" onkeyup="clearNoNum(this);chkCoins();" onafterpaste="clearNoNum(this);chkCoins();" /></td>
-        <td align="left"></td>
-        <td align="right">所需比邻币(包括10%佣金)：<span id="total_coins" style="color:#03F; font-weight:bold;">0</span></td>
-        <td align="right"><img src="/static/images/blank.png" alt="" width="30" height="29" id="check_coins" /></td>
+      <tr id="inviteRow">
+        <td colspan="5"><a href="javascript:void(0);" data-reveal-id="inviteUsers" data-animation="fade" style="padding-right:30px;font-size:1.8em; line-height:2em;">快速邀请用户回答</a> | <a href="javascript:void(0);" data-reveal-id="searchUsers" data-animation="fade" style="padding-left:30px; padding-right:30px;font-size:1.8em; line-height:2em;">搜索用户邀请回答</a> | <a href="javascript:void(0);" data-reveal-id="attUsers" data-animation="fade" style="padding-left:30px;font-size:1.8em; line-height:2em;">邀请关注用户回答</a></td>
       </tr>
-      <tr>
-        <td colspan="4" align="left">现有比邻币：<span style="color:#03F; font-weight:bold;">{$coins;}</span>，冻结比邻币：<span style="color:#900; font-weight:bold;">{$frozen_coins;}</span>，可用余额：<span id="available_coins" style="color:#063; font-weight:bold;"></span></td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr id="inviteRow" style="display:none;">
-        <td colspan="5"><a href="javascript:void(0);" data-reveal-id="inviteUsers" data-animation="fade" style="padding-right:30px;">快速邀请用户回答</a> | <a href="javascript:void(0);" data-reveal-id="searchUsers" data-animation="fade" style="padding-left:30px; padding-right:30px;">搜索用户邀请回答</a> | <a href="javascript:void(0);" data-reveal-id="attUsers" data-animation="fade" style="padding-left:30px;">邀请关注用户回答</a></td>
-      </tr>
-      <tr id="inviteResultRow" style="display:none;">
-        <td colspan="5" style="text-align:left;">
+      <tr id="inviteResultRow">
+        <td colspan="5" style="text-align:left;font-size:1.8em; line-height:2em;">
         <p>已邀请用户：（您最多可以邀请10位用户来回答您的问题）</p>
         <p><div id="invitedUsers" class="invitedUsers">还未邀请任何用户</div></p>
         </td>
       </tr>
       <tr>
-        <td colspan="4" align="right"><button type="button" name="submitbtn" id="submitbtn" class="btn btn-default" style="width: 100%; height:2em; font-size: 1.2em; background-color:#004d9d; color:#FFF;">发布问题</button></td>
+        <td colspan="4" align="right"><button type="button" name="submitbtn" id="submitbtn" class="btn btn-default" style="width: 100%; height:auto; background-color:#004d9d; color:#FFF;font-size:1.8em; line-height:2em;">发布问题</button></td>
         <td align="right">&nbsp;</td>
       </tr>
     </table>
 </div>
-<div id="inviteUsers" class="reveal-modal" style="height:620px;overflow:hidden;">
+<div id="inviteUsers" class="reveal-modal" style="height:620px;overflow:hidden;font-size:1.8em; line-height:2em;">
     <div class="header_title">快速邀请以下用户来回答</div>
     <div style="height:20px;"></div>
     <!-- 随机用户列表 -->
@@ -69,7 +58,7 @@ input { background-color:#f7f8fa;}
     <!-- 随机用户列表结束 -->
     <a class="close-reveal-modal">&#215;</a>
 </div>
-<div id="searchUsers" class="reveal-modal" style="overflow:hidden; height:620px;">
+<div id="searchUsers" class="reveal-modal" style="overflow:hidden; height:620px;font-size:1.8em; line-height:2em;">
     <div class="header_title">搜索用户邀请回答</div>
     <div style="height:20px;"></div>
     <div style="text-align:right;">搜索您想邀请的用户：
@@ -105,7 +94,7 @@ input { background-color:#f7f8fa;}
     </div>
     <a class="close-reveal-modal">&#215;</a>
 </div>
-<div id="attUsers" class="reveal-modal" style="overflow-y:scroll; height:620px;">
+<div id="attUsers" class="reveal-modal" style="overflow-y:scroll; height:620px;font-size:1.8em; line-height:2em;">
     <div class="header_title">邀请关注用户来回答</div>
     <div style="height:20px;"></div>
     {volist name="att_users" id="attUser" empty="暂时没有关注用户"}
@@ -122,5 +111,10 @@ input { background-color:#f7f8fa;}
 <input type="hidden" name="originalcoins" id="originalcoins" value="{$coins}" />
 <input type="hidden" name="frozencoins" id="frozencoins" value="{$frozen_coins}" />
 <div style="height:100px;"></div>
-<script type="text/javascript" src="/static/mobile/js/qna.js"></script>
+<script type="text/javascript" src="/static/mobile/js/qna.js?3"></script>
 <script type="text/javascript" src="/static/mobile/js/jquery.reveal.js"></script>
+{if condition="$invite_user neq ''"}
+<script>
+inviteUser('{$invite_user}',0,'direct');
+</script>
+{/if}

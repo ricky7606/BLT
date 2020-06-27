@@ -82,14 +82,14 @@ class Qnalist extends Controller
 		$this->assign('list',$qna_list);
 		$this->assign('userid',Cookie::get('userid'));
 		if(Cookie::has('userid')){
-			$this->assign('header_type', 'user');
+			$this->assign('header_type', 'qna_user');
 			$this->assign('userid', Cookie::get('userid'));
 			$user = new Users;
 			$user->chkReminder(Cookie::get('userid'));
 			$userinfo = $user->getUserInfo(Cookie::get('userid'));
 			$this->assign('userinfo',$userinfo);
 		}else{
-			$this->assign('header_type', 'normal'); 
+			$this->assign('header_type', 'qna_normal'); 
 		}
 		$ads = new Ads;
 		$ad1 = $ads->getAdsByPosition(1);
@@ -200,24 +200,6 @@ class Qnalist extends Controller
 			}
 			$total['meta'] = $metadata;
 			return $total;
-			$this->assign('list',$qna_list);
-			$this->assign('userid',Cookie::get('userid'));
-			if(Cookie::has('userid')){
-				$this->assign('header_type', 'user');
-				$this->assign('userid', Cookie::get('userid'));
-				$user = new Users;
-				$user->chkReminder(Cookie::get('userid'));
-				$userinfo = $user->getUserInfo(Cookie::get('userid'));
-				$this->assign('userinfo',$userinfo);
-			}else{
-				$this->assign('header_type', 'normal'); 
-			}
-			$ads = new Ads;
-			$ad1 = $ads->getAdsByPosition(1);
-			$ad2 = $ads->getAdsByPosition(2);
-			$this->assign('ad1', $ad1); 
-			$this->assign('ad2', $ad2); 
-	        return $this->fetch();
 		}else{
 			return $this->redirect('/mobile/login');
 		}

@@ -25,6 +25,7 @@
             <div id="menu_items" style="background-color:#FFF;width:1180px;margin-bottom: 10px;float: left;">
                 <div class="inactive_menu" onclick="window.location.href='/index/userpending'">等我回答{if condition="$userinfo.pending_reminder>0"}<span class="reminder">{$userinfo.pending_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userqnas'">我的提问{if condition="$userinfo.reply_apply_reminder>0"}<span class="reminder">{$userinfo.reply_apply_reminder}</span>{/if}</div>
+                <div class="inactive_menu" onclick="window.location.href='/index/userarticles'">我的发布</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userreply'">我的回答{if condition="$userinfo.answer_reminder>0"}<span class="reminder">{$userinfo.answer_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userattention'">我的关注{if condition="$userinfo.attention_reminder>0"}<span class="reminder">{$userinfo.attention_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userfollow'">我的收藏</div>
@@ -110,6 +111,9 @@
                   	{case value='16'}
                   <tr style="background:#ddd">
                     {/case}
+                  	{case value='17'}
+                  <tr style="background:#ddd">
+                    {/case}
                   	{case value='99'}
                   <tr style="background:#eee">
                     {/case}
@@ -122,7 +126,7 @@
                     <td>{$trans.coins_before}</td>
                     <td>{$trans.coins_after}</td>
                     <td>{if condition="$trans.reference_userid == ''"}系统{else /}<a href="/index/userreplydetail?userid={$trans.reference_userid}" target="_blank">{$trans.reference_username}</a>{/if}</td>
-                    <td>{in name="$trans.transaction_type" value="13,14,15"}流水号：{$trans.serial_number}{/in}{if condition="$trans.qnaid != ''"}<a href="/index/qnadetails?id={$trans.qnaid}" target="_blank">{$trans.title}</a>{/if}</td>
+                    <td>{in name="$trans.transaction_type" value="13,14,15"}流水号：{$trans.serial_number}{/in}{if condition="$trans.qnaid != ''"}{if condition="$trans.transaction_type!=17"}<a href="/index/qnadetails?id={$trans.qnaid}" target="_blank">{$trans.title}</a>{else/}<a href="/index/articledetails?id={$trans.qnaid}" target="_blank">{$trans.article_title}</a>{/if}{/if}</td>
                   </tr>
                   {/volist}
                 </table>

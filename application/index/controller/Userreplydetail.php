@@ -84,14 +84,14 @@ class UserReplyDetail extends Controller
 		$this->assign('reply_list',$reply_list);
 
 		if(Cookie::has('userid')){
-			$this->assign('header_type','user');
+			$this->assign('header_type','qna_user');
 			$user->chkReminder($login_userid);
 			$userinfo = $user->getUserInfo($login_userid);
 			$this->assign('userinfo',$userinfo);
 			$this->assign('login_userid',$login_userid);
 		}else{
 			$this->assign('login_userid','');
-			$this->assign('header_type','normal');
+			$this->assign('header_type','qna_normal');
 		}
 		$ads = new Ads;
 		$ad1 = $ads->getAdsByPosition(1);

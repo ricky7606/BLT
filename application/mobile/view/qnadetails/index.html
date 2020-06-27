@@ -1,16 +1,16 @@
 {include file="header/index" header_type="$header_type" /}
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 <script src="/static/mobile/js/wangEditor.min.js"></script>
-<div style="">
+<div style="background-color:#F2F2F2;">
     <div style="margin:0 auto; width:1200px;">
         <div style="text-align:left;">
             <div style="height:10px";></div>
             <div class="content_box" id="loading" style="height:2000px; text-align:center">
-                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
             </div>
             <div class="content_box" id="content">
-            <div class="header_title split_left" style="width: 70%"><span class="am-icon-comment" style="color:#900;"></span> 提问者：
-            <img src="{if condition="$qna_userinfo.personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$qna_userinfo.personal_pic}{/if}" class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href='/mobile/userreplydetail?userid={$qna_userinfo.userid}';">{$qna_userinfo.username}</span> {if condition="$qna_userinfo.gender"}{if condition="$qna_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
+            <div class="header_title split_left"><span class="am-icon-comment" style="color:#900;"></span> 提问者：
+            <img src="{if condition="$qna_userinfo.personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$qna_userinfo.personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title_article" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$qna_userinfo.userid}';">{$qna_userinfo.username}</span> {if condition="$qna_userinfo.gender"}{if condition="$qna_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $qnainfo.userid"}
             {if condition="$qnainfo['qna_user_att'] == '-1'"}
@@ -21,16 +21,16 @@
             {/if}
             {/if}
             </div>
-            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold; width: 30%">{if condition="$qnainfo.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$qnainfo.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be qna type icon --></div>
             <div style="clear:both;"></div>
-            {if condition="$qna_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;font-size: 1.6em">自我简介：<span style="color:#03C;">{$qna_userinfo.brief}</span></div>{/if}
+            {if condition="$qna_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$qna_userinfo.brief}</span></div>{/if}
             <div style="height:10px;"></div>
             <div class="content_title">{$qnainfo.title}</div>
             <div style="height:10px;"></div>
             {if condition="$qnainfo.thumb_img neq ''"}
             <div style="width:100%" id="content_text_0">
-                <div style="width:15%; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$qnainfo.thumb_img}" class="thumb_img"></div>
-                <div style="width:80%; float:right;" class="format_text">{$qnainfo.content_text} <a href="javascript:void(0)" onclick="viewAll(0);">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+                <div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$qnainfo.thumb_img}" class="thumb_img"></div>
+                <div style="width:418px; float:left;" class="format_text">{$qnainfo.content_text} <a href="javascript:void(0)" onclick="viewAll(0);">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
             </div>
             <div style="clear:both;"></div>
             {else /}
@@ -82,11 +82,11 @@
             <div style="clear:both;"></div>
             <div style="height:20px;"></div>
             <!--answer section -->
-            {volist name="reply_list" id="reply_detail" empty="<div style='width:100%;text-align:center; padding:200px; font-size:2em; font-weight:bold;'>暂时没有回答</div>"}
+            {volist name="reply_list" id="reply_detail" empty="<div style='width:100%;text-align:center; padding:200px; font-size:1.8em; font-weight:bold;'>暂时没有回答</div>"}
             <hr style="height:1px; color:#CCC;">
 
             <div class="header_title"><span class="am-icon-comments-o" style="color:#06C;"></span> 回答者：
-            <img src="{if condition="$reply_detail.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.reply_personal_pic}{/if}" class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href='/mobile/userreplydetail?userid={$reply_detail.userid}';">{$reply_detail.reply_username}</span> {if condition="$reply_detail['reply_userinfo']['gender'] != ''"}{if condition="$reply_detail['reply_userinfo']['gender'] == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}<span style="font-size:12px; color:#999; padding-left:10px;">({$reply_detail.create_date})</span>
+            <img src="{if condition="$reply_detail.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.reply_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title_article" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$reply_detail.userid}';">{$reply_detail.reply_username}</span> {if condition="$reply_detail['reply_userinfo']['gender'] != ''"}{if condition="$reply_detail['reply_userinfo']['gender'] == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}<span style="font-size:0.5em; color:#999; padding-left:10px;">({$reply_detail.create_date})</span>
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $reply_detail.userid"}
             {if condition="$reply_detail['reply_user_att'] == '-1'"}
@@ -101,19 +101,19 @@
             <div style="height:20px;"></div>
 			
             {if condition="$reply_detail.thumb_img neq ''"}
-            <div style="width:100%; font-size: 2.5em" id="content_text_{$i}">
-                <div style="width:15%; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$reply_detail.thumb_img}" class="thumb_img"></div>
-                <div style="width:80%; float:right;">{$reply_detail.content_text} {if condition="$qnainfo.formatCoins > 0"}{if condition="$reply_detail.share"}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}{else /}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}</div>
+            <div style="width:100%" id="content_text_{$i}">
+                <div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$reply_detail.thumb_img}" class="thumb_img"></div>
+                <div style="width:418px; float:left;" class="format_text">{$reply_detail.content_text} {if condition="$qnainfo.formatCoins > 0"}{if condition="$reply_detail.share"}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}{else /}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}</div>
             </div>
             <div style="clear:both;"></div>
             {else /}
-            <div id="content_text_{$i}" style="font-size: 2.5em">{$reply_detail.content_text} {if condition="$qnainfo.formatCoins > 0"}{if condition="$reply_detail.share"}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}{else /}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}</div>
+            <div id="content_text_{$i}" class="format_text">{$reply_detail.content_text} {if condition="$qnainfo.formatCoins > 0"}{if condition="$reply_detail.share"}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}{else /}<a href="javascript:void(0)" onclick="viewAll({$i});"> 阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a>{/if}</div>
 			{/if}
             
             {if condition="$qnainfo.formatCoins > 0"}
             {if condition="$reply_detail.share"}
             <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
-            {if condition="$reply_detail['reply_userinfo']['brief']"}<div style="padding-top:10px; padding-bottom:10px;font-size: 1.6em">自我简介：<span style="color:#03C;">{$reply_detail['reply_userinfo']['brief']}</span></div>{/if}
+            {if condition="$reply_detail['reply_userinfo']['brief']"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$reply_detail['reply_userinfo']['brief']}</span></div>{/if}
             <div style="height:20px;"></div>
             <div>{$reply_detail.content}</div>
             
@@ -147,7 +147,7 @@
             {/if}
             {else /}
             <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
-            {if condition="$reply_detail['reply_userinfo']['brief']"}<div style="padding-top:10px; padding-bottom:10px;font-size: 1.6em">自我简介：<span style="color:#03C;">{$reply_detail['reply_userinfo']['brief']}</span></div>{/if}
+            {if condition="$reply_detail['reply_userinfo']['brief']"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$reply_detail['reply_userinfo']['brief']}</span></div>{/if}
             <div style="height:20px;"></div>
             <div>{$reply_detail.content}</div>
             <div style="height:20px;"></div>
@@ -203,5 +203,5 @@
 <input type="hidden" name="content" id="content" value="" />
 <input type="hidden" name="pendingid" id="pendingid" value="" />
 <input type="hidden" name="content_text" id="content_text" value="" />
-<script src="/static/mobile/js/index.js"></script>
+<script src="/static/mobile/js/index_qna.js"></script>
 <script type="text/javascript" src="/static/mobile/js/jquery.reveal.index.js"></script>

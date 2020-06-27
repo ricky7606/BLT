@@ -1,114 +1,60 @@
 {include file="header/index" header_type="$header_type" /}
-<meta http-equiv="refresh" content="0;url=/index/mobileregister" />
+<style> 
+td { padding-right:10px; padding-bottom:20px;}
+input { background-color:#f7f8fa;}
+</style>
 
-<link rel="stylesheet" href="/static/css/reveal.css">
-<script src="/static/mobile/js/wangEditor.min.js"></script>
-<div style="">
-    <div style="margin:0 auto;width: 1200px">
-        <div style="text-align:left;">
-            <div style="height:10px";></div>
-            <div class="content_box" id="loading" style="height:2000px; text-align:center">
-                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
-            </div>
-            <div style="clear:both;"></div>
-            
-            <!-- 下载区域 -->
-            <!--<div class="big_column" id="download" style=" background-color:#FEE9EC;">
-            <i class="am-icon-bitcoin" style="color:#FC0;"></i> 我们对首批十万比邻小镇注册用户每位赠送五十枚比邻币。比邻币采用与比特币相同的区块链技术，总数为二亿枚。<br /><a href="/Beelinton-qt.exe">点此下载电脑版比邻币钱包进行比邻币的管理和交易</a>。
-            </div>
-            <div style="height:10px";></div>-->
-            <!-- 下载区域结束 -->
-            
-            <!-- 标签区域 -->
-            <div class="big_column" id="tags">
-            <div style="width:1%;display: inline;float: left;text-align: left;">
+<div style="height:60px;"></div>
+	<div class="form-group">
+    <table width="630" align="center">
+      <tr>
+        <td width="186" align="right">用户名</td>
+        <td colspan="2"><label for="textfield"></label>
+        <input name="username" type="text" class="form-control" id="username" width="20" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="4-20个字符，可使用数字/字母/中文" onblur="chkUsername();" /></td>
+        <td width="40"><img id="check_username" /></td>
+      </tr>
+      <tr>
+        <td align="right">电子邮箱</td>
+        <td colspan="2"><input type="text" class="form-control" name="email" id="email" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="电子邮件地址" onblur="chkEmail();" onkeyup="value=value.replace(/[^0-9a-zA-z.@_-]/g,'')" /></td>
+        <td><img id="check_email" /></td>
+      </tr>
+      <tr>
+        <td align="right">密码</td>
+        <td colspan="2"><input type="password" class="form-control" name="password" id="password" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="大于6个字符，数字、大/小写字母、符号包含两种" onblur="chkPassword();" /></td>
+        <td><img id="check_password" /></td>
+      </tr>
+      <tr>
+        <td align="right">确认密码</td>
+        <td colspan="2"><input type="password" class="form-control" name="password2" id="password2" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="请再输一次密码" onblur="chkPassword2();" /></td>
+        <td><img id="check_password2" /></td>
+      </tr>
+      <tr>
+        <td align="right">验证码</td>
+        <td><input type="text" class="form-control" name="imgcode" id="imgcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入图形验证码" onblur="chkImgcode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" /></td>
+        <td><img id="verify_img" src="{:captcha_src()}" width="150" alt="验证码" onclick="refreshVerify()" /><br />
+          <a href="javascript:void(0);" onclick="refreshVerify()">看不清？刷新<img src="/static/images/refresh.jpg"></a></td>
+        <td><img id="check_imgcode" /></td>
+      </tr>
+      <tr>
+        <td align="right">邮箱验证码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="emailcode" id="emailcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入验证邮件中的验证码" onblur="chkEmailcode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        </td>
+        <td width="130" align="left"><button type="button" id="zemail" onClick="get_email_code();" class="btn btn-default" style="width:120px; height:45px; background-color:#748ba5; color:#FFF;">获取验证码</button></td>
+        <td width="48" align="left"><img id="check_emailcode" /></td>
+      </tr>
+      
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td colspan="2" align="left"><input type="checkbox" name="agreement" id="agreement" onclick="chkAgreement();" />
+        <label for="agreement"><a href="/mobile/index/disclaimer" target="_blank">我已阅读并同意《用户服务协议》</a></label></td>
+        <td align="left"><img id="check_agreement" /></td>
+      </tr>
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td colspan="3" align="left"><button type="submit" name="submitbtn" id="submitbtn" onclick="submitForm();" class="btn btn-default" style="width:350px; height:45px; background-color:#004d9d; color:#FFF;">提交</button></td>
+      </tr>
+    </table>
 
-            
-            </div>
-            <div style="width: 98%;display: inline;float: right;">
-                <span class="header_title"><span class="am-icon-tags am-icon-sm" style="color:#06C;"></span> 请搜索您感兴趣的标签关键字：</span><input name="search_tags" id="search_tags" type="text" name="brief" id="brief" style="margin-left:10px;border:1px; border-color:#ccc; border-style:solid; margin-top:10px;border-radius:2px;background-color:#fff; height:4em; line-height: 4em; width:230px; font-size: 2.5em padding-left:10px;" onkeydown="return chkSearchTag(event);" /> <img src="/static/images/glass_small.png" style="height:30px;margin-top:8px;cursor:pointer;" onclick="searchTags();">
-            <div style="height:10px;"></div>
-            <div style="width:100%; padding-left:10px; padding-right:10px;font-size: 1.6em;color: #aaa;text-align: left;">说明：目前我们的标签主要涵盖了文化、自然科学等领域，并且将不断扩充标签库；<br />选择您最感兴趣的标签作为个人标识，将有助于他人了解您。标签将是比邻小镇居民之间联系的重要纽带。</div>
-            <div style="height:20px;"></div>
-
-              <div id="cooperation_tags" style="line-height:2.5em;font-size: 2.5em;"><span style="font-size: 1.2.5em">比邻小镇战略合作伙伴标签</span>：<a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="男左女右" data-tag-id="6027fcaa-1de2-11e8-815e-525400eec8cb" data-type="users">男左女右</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="核能信息实时网" data-tag-id="69a86019-1de3-11e8-815e-525400eec8cb" data-type="users">核能信息实时网</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="稀有、稀土金属科技信息" data-tag-id="f74ded8c-1de7-11e8-815e-525400eec8cb" data-type="users">稀有、稀土金属科技信息</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="中国科学技术大学" data-tag-id="da209d05-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">中国科学技术大学</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="上海复旦大学" data-tag-id="cee2d8e1-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">上海复旦大学</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="上海交通大学" data-tag-id="cee5a95e-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">上海交通大学</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="西安交通大学" data-tag-id="d3cd9aef-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">西安交通大学</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="厦门大学" data-tag-id="dd4d6585-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">厦门大学</a> <a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="上海杉达学院" data-tag-id="cef5185f-0d7c-11e8-a12f-6c92bf0c200d" data-type="users">上海杉达学院</a><br />
-                <span style="font-size: 1.2.5em">合作伙伴：<a href="http://www.xmuenergy.com" target="_blank">核能信息实时网</a></span>
-                </div>
-                <div id="tags_recommand" style="padding-left:10px; padding-right:10px; line-height:2.5em;font-size: 2.5em">随机推荐热门标签：<br><span id="recommandTags"></span><p style="font-size:1em; color:#666;">我们还有<span style="font-weight: bold;color: #06C">数万</span>的标签等待您的发掘！(<span style="font-size:1em;"><a href='javascript:void(0);' onclick='getRandomTags();'><i class="am-icon-refresh"></i> 换一批推荐标签</a></span>)</p></div>
-              <div id="tag_searched" class="txtwrap" style="padding-left:40px; padding-right:40px; line-height:40px;font-size: 2.5em; display:none;"><img src="/static/images/loading.gif"></div>
-            <div style="height:20px;"></div>
-            </div>
-            </div>
-            
-            <!-- 标签区域结束 -->
-            
-            <div style="height:10px";></div>
-            <div class="content_box_big" id="content">
-            
-            </div>
-            <!--
-            <div class="right_column">
-            <div class="right_banner_box"><img src="/static/images/banner-1.jpg" style="width:100%;" class="banner_img"></div>
-            <div class="right_box header_title">
-            <p class="header_title">最新提问</p>
-            </div>
-            <div class="right_banner_box"><img src="/static/images/banner-2.jpg" style="width:100%;" class="banner_img"></div>
-            <div class="right_box header_title">
-            <p style="color:#666; font-size:12px;">下载比邻Call &middot; 下载比邻钱包<br /><br />联系我们 &copy;2018</p>
-            </div>
-            </div>
-            -->
-            <div style="clear:both;"></div>
-            <div style="height:20px;"></div>
-        </div>
-    </div>
-</div>
-<div id="answer_box" class="reveal-modal" style="width:700px;">
-    <div class="header_title" id="qna_title"></div>
-    <div style="height:20px;"></div>
-    <div id="editordiv" class="text">
-    </div>
-    <div style="height:20px;"></div>
-    <button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer"><i class="am-icon-comment"></i> 发布回答</button>
-    <a class="close-reveal-modal">&#215;</a>
-</div>
-<div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px; font-size: 2em">
-    <div id="box_title" class="header_title">子标签列表</div>
-    <div style="height:20px;"></div>
-    <div style="line-height:2em;">当前标签：<span id="current_tag"></span></div>
-    <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
-    <div id="notLogin" style="color:#900; display:none;">对不起，您尚未登录，请 <a href="/mobile/login" style="font-weight:bold;">登录</a> 后添加标签。</div>
-    <hr style="color:#999; height:1px; width:90%;">
-    <div id="data_list" style="line-height:50px;"></div>
-    <div style="height:15px;"></div>
-    <a class="close-reveal-modal">&#215;</a>
-</div>
-<div id="report_box" class="reveal-modal" style="width:420px;overflow-y:scroll; overflow-x:hidden; height:360px;">
-    <div id="box_title" class="header_title">违规举报</div>
-    <div style="height:20px;"></div>
-    <div>
-    <select name="report_type" id="report_type" onchange="chkReportType();">
-    <option value="">选择举报类别</option>
-    <option value="1">辱骂、歧视、挑衅、骚扰等语言行为</option>
-    <option value="2">内容抄袭</option>
-    <option value="3">侵犯个人或企业权益</option>
-    <option value="4">垃圾广告信息</option>
-    <option value="5">色情、暴力、血腥等违法违规内容</option>
-    <option value="6">政治敏感内容</option>
-    <option value="7">诱导分享、投票等行为</option>
-    </select>
-    </div>
-    <div style="margin:20px;"><textarea name="report_comment" id="report_comment" style="width:280px;" rows="3" placeholder="举报说明（选填），可填写详细说明，如抄袭的原文链接等。（200字以内）" onblur="chkReportComment();" onkeyup="chkReportComment();"></textarea></div>
-    <div style="margin:20px;"><button type="button" name="reportbtn" id="reportbtn" class="btn btn-default user_button_blue_answer">我要举报</button></div>
-    <div style="height:15px;"></div>
-    <a class="close-reveal-modal">&#215;</a>
-    <input type="hidden" name="qnaid" id="qnaid" value="" />
-    <input type="hidden" name="qna_type" id="qna_type" value="" />
-</div>
-<input type="hidden" name="content" id="content" value="" />
-<input type="hidden" name="pendingid" id="pendingid" value="" />
-<input type="hidden" name="content_text" id="content_text" value="" />
-<input type="hidden" id="recommandTags_text" value="">
-<script src="/static/mobile/js/index.js"></script>
-<script src="/static/mobile/js/index_tags.js"></script>
-<script type="text/javascript" src="/static/mobile/js/jquery.reveal.indextag.js"></script>
+  </div>
+<input type="hidden" name="register_token" id="register_token" value="{$register_token}" />
+<script type="text/javascript" src="/static/mobile/js/register.js?3"></script>

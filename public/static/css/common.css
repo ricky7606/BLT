@@ -43,8 +43,8 @@ input[type="button"], input[type="submit"], input[type="reset"] {
 .grey_text_comment{color:#999; font-size: 0.8em;font-weight: normal; vertical-align:middle; padding-top:10px;}
 .banner_img { border-radius:4px;}
 .text { width: 620px; text-align:left;}
-.reminder_top {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:0px; right:20px; font-size:10px; color:#FFF;  width:25px; height:25px; text-align:center; padding-top:2px; padding-bottom:4px; text-align:center;}
-.reminder {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:5px; right:10px; font-size:10px; color:#FFF; padding:5px; padding-top:2px; padding-bottom:4px; width:25px; height:25px; text-align:center;}
+.reminder_top {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:0px; right:20px; font-size:10px; color:#FFF;  width:25px; height:25px; text-align:center; padding-top:2px; padding-bottom:4px; text-align:center; font-weight:bold;}
+.reminder {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:5px; right:10px; font-size:10px; color:#FFF; padding:5px; padding-top:2px; padding-bottom:4px; width:25px; height:25px; text-align:center; font-weight:bold;}
 .prevNextBtn {width:auto; border-color:#06C; border-width:1px; border-radius:2px; border-style:solid; margin-left:20px; margin-right:20px; padding:10px; cursor:pointer;}
 .thumb_img { max-height:100px; max-width:130px; margin:5px; overflow:hidden;}
 .underlineBtnActive {border-bottom-color:#03C; border-bottom-width:1px; border-bottom-style:solid; padding-top:20px; padding-bottom:10px; margin:15px; font-weight:bold;}

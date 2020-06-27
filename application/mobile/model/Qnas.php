@@ -57,20 +57,20 @@ class Qnas extends Model {
 		$result_qna = $this->save();
 		
 		if($result_qna){
-			if($coins > 0){
-				$users = new Users;
-				$userinfo = $users->getUserDetails($userid);
-				$total_invite = 1;
-				$transaction = new Transactions;
-				if($invite_users != ""){
-					$pending = new QnasPending;
-					$invite_user_arr = explode(",",$invite_users);
-					$total_invite = count($invite_user_arr);
-					foreach ($invite_user_arr as $username){ 
-						$invited_userid = $users->getUserIdByUsername($username);
-						$new_pendingid = uuid();
-						$new_transid = uuid();
-						
+			$users = new Users;
+			$userinfo = $users->getUserDetails($userid);
+			$total_invite = 1;
+			$transaction = new Transactions;
+			if($invite_users != ""){
+				$pending = new QnasPending;
+				$invite_user_arr = explode(",",$invite_users);
+				$total_invite = count($invite_user_arr);
+				foreach ($invite_user_arr as $username){ 
+					$invited_userid = $users->getUserIdByUsername($username);
+					$new_pendingid = uuid();
+					$new_transid = uuid();
+					
+					if($coins>0){
 						$pending->pendingid = $new_pendingid;
 						$pending->qnaid = $new_qnaid;
 						$pending->qna_userid = $userid;
@@ -80,29 +80,42 @@ class Qnas extends Model {
 						$pending->pending_type = 1;
 						$pending->transactionid = $new_transid;
 						$result_pending = $pending->isUpdate(false)->save();
-
+					
 						$result_trans = $transaction->saveTransaction($userid, $coins, 1, $new_qnaid, $invited_userid, $new_pendingid);
 						$commission = bcmul($coins, 0.1, 8);
 						$result_trans = $transaction->saveTransaction($userid, $commission, 2, $new_qnaid, $invited_userid, $new_pendingid);
-						
-						//通知被邀请用户
-						$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$userid."\" target=\"_blank\">".$userinfo->username."</a>”邀请您回答问题：“<a href=\"\\index\\qnadetails?id=".$new_qnaid."\" target=\"_blank\">".$title."</a>”，快去<a href=\"\\index\\userpending\">回答问题</a>吧。";
-						$message = new Message;
-						$result_message = $message->saveNewMessage($invited_userid, $message_text);
 
 						if(!$result_trans || !$result_pending){
 							$error_flag = true;
 						}
+					}else{
+						$pending->pendingid = $new_pendingid;
+						$pending->qnaid = $new_qnaid;
+						$pending->qna_userid = $userid;
+						$pending->pending_userid = $invited_userid;
+						$pending->pending_date = date('Y-m-d H:i:s',time());
+						$pending->status = 1;
+						$pending->pending_type = 1;
+						$result_pending = $pending->isUpdate(false)->save();
+
+						if(!$result_pending){
+							$error_flag = true;
+						}
 					}
-				}else{
-					//没有邀请不需要冻结，放在申请通过的时候再检查余额
+					
+					//通知被邀请用户
+					$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$userid."\" target=\"_blank\">".$userinfo->username."</a>”邀请您回答问题：“<a href=\"\\index\\qnadetails?id=".$new_qnaid."\" target=\"_blank\">".$title."</a>”，快去<a href=\"\\index\\userpending\">回答问题</a>吧。";
+					$message = new Message;
+					$result_message = $message->saveNewMessage($invited_userid, $message_text);
+				}
+			}else{
+				//没有邀请不需要冻结，放在申请通过的时候再检查余额
 //					$result_trans = $transaction->saveTransaction($userid, $coins, 1, $new_qnaid);
 //					$commission = bcmul($coins, 0.1, 8);
 //					$result_trans = $transaction->saveTransaction($userid, $commission, 2, $new_qnaid);
 //					if(!$result_trans){
 //						$error_flag = true;
 //					}
-				}
 			}
 		}else{
 			$error_flag = true;

@@ -29,7 +29,7 @@ class QnaDetails extends Controller
 		$qna = new Qnas; 
 		$qna_detail = $qna->getQnaDetailsByQnaId($qnaid);
 		if(!$qna_detail){
-			return $this->redirect('/mobile');
+			return $this->redirect('/index');
 		}
 		$userid = Cookie::get('userid');
 		$this->assign('userid',$userid);
@@ -125,13 +125,13 @@ class QnaDetails extends Controller
 		}
 		$this->assign('qna_list',$qna_list);
 		if(Cookie::has('userid')){
-			$this->assign('header_type','user');
+			$this->assign('header_type','qna_user');
 			$user->chkReminder($userid);
 			$userinfo = $user->getUserInfo($userid);
 			$this->assign('userinfo',$userinfo);
 			$this->assign('userid',$userid);
 		}else{
-			$this->assign('header_type','normal');
+			$this->assign('header_type','qna_normal');
 		}
 		$ads = new Ads;
 		$ad1 = $ads->getAdsByPosition(1);
@@ -143,7 +143,7 @@ class QnaDetails extends Controller
 	
 	public function updateApply(){
 		if(!Cookie::has('userid')){
-			return $this->redirect('/mobile/login');
+			return $this->redirect('/index/login');
 		}
 		$applyid = Request::instance()->post('applyid');
 		$applystatus = Request::instance()->post('applystatus');
@@ -157,7 +157,7 @@ class QnaDetails extends Controller
 
 	public function updateReply(){
 		if(!Cookie::has('userid')){
-			return $this->redirect('/mobile/login');
+			return $this->redirect('/index/login');
 		}
 		$replyid = Request::instance()->post('replyid');
 		$replystatus = Request::instance()->post('replystatus');
@@ -171,7 +171,7 @@ class QnaDetails extends Controller
 	
 	public function attUser(){
 		if(!Cookie::has('userid')){
-			return $this->redirect('/mobile/login');
+			return $this->redirect('/index/login');
 		}
 		$attention_userid = Request::instance()->post('userid');
 		if($attention_userid != ''){

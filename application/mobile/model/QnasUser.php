@@ -51,14 +51,6 @@ class QnasUser extends Model {
 		->page($page, $num)
 		->select();		
 		return $new_qnauser;
-
-        $new_qnauser = $this->order('create_date','desc')
-		->where('report_disabled', 0)
-		->paginate(10);          
-        if (empty($new_qnauser)) {                 // 判断是否出错
-            return false;
-        }
-        return $new_qnauser;   // 返回修改后的数据
 	}
 
 	public function getQnasByUserId($userid){

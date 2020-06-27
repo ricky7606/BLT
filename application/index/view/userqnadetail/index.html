@@ -13,14 +13,15 @@
             <img src="{if condition="$userdetail.personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$userdetail.personal_pic}{/if}" class="index_profile_pic" style="margin-right:20px;">  
             </div>
             <div class="header_title userdetail_split_right" style="padding-top:18px;">
-            {$userdetail.username} {if condition="$userdetail.gender"}{if condition="$userdetail.gender == 1"} <span class="am-icon-mars" style="color:#06C;" title="男"></span>{else /} <span class="am-icon-venus" style="color:#900;" title="女"></span>{/if}{/if}
-            {if condition="$header_type == 'user'"} 
+            {$userdetail.username} {if condition="$userdetail.gender == 1 || $userdetail.gender == 0"}{if condition="$userdetail.gender == 1"} <span class="am-icon-mars" style="color:#06C;" title="男"></span>{else /} <span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
+            {if condition="$header_type == 'qna_user'"} 
             {if condition="$login_userid != $userdetail.userid"}
             {if condition="$user_att == '-1'"}
             <button type="button" class="btn btn-default button_grey" id="attBtn1" onclick="attUser('{$userdetail.userid}','1');this.disabled='disabled';" style="margin-left:20px;"><i class="am-icon-plus"></i> 关注TA</button>
             {else /}
             <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;"><i class="am-icon-user-plus"></i> 已关注</button>
             {/if}
+            <button type="button" class="btn btn-default button_blue am-fr" style="width:auto; margin-left:20px;" onclick="window.location.href='/index/qna?invite_user={$userdetail.userid}'"><i class="am-icon-question-circle"></i> 向TA提问</button>
             {/if}
             {/if}
             {if condition="$userdetail.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$userdetail.brief}</span></div>{else /}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#666;">还没有想好该怎么来介绍自己</span></div>{/if}
@@ -30,7 +31,7 @@
             </div>
             <div style="clear:both;"></div>
             <div style="height:20px;"></div>
-            <div><span class="underlineBtnInactive" onclick="window.location.href='/index/userreplydetail?userid={$userdetail.userid}'"><i class="am-icon-comments-o" style="color:#06C; margin-right:10px;"></i> TA的回答</span> <span class="underlineBtnActive"><i class="am-icon-comment" style="color:#900; margin-right:10px;"></i> TA的提问</span></div>
+            <div><span class="underlineBtnInactive" onclick="window.location.href='/index/userreplydetail?userid={$userdetail.userid}'"><i class="am-icon-comments-o" style="color:#06C; margin-right:10px;"></i> TA的回答</span> <span class="underlineBtnActive"><i class="am-icon-comment" style="color:#900; margin-right:10px;"></i> TA的提问</span> <span class="underlineBtnInactive" onclick="window.location.href='/index/userarticledetail?userid={$userdetail.userid}'"><i class="am-icon-file-text" style="color:#06C; margin-right:10px;"></i> TA的发布</span></div>
             <!--answer section -->
             {volist name="qna_list" id="qna" empty="<div style='width:100%;text-align:center; height:200px; padding-top:100px; font-size:18px; font-weight:bold;'>暂时没有提出任何问题</div>"}
             <hr style="height:1px; color:#CCC;">

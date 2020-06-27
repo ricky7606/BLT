@@ -33,6 +33,7 @@ class Message extends Model {
 		$message = new MessageDetails;
 		$message_list = $message->where('userid', $userid)
 		->order('create_date', 'desc')
+		->order('messageid', 'desc')
 		->paginate(20);
 		return $message_list;
 	}

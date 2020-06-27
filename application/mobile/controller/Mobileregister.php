@@ -1,11 +1,11 @@
 <?php
-namespace app\index\controller;
+namespace app\mobile\controller;
 use think\Controller;
 use think\Request;
 use think\Cookie;
 use think\Session;
 use think\captcha\Captcha;
-use app\index\model\Users;
+use app\mobile\model\Users;
 
 class Mobileregister extends Controller
 {

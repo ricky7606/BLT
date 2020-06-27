@@ -20,20 +20,20 @@
 		if(type=='tags'){
 			$("#current_tag").html("<a href=\"javascript:void(0);\" class='tag' title=\"点击查看添加该标签的用户\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"users\">"+tag+"</a>");
 		}else{
-			$("#current_tag").html("<span class='tag' onclick='chkTag(\""+tagId+"\")' title=\"点击添加该标签\">"+tag+"</span>"); 
+			$("#current_tag").html("<span class='tag'>"+tag+"</span>"); 
 		}
 		if(type == 'tags'){
 			$("#box_title").html('子标签列表');
 			$("#tips").html('tips: 也可以点击该父标签查看添加该标签的用户');  
 		}else{
 			$("#box_title").html('标签用户列表');
-			$("#tips").html('tips: 可以直接点击该标签添加');
+			$("#tips").html('');
 		}
 		$("#data_list").html("<img src='/static/images/loading.gif'>");
 		
 		if(type == 'tags'){
 			//获取子标签
-			$.post('/index/usertags/getMoreTags', {tagid:tagId,page:page}, function(msg) {
+			$.post('/mobile/usertags/getMoreTags', {tagid:tagId,page:page}, function(msg) {
 				if(msg == ''){
 					xcsoft.error('没有更多的子标签',2000);
 					$("#data_list").html("没有更多的子标签");
@@ -72,14 +72,19 @@
 			});
 		}else{
 			//获取用户列表
-			$.post('/index/usertags/getTagUsers', {tagid:tagId}, function(msg) {
+			$.post('/mobile/usertags/getTagUsers', {tagid:tagId,page:page}, function(msg) {
 				if(msg == ''){
 					xcsoft.error('暂时还没有用户添加该标签',2000);
 					$("#data_list").html("暂时还没有用户添加该标签");
 				}else{
 					$("#data_list").html('');
-					tmpStr = "<div style='margin-left:50px; margin-right:30px; text-align:left; line-height:70px;'><div><i class=\"am-icon-users am-icon-sm\"></i> 以下用户已经添加了该标签，您可以加入TA们！</div>";
-					tmpArr = msg.split('$$$');
+					tmpStr = "<div style='width:100%; margin-left:50px; margin-right:30px; text-align:left; line-height:70px;'><div><i class=\"am-icon-users\"></i> 以下用户已经添加了该标签，您可以查看用户信息。</div>";
+					tmpArr = msg.split('___');
+					tmpArr2 = tmpArr[0].split('###');
+					total_page = tmpArr2[0];
+					current_page = tmpArr2[1];
+					if(current_page==''){current_page=1;}
+					tmpArr = tmpArr[1].split('$$$');
 					tmpArr.forEach(function(value){
 						if(value != ''){
 							tmpArr2 = value.split('###');
@@ -88,17 +93,57 @@
 							}else{
 								tmpStr += "<div style=\"float:left;\"><img src=\"/static/images/profile_pic.jpg\" class=\"user_pic\" style=\"margin-right:20px;\"> ";
 							}
-							tmpStr += "<a href=\"/index/userreplydetail?userid="+tmpArr2[0]+"\" title=\"点击查看该用户\" target=\"details\" style=\"margin-right:40px;\">"+tmpArr2[1]+"</a></div>";
+							tmpStr += "<a href=\"/mobile/userreplydetail?userid="+tmpArr2[0]+"\" title=\"点击查看该用户\" target=\"details\" style=\"margin-right:40px;\">"+tmpArr2[1]+"</a></div>";
 						}
 					});
 					tmpStr += "<div style=\"clear:both;\"></div></div>";
+					tmpStr += "<div style=\"padding-top:20px;\">";
+					if(parseInt(current_page)>1){
+						tmpStr += "<a class=\"prevNextBtn\" href=\"javascript:void(0);\" class='tag_parent' title=\"上一页\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"users\" data-page=\""+(parseInt(current_page)-1)+"\">上一页</a>";
+					}
+					tmpStr += "<span>( "+current_page+"/"+total_page+" )</span>";
+					if(parseInt(current_page) < parseInt(total_page)){
+						tmpStr += "<a class=\"prevNextBtn\" href=\"javascript:void(0);\" class='tag_parent' title=\"下一页\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"users\" data-page=\""+(parseInt(current_page)+1)+"\">下一页</a>";
+					}
+					tmpStr += "</div>";
 					$("#data_list").html(tmpStr);
+				}
+			});
+			//获取发布列表
+			$.post('/mobile/articlelist/getArticleListByTagId', {tagid:tagId,page:page}, function(msg) {
+				if(msg == ''){
+					$("#article_list").html("暂时还没有发布使用该标签");
+				}else{
+					$("#article_list").html('');
+					tmpStr = "<div style='width:100%; margin-left:50px; margin-right:30px; line-height:40px; text-align:left;'><div><i class=\"am-icon-file-text\"></i> 以下发布使用了该标签，您可以点击查看！</div>";
+					tmpArr = msg.split('___');
+					tmpArr2 = tmpArr[0].split('###');
+					total_page = tmpArr2[0];
+					current_page = tmpArr2[1];
+					if(current_page==''){current_page=1;}
+					tmpArr = tmpArr[1].split('$$$');
+					tmpArr.forEach(function(value){
+						if(value != ''){
+							tmpArr2 = value.split('###');
+							tmpStr += "<li><a href=\"/mobile/articledetails?id="+tmpArr2[0]+"\" title=\"点击查看该发布\" target=\"articles\">"+tmpArr2[1]+"</a></li>";
+						}
+					});
+					tmpStr += "<div style=\"padding-top:20px; width:85%; text-align:center;\">";
+					if(parseInt(current_page)>1){
+						tmpStr += "<a class=\"prevNextBtn\" href=\"javascript:void(0);\" class='tag_parent' title=\"上一页\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"articles\" data-page=\""+(parseInt(current_page)-1)+"\">上一页</a>";
+					}
+					tmpStr += "<span>( "+current_page+"/"+total_page+" )</span>";
+					if(parseInt(current_page) < parseInt(total_page)){
+						tmpStr += "<a class=\"prevNextBtn\" href=\"javascript:void(0);\" class='tag_parent' title=\"下一页\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"articles\" data-page=\""+(parseInt(current_page)+1)+"\">下一页</a>";
+					}
+					tmpStr += "</div>";
+					$("#article_list").html(tmpStr);
 				}
 			});
 		}
 		
 		$('#'+modalLocation).reveal($(this).data());
-		$("html,body").css({overflow:"hidden"}); //禁用滚动条
+		//$("html,body").css({overflow:"hidden"}); //禁用滚动条
 	});
 
 /*---------------------------
@@ -210,19 +255,22 @@
 			//Close Modal Listeners
 			var closeButton = $('.' + options.dismissmodalclass).bind('click.modalEvent', function () {
 			  modal.trigger('reveal:close');
-			  $("html,body").css({overflow:"auto"}); //启动滚动条
+			  //$("html,body").css({overflow:"auto"}); //启动滚动条
 			});
 			
 			if(options.closeonbackgroundclick) {
 				modalBG.css({"cursor":"pointer"})
 				modalBG.bind('click.modalEvent', function () {
 				  modal.trigger('reveal:close');
-				  $("html,body").css({overflow:"auto"}); //启动滚动条
+				  //$("html,body").css({overflow:"auto"}); //启动滚动条
 
 				});
 			}
 			$('body').keyup(function(e) {
-        		if(e.which===27){ modal.trigger('reveal:close'); $("html,body").css({overflow:"auto"});} // 27 is the keycode for the Escape key
+        		if(e.which===27){ 
+					modal.trigger('reveal:close'); 
+					//$("html,body").css({overflow:"auto"});
+				} // 27 is the keycode for the Escape key
 			});
 			
 			

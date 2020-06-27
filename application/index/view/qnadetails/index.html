@@ -21,7 +21,7 @@
             {/if}
             {/if}
             </div>
-            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;">{if condition="$qnainfo.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$qnainfo.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be qna type icon --></div>
             <div style="clear:both;"></div>
             {if condition="$qna_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$qna_userinfo.brief}</span></div>{/if}
             <div style="height:10px;"></div>
@@ -216,5 +216,6 @@
 <input type="hidden" name="content" id="content" value="" />
 <input type="hidden" name="pendingid" id="pendingid" value="" />
 <input type="hidden" name="content_text" id="content_text" value="" />
-<script src="/static/js/index.js"></script>
+<input type="hidden" name="reply_type" id="reply_type" value="refresh" />
+<script src="/static/js/index_qna.js"></script>
 <script type="text/javascript" src="/static/js/jquery.reveal.index.js"></script>

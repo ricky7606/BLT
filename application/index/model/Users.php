@@ -94,11 +94,67 @@ class Users extends Model {
         return $users;   // 返回修改后的数据
 	}
 	
-	public function getLogin($mobile, $password, $isonemonth){
+	public function getLogin($email, $password, $isonemonth){
+		// 验证用户Bcrypt加密后的密码
+		$chkPwd = $this->where(function ($query) use ($email){
+			$query->where('email',$email)
+			->field('password,userid,username,failed_login_times,failed_login_starttime,baned_endtime')
+			->limit(1);
+		})->find();
+		if($chkPwd){
+			if($chkPwd->baned_endtime>date('Y-m-d H:i:s',time())){
+				return "您最近二十四小时内登录失败次数过多，账号被临时禁用中";
+			}else{
+				//如果错误次数开始时间超过24小时则清零
+				if(DateDiff("h",$chkPwd->failed_login_starttime,date('Y-m-d H:i:s',time()))>=24){
+					$this->where('email', $email)->update(['failed_login_times' => 0, 'failed_login_starttime' => NULL, 'baned_endtime' => NULL]);
+				}
+				if(password_verify($password,$chkPwd->password)){
+					if($isonemonth == 'yes'){
+						Cookie::set('userid',$chkPwd->userid,2678400);
+						Cookie::set('email',$email,2678400);
+						Cookie::set('username',$chkPwd->username,2678400);
+					}else{
+						Cookie::set('userid',$chkPwd->userid,86400);
+						Cookie::set('email',$email,86400);
+						Cookie::set('username',$chkPwd->username,86400);
+					}
+					$this->chkReminder($chkPwd->userid);
+					//成功登录后错误次数清零
+					$this->where('email', $email)->update(['failed_login_times' => 0, 'failed_login_starttime' => NULL, 'baned_endtime' => NULL]);
+					return "ok";
+				}else{
+					$chkPwd = $this->where(function ($query) use ($email){
+						$query->where('email',$email)
+						->field('failed_login_times,failed_login_starttime,baned_endtime')
+						->limit(1);
+					})->find();
+					if($chkPwd->failed_login_times==0){
+						$this->where('email', $email)->update(['failed_login_starttime' => date('Y-m-d H:i:s',time())]);
+					}
+					$this->where('email', $email)->setInc('failed_login_times',1);
+					$failed_login = $chkPwd->failed_login_times+1;
+					if($failed_login>=10){
+						$this->where('email', $email)->update(['baned_endtime' => DateAdd("h", 24, date('Y-m-d H:i:s',time()))]);
+						return "您最近二十四小时内登录失败次数过多，账号被临时禁用二十四小时";
+					}elseif($failed_login%3==0){
+						$this->where('email', $email)->update(['baned_endtime' => DateAdd("n", 10, date('Y-m-d H:i:s',time()))]);
+						return "您最近二十四小时内登录失败次数过多，账号被临时禁用十分钟";
+					}else{
+						return "邮件地址或密码错误，请检查后重试。提示：错误登录尝试过多账号会被临时禁用！";
+					}
+				}
+			}
+		}else{
+			return "邮件地址或密码错误，请检查后重试。提示：错误登录尝试过多账号会被临时禁用！";
+		}
+	}
+
+	public function getMobileLogin($mobile, $password, $isonemonth){
 		// 验证用户Bcrypt加密后的密码
 		$chkPwd = $this->where(function ($query) use ($mobile){
 			$query->where('mobile',$mobile)
-			->field('password,userid,username,failed_login_times,failed_login_starttime,baned_endtime')
+			->field('password,userid,username,failed_login_times,failed_login_starttime,baned_endtime,email')
 			->limit(1);
 		})->find();
 		if($chkPwd){
@@ -122,7 +178,11 @@ class Users extends Model {
 					$this->chkReminder($chkPwd->userid);
 					//成功登录后错误次数清零
 					$this->where('mobile', $mobile)->update(['failed_login_times' => 0, 'failed_login_starttime' => NULL, 'baned_endtime' => NULL]);
-					return "ok";
+					if($chkPwd->email==''){
+						return "ok#noEmail";
+					}else{
+						return "ok";
+					}
 				}else{
 					$chkPwd = $this->where(function ($query) use ($mobile){
 						$query->where('mobile',$mobile)
@@ -202,11 +262,11 @@ class Users extends Model {
 		$this->where('userid', $userid)->update(['message_reminder' => 0]);
 	}
 	
-	public function userRegister($username, $password, $mobile){
+	public function userRegister($username, $password, $email){
 		$this->startTrans();
 		$this->username = $username;
 		$this->password = $password;
-		$this->mobile = $mobile;
+		$this->email = $email;
 		$this->reg_date = date('Y-m-d H:i:s',time());
 		$userid = uuid();
 		$this->userid = $userid;
@@ -238,6 +298,18 @@ class Users extends Model {
 		}
 	}
 	
+	public function chkEmail($email){
+		$chkEmail = $this->where(function ($query) use ($email){
+			$query->where('email',$email);
+		})->find();
+		if($chkEmail)
+		{
+			return "exists";
+		}else{
+			return "none";
+		}
+	}
+	
 	public function chkUsername($username){
 		$chkUsername = $this->where(function ($query) use ($username){
 			$query->where('username',$username);
@@ -260,11 +332,10 @@ class Users extends Model {
         return $user;   // 返回修改后的数据
 	}
 	
-	public function saveUserDetails($mobile, $gender, $brief, $email, $location, $industry, $career, $education, $introduction){
-		$this->mobile = $mobile;
+	public function saveUserDetails($userid, $gender, $brief, $location, $industry, $career, $education, $introduction){
+		$this->userid = $userid;
 		$this->gender = $gender;
 		$this->brief = $brief;
-		$this->email = $email;
 		$this->location = $location;
 		$this->industry = $industry;
 		$this->career = $career;
@@ -316,8 +387,8 @@ class Users extends Model {
 		}
 	}
 	
-	public function changeUsername($mobile, $username){
-		$this->mobile = $mobile;
+	public function changeUsername($userid, $username){
+		$this->userid = $userid;
 		$this->username = $username;
 		$this->original_username = Cookie::get('username');
 		$this->changed_username = 1;
@@ -330,15 +401,15 @@ class Users extends Model {
 		}
 	}
 
-	public function changePassword($mobile, $password, $new_password){
-		$result = $this->where('mobile', $mobile)
+	public function changePassword($userid, $password, $new_password){
+		$result = $this->where('userid', $userid)
 		->limit(1)
 		->find();
 		if($result){
 			$current_pwd = $result->password;
 			if(password_verify($password,$current_pwd)){
 				$new_password = password_hash($new_password,PASSWORD_BCRYPT);
-				$result_pwd = $this->update(['mobile' => $mobile, 'password' => $new_password]);
+				$result_pwd = $this->update(['userid' => $userid, 'password' => $new_password]);
 				if($result_pwd){
 					return "ok";
 				}else{
@@ -352,21 +423,34 @@ class Users extends Model {
 		}
 	}
 	
-	public function changeMobile($old_mobile, $new_mobile){
-		$result = $this->where('mobile', $old_mobile)->update(['mobile' => $new_mobile]);
-		if($result){
-			return "ok";
-		}else{
+	public function changeMobile($userid, $new_mobile){
+		$result = $this->where('userid', $userid)->update(['mobile' => $new_mobile]);
+		if($result === false){
 			return "手机号码修改失败";
+		}else{
+			return "ok";
+		}
+	}
+
+	public function changeEmail($userid, $new_email){
+		$result = $this->where('userid', $userid)->update(['email' => $new_email]);
+		if($result === false){
+			return "邮箱地址修改失败";
+		}else{
+			return "ok";
 		}
 	}
 	
-	public function resetPassword($mobile, $password){
-		$result = $this->where('mobile', $mobile)->update(['password' => $password]);
-		if($result){
-			return "ok";
+	public function resetPassword($mobile, $email, $password){
+		if($email!=''){
+			$result = $this->where('email', $email)->update(['password' => $password]);
 		}else{
+			$result = $this->where('mobile', $mobile)->update(['password' => $password]);
+		}
+		if($result === false){
 			return "密码重设失败";
+		}else{
+			return "ok";
 		}
 	}
 }

@@ -7,10 +7,6 @@ xcsoft.tipsCss = {
 xcsoft.tipsHide=xcsoft.tipsShow=300;
 
 var isTitleOK=false;
-var isCoinsOK=false;
-var originalcoins = $('#originalcoins').val();
-var frozencoins = $('#frozencoins').val();
-$('#available_coins').html(sub(originalcoins,frozencoins));
 var invited_users = new Array();
 var invited_users_html = new Array();
 
@@ -35,7 +31,7 @@ editor.customConfig.menus = [
     'undo',  // 撤销
     'redo'  // 重复
 ]
-editor.customConfig.uploadImgServer = '/mobile/qna/uploadPic'
+editor.customConfig.uploadImgServer = '/index/qna/uploadPic'
 editor.customConfig.uploadFileName = 'upFiles[]'
 // 限制一次最多上传 5 张图片
 editor.customConfig.uploadImgMaxLength = 5
@@ -50,16 +46,16 @@ document.getElementById('submitbtn').addEventListener('click', function () {
 		xcsoft.error('您输入的内容太长了，请精简一些吧',3000);
 		return false;
 	}else{
-		if(isTitleOK && isCoinsOK){
+		if(isTitleOK){
 			document.getElementById("submitbtn").disabled = true;
 			document.getElementById("submitbtn").innerHTML = '数据提交中，请稍后';
 			// 读取 html
 			$('#content').val(editor.txt.html());
 			$('#content_text').val(editor.txt.text());
-			$.post('/mobile/qna/saveQna', {title:jQuery.trim($('#title').val()),content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),coins:jQuery.trim($('#coins').val()),invite_users:jQuery.trim($('#invite_user_list').val())}, function(msg) {
+			$.post('/index/qna/saveQna', {title:jQuery.trim($('#title').val()),content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),invite_users:jQuery.trim($('#invite_user_list').val())}, function(msg) {
 				if(msg=='ok'){
 					xcsoft.success('问题发布成功！3秒后跳转',3000);
-					setTimeout("window.location.href='/mobile'", 3000 ); //3秒后跳转
+					setTimeout("window.location.href='/mobile/qnalist'", 3000 ); //3秒后跳转
 					return true;
 				}else{
 					xcsoft.error(msg,3000);
@@ -145,7 +141,7 @@ $("input[name=title]").bind('blur', function () {
 
 function getRandUsers(){
 	var userid = $("#userid").val();
-	$.post('/mobile/qna/getRandUsers', {limit:6, userid:userid}, function(msg) {
+	$.post('/index/qna/getRandUsers', {limit:6, userid:userid}, function(msg) {
 		if(msg!=''){
 			$("#rnd_user_list").css({'display' : 'block'});
 			$("#search_user_result").css({'display' : 'none'});
@@ -177,84 +173,103 @@ function getRandUsers(){
 }
 
 function inviteUser(username,i,type){
-	chkCoins();
-	if(isCoinsOK){
-		if(invited_users.length>9){
-			xcsoft.error("您最多只能邀请10位用户来回答",3000);
-		}else{
-			var new_user = true;
-			$.each(invited_users, function(index,value){
-				if(value==username){
-					new_user = false;
-					return false;
-				}
-			});
-			if(new_user){
-				invited_users.push(username);
-				invited_users_html.push('<a href="javascript:void(0);" onclick="cancelUser(\''+username+'\');"><i class="am-icon-times-circle"></i> '+username+'</a>');
-				if(type=='att'){
-					$("#att_invitebtn"+i).css({'display' : 'none'});
-					$("#att_cancelbtn"+i).css({'display' : 'block'});
-				}
-				if(type=='invite'){
-					$("#invitebtn"+i).css({'display' : 'none'});
-					$("#cancelbtn"+i).css({'display' : 'block'});
-				}
-				if(type=='search'){
-					$("#search_invitebtn"+i).css({'display' : 'none'});
-					$("#search_cancelbtn"+i).css({'display' : 'block'});
-				}
+	if(invited_users.length>9){
+		xcsoft.error("您最多只能邀请10位用户来回答",3000);
+	}else{
+		var new_user = true;
+		$.each(invited_users, function(index,value){
+			if(value==username){
+				new_user = false;
+				return false;
 			}
-			$("#invitedUsers").html(invited_users_html.join(", "));
-			$("#invite_user_list:hidden").val(invited_users.join(","));
+		});
+		if(new_user){
+			invited_users.push(username);
+			invited_users_html.push('<a href="javascript:void(0);" onclick="cancelUser(\''+username+'\');"><i class="am-icon-times-circle"></i> '+username+'</a>');
 			if(type=='att'){
-				for(i=0;i<6;i++){
-					if($('#username'+(i+1)).val() == username) {
-						$("#invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
-				}
-				for(i=0;i<6;i++){
-					if($('#searchusername'+(i+1)).val() == username) {
-						alert($('#searchusername'+(i+1)).val());
-						$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
-				}
+				$("#att_invitebtn"+i).css({'display' : 'none'});
+				$("#att_cancelbtn"+i).css({'display' : 'block'});
 			}
 			if(type=='invite'){
-				var total_att_users = $('#total_att_users').val();
-				for(i=0;i<total_att_users;i++){
-					if($('#att_username'+(i+1)).val() == username) {
-						$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
-				}
-				for(i=0;i<6;i++){
-					if($('#searchusername'+(i+1)).val() == username) {
-						alert($('#searchusername'+(i+1)).val());
-						$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
-				}
+				$("#invitebtn"+i).css({'display' : 'none'});
+				$("#cancelbtn"+i).css({'display' : 'block'});
 			}
 			if(type=='search'){
-				for(i=0;i<6;i++){
-					if($('#username'+(i+1)).val() == username) {
-						$("#invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
+				$("#search_invitebtn"+i).css({'display' : 'none'});
+				$("#search_cancelbtn"+i).css({'display' : 'block'});
+			}
+		}
+		$("#invitedUsers").html(invited_users_html.join(", "));
+		$("#invite_user_list:hidden").val(invited_users.join(","));
+		//直接提问邀请
+		if(type=='direct'){
+			var total_att_users = $('#total_att_users').val();
+			for(i=0;i<total_att_users;i++){
+				if($('#att_username'+(i+1)).val() == username) {
+					$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
 				}
-				var total_att_users = $('#total_att_users').val();
-				for(i=0;i<total_att_users;i++){
-					if($('#att_username'+(i+1)).val() == username) {
-						$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
-						$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
-					}
+			}
+			for(i=0;i<6;i++){
+				if($('#username'+(i+1)).val() == username) {
+					$("#invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+			for(i=0;i<6;i++){
+				if($('#searchusername'+(i+1)).val() == username) {
+					alert($('#searchusername'+(i+1)).val());
+					$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
 				}
 			}
 		}
-		chkCoins();
+		if(type=='att'){
+			for(i=0;i<6;i++){
+				if($('#username'+(i+1)).val() == username) {
+					$("#invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+			for(i=0;i<6;i++){
+				if($('#searchusername'+(i+1)).val() == username) {
+					alert($('#searchusername'+(i+1)).val());
+					$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+		}
+		if(type=='invite'){
+			var total_att_users = $('#total_att_users').val();
+			for(i=0;i<total_att_users;i++){
+				if($('#att_username'+(i+1)).val() == username) {
+					$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+			for(i=0;i<6;i++){
+				if($('#searchusername'+(i+1)).val() == username) {
+					alert($('#searchusername'+(i+1)).val());
+					$("#search_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#search_cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+		}
+		if(type=='search'){
+			for(i=0;i<6;i++){
+				if($('#username'+(i+1)).val() == username) {
+					$("#invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+			var total_att_users = $('#total_att_users').val();
+			for(i=0;i<total_att_users;i++){
+				if($('#att_username'+(i+1)).val() == username) {
+					$("#att_invitebtn"+(i+1)).css({'display' : 'none'});
+					$("#att_cancelbtn"+(i+1)).css({'display' : 'block'});
+				}
+			}
+		}
 	}
 }
 
@@ -301,7 +316,6 @@ function cancelUser(username){
 			}
 		});
 	}
-	chkCoins();
 }
 
 function searchUser(){
@@ -317,7 +331,7 @@ function searchUser(){
 			$('#searchUser'+(i)).html('');
 			$('#searchusername'+(i)).val('');
 		}
-		$.post('/mobile/qna/getSearchUser', {username:username, userid:userid}, function(msg) {
+		$.post('/index/qna/getSearchUser', {username:username, userid:userid}, function(msg) {
 			if(msg==''){
 				xcsoft.error("未能搜索到相关用户名",3000);
 			}else{
@@ -349,46 +363,6 @@ function searchUser(){
 				}
 			}
 		});
-	}
-}
-
-function chkCoins(){
-	var originalcoins = $('#originalcoins').val();
-	var frozencoins = $('#frozencoins').val();
-	var total_invite = 1;
-	var coins = 0;
-	if($('#coins').val() != ''){
-		var coins = $('#coins').val();
-		var invite_users = $('#invite_user_list').val();
-		if(invite_users != ''){
-			var invite_arr = invite_users.split(',');
-			total_invite = invite_arr.length;
-		}
-		coins = mul(coins, total_invite);
-		coins = mul(coins, 1.1);
-	}
-	if(sub(sub(originalcoins,frozencoins), coins)<0){
-		xcsoft.error("比邻币余额不足",2000);
-		$('#total_coins').html(coins);
-		document.getElementById('coins').style.color = "#F00";
-		document.getElementById('total_coins').style.color = "#F00";
-		isCoinsOK=false;
-		yesNoImg('check_coins','no');
-	}else{
-		document.getElementById('coins').style.color = "";
-		document.getElementById('total_coins').style.color = "#03F";
-		$('#total_coins').html(coins);
-		isCoinsOK=true;
-		yesNoImg('check_coins','ok');
-	}
-	var row1 = document.getElementById('inviteRow');
-	var row2 = document.getElementById('inviteResultRow');
-	if(coins > 0){
-		row1.style.display = (document.all ? "block" : "table-row");  
-		row2.style.display = (document.all ? "block" : "table-row");  
-	}else{
-		row1.style.display = "none";  
-		row2.style.display = "none";  
 	}
 }
 

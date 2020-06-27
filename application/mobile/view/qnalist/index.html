@@ -1,5 +1,5 @@
 {include file="header/index" header_type="$header_type" /}
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 <script src="/static/mobile/js/wangEditor.min.js"></script>
 <script type="text/javascript">
     var handler = null;
@@ -12,19 +12,20 @@
 //定义滚动函数
 page = 1;
 loadState = null;//记录加载状态的变量
+loadedAll = false; //是否全部加载完毕
 
 function onScroll(event) {
 //是否到底部（这里是判断离底部还有100px开始载入数据）.
-var closeToBottom = ($(window).scrollTop() + $(window).height() > $(document).height() - 100);
+var closeToBottom = ($(window).scrollTop() + $(window).height() > $(document).height() - 200);
 // var screen = window.screen.height;//可视区域高度
 // var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
 //if(screen+100 >= compare && window.loadState == null){
-if(closeToBottom && window.loadState == null) {
+if(closeToBottom && window.loadState == null && loadedAll == false) {
     //$("#loading").show();
     window.loadState = 1;
     var p = window.page + 1
     window.page = p;
-    $("#content").append('<div class="loadAjax" style="text-align: center"><img src="/static/images/loading.gif"></div>')
+    $("#content").append('<div class="loadAjax" style="text-align: center"><img src="/static/images/loading.gif" width="600"></div>')
 
     $.ajax({
         type: "get",
@@ -36,106 +37,105 @@ if(closeToBottom && window.loadState == null) {
 
             content = data.list;
             metadata = data.meta;
-            for(i = 0; i < content.length; i++){
-                item = content[i];
-                html += '<div class="header_title /static/mobile/js/eft" style="float: left;">';
-                if(item['userinfo']['personal_pic'] != "null" && item['userinfo']['personal_pic'] != null && item['userinfo']['personal_pic'] != ""){
-                    html += '<img src="' + item['userinfo']['personal_pic'] + '"';
-                } else {
-                    html += '<img src="/static/images/profile_pic.jpg"';
-                }
-                html += 'class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href="/mobile/userreplydetail?userid=' + item['userinfo']['userid'] + '">' + item['userinfo']['username'] + "</span>";
-                if(metadata['header_type'] == 'user' && item['attention'] == '-1' && item['userid'] != metadata['selfuserid']){
-                    html += '<button type="button" class="btn btn-default button_grey" id="attBtn'+ metadata['page'] + i +'" onclick="attUser(\'' + item['userid'] + '\',' + metadata['page'] + i + ');this.disabled=\'disabled\';" style="margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-plus"></i> 关注TA</button>';
-                } else {
-                    html += '<button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-user-plus"></i> 已关注</button>'
-                }
-                html += '</div>';
-
-                html += '<div class="split_right" style="width:20%; padding-top:18px; color:#03C; font-weight:bold;float: right; padding-right: 10px">';
-                if(item['formatCoins'] > 0){
-                    html += '<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> '+ item['formatCoins'];
-                } else {
-                    html += '<span class="am-icon-send" style="color:#06C;" title="公开"></span>';
-                }
-                html += '</div><div style="clear:both;"></div><div style="height:10px;"></div>';
-
-                
-                html += '<div class="content_title" style="cursor:pointer;" onclick="window.location.href="/mobile/qnadetails?id=' + item['qnaid'] + '"">' + item['title'] + '</div><div style="height:10px;"></div>';
-
-
-                if(item['thumb_img'] != ''){
-                    html += '<div style="width:100%" id="content_text_' + metadata['page'] + i + '"><div style="width:15%; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="' + item['thumb_img'] + '" class="thumb_img"></div><div style="width:80%; float:right;" class="format_text"> ' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div></div><div style="clear:both;"></div>';
-                } else {
-                    html += '<div id="content_text_' + metadata['page'] + i + '" class="format_text">' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>';
-                }
-            
-                html += '<div id="content_html_' + metadata['page'] + i + '" style="display:none; overflow-x:auto;" class="format_text"><div>' + item['content'] + '</div><div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll(' + metadata['page'] + i + ');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div></div><div style="height:20px;"></div><div><div class="grey_text /static/mobile/js/eft" style="float: left"><span id="followSpan' + metadata['page'] + i + '" style="cursor:pointer;color:#999;"';
-
-                if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid'] && item['follow'] == -1){
-                    html += 'onclick="follow("' + item['qnaid'] + '","' + metadata['page'] + i + '");" title="收藏"';
-                }
-                html += '><span id="followIcon' + metadata['page'] + i + '" class="am-icon-star" style="cursor:pointer; color:';
-                if(metadata['header_type'] == 'user'){
-                    if(item['follow'] == 1){
-                        html += '#09F';
-                    } else {
-                        html += '#999';
-                    }
-                } else {
-                    html += '#999';
-                }
-                html += ';"></span> <span id="followCount' + metadata['page'] + i + '" style="color:#999;">' + item['followCount'] + '</span>个收藏</span> <span id="likeSpan' + metadata['page'] + i + '" style="cursor:pointer; margin-left:30px;color:#999;"';
-                if(metadata['header_type'] == 'user'){
-                    html += 'onclick="chkLike(\'' + item['qnaid'] + '\',' + metadata['page'] + i + ');" title="';
-                    if(item['qna_like'] == -1){
-                        html += '点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999";>';
-                    } else {
-                        html += '取消点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#09F";>';
-                    }
-                } else {
-                    html += '<span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999;>';
-                }
-                html += '</span><span id="likeCount' + metadata['page'] + i + '" style="color:#999;">' + item['likeCountQna'] + '</span>个赞</span></span>';
-
-                if(metadata['header_type'] == 'user'){
-                    html += '<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid' + i+ '" data-type="qna" style="color:#999;">举报</a>';
-                }
-                html += '</div>';
-                
-                html += '<div class="split_right" style="float: right;">';
-                if(item['coins'] > 0){
-                    if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
-                        if(item['pendingid'] != ""){
-                            if(item['pending_status'] == "0"){
-                                html += '<button type="button" class="btn btn-default button_grey" style="font-size: 0.8em; height: 2em"><i class="am-icon-hourglass-half"></i> 已申请回答</button>';
-                            } else if(item['pending_status'] == "1"){
-                                html += '<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title' + metadata['page'] + i + '" data-pendingid="pendingid' + metadata['page'] + i + '" data-id="qnaid' + metadata['page'] + i + '" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>';
-                            }
-                            html += '<input type="hidden" id="pendingid' + metadata['page'] + i + '" value="' + item['pendingid'] + '"> ';
-                        } else {
-                            html += '<button type="button" class="btn btn-default button_blue" id="apply' + metadata['page'] + i + '" onclick="applyQna(' + metadata['page'] + i + ')" style="font-size: 0.8em; height: 2em"><i class="am-icon-hand-paper-o"></i> 申请回答</button>';
-                        }
-                    }
-                } else {
-                    if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
-                        html += '<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title' + metadata['page'] + i + '" data-id="qnaid' + metadata['page'] + i + '" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>';
-                    }
-                }
-                if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid'] && item['follow'] == "-1"){
-                    html += '<button type="button" class="btn btn-default button_blue" id="followBtn' + metadata['page'] + i + '" onclick="follow(\'' + item['qnaid'] + '\',\'' + metadata['page'] + i + '\');this.disabled=\'disabled\';" style="margin-left:30px;font-size: 0.8em; height: 2em"><i class="am-icon-star-o"></i> 收藏问题</button>';
-                } else {
-                    html += '<button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>';
-                }
-            html += '</div><input type="hidden" id="qna_title' + metadata['page'] + i + '" value="' + item['title'] + '"><input type="hidden" id="qnaid' + metadata['page'] + i + '" value="' + item['qnaid'] + '"><div style="clear:both;"></div></div>';
-
-
-
-
-
-
-                html += '<hr style="height:1px; color:#CCC;">';
-            }
+			if(content.length==0){
+				loadedAll = true;
+				return false;
+			}else{
+				for(i = 0; i < content.length; i++){
+					item = content[i];
+					html += '<div class="header_title" style="float: left;">';
+					if(item['userinfo']['personal_pic'] != "null" && item['userinfo']['personal_pic'] != null && item['userinfo']['personal_pic'] != ""){
+						html += '<img src="' + item['userinfo']['personal_pic'] + '"';
+					} else {
+						html += '<img src="/static/images/profile_pic.jpg"';
+					}
+					html += 'class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href="/mobile/userreplydetail?userid=' + item['userinfo']['userid'] + '">' + item['userinfo']['username'] + "</span> <a href=\"javascript:void(0);\" user-reveal-id=\"tag_box\" data-animation=\"fade\" data-user=\"" + item['userinfo']['username'] + "\" data-user-id=\"" + item['userinfo']['userid'] +"\" data-type=\"user_tags\"><span class=\"am-icon-tags am-icon-sm header_title_arctile\" style=\"color:#06C;\" title=\"用户标签报告\"></span></a>";
+					if(metadata['header_type'] == 'user' && item['userid'] != metadata['selfuserid']){
+						if(item['attention'] == '-1'){
+							html += '<button type="button" class="btn btn-default button_grey" id="attBtn'+ metadata['page'] + i +'" onclick="attUser(\'' + item['userid'] + '\',' + metadata['page'] + i + ');this.disabled=\'disabled\';" style="margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-plus"></i> 关注TA</button>';
+						}else{
+							html += '<button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-user-plus"></i> 已关注</button>'
+						}
+					}
+					html += '</div>';
+	
+					html += '<div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be qna type icon --></div>';
+					html += '<div style="clear:both;"></div><div style="height:10px;"></div>';
+	
+					
+					html += '<div class="content_title" style="cursor:pointer;" onclick="window.location.href="/mobile/qnadetails?id=' + item['qnaid'] + '"">' + item['title'] + '</div><div style="height:10px;"></div>';
+	
+	
+					if(item['thumb_img'] != ''){
+						html += '<div style="width:100%" id="content_text_' + metadata['page'] + i + '"><div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="' + item['thumb_img'] + '" class="thumb_img"></div><div style="width:770px;; float:right;" class="format_text"> ' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div></div><div style="clear:both;"></div>';
+					} else {
+						html += '<div id="content_text_' + metadata['page'] + i + '" class="format_text">' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>';
+					}
+				
+					html += '<div id="content_html_' + metadata['page'] + i + '" style="display:none; overflow-x:auto;" class="format_text"><div>' + item['content'] + '</div><div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll(' + metadata['page'] + i + ');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div></div><div style="height:20px;"></div><div><div class="grey_text /static/mobile/js/eft" style="float: left"><span id="followSpan' + metadata['page'] + i + '" style="cursor:pointer;color:#999;"';
+	
+					if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid'] && item['follow'] == -1){
+						html += 'onclick="follow("' + item['qnaid'] + '","' + metadata['page'] + i + '");" title="收藏"';
+					}
+					html += '><span id="followIcon' + metadata['page'] + i + '" class="am-icon-star" style="cursor:pointer; color:';
+					if(metadata['header_type'] == 'user'){
+						if(item['follow'] == 1){
+							html += '#09F';
+						} else {
+							html += '#999';
+						}
+					} else {
+						html += '#999';
+					}
+					html += ';"></span> <span id="followCount' + metadata['page'] + i + '" style="color:#999;">' + item['followCount'] + '</span>个收藏</span> <span id="likeSpan' + metadata['page'] + i + '" style="cursor:pointer; margin-left:30px;color:#999;"';
+					if(metadata['header_type'] == 'user'){
+						html += 'onclick="chkLike(\'' + item['qnaid'] + '\',' + metadata['page'] + i + ');" title="';
+						if(item['qna_like'] == -1){
+							html += '点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999";>';
+						} else {
+							html += '取消点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#09F";>';
+						}
+					} else {
+						html += '<span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999;>';
+					}
+					html += '</span><span id="likeCount' + metadata['page'] + i + '" style="color:#999;">' + item['likeCountQna'] + '</span>个赞</span></span>';
+	
+					if(metadata['header_type'] == 'user'){
+						html += '<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid' + i+ '" data-type="qna" style="color:#999;">举报</a>';
+					}
+					html += '</div>';
+					
+					html += '<div class="split_right" style="float: right;">';
+					if(item['coins'] > 0){
+						if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
+							if(item['pendingid'] != ""){
+								if(item['pending_status'] == "0"){
+									html += '<button type="button" class="btn btn-default button_grey" style="font-size: 0.8em; height: 2em"><i class="am-icon-hourglass-half"></i> 已申请回答</button>';
+								} else if(item['pending_status'] == "1"){
+									html += '<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title' + metadata['page'] + i + '" data-pendingid="pendingid' + metadata['page'] + i + '" data-id="qnaid' + metadata['page'] + i + '" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>';
+								}
+								html += '<input type="hidden" id="pendingid' + metadata['page'] + i + '" value="' + item['pendingid'] + '"> ';
+							} else {
+								html += '<button type="button" class="btn btn-default button_blue" id="apply' + metadata['page'] + i + '" onclick="applyQna(' + metadata['page'] + i + ')" style="font-size: 0.8em; height: 2em"><i class="am-icon-hand-paper-o"></i> 申请回答</button>';
+							}
+						}
+					} else {
+						if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
+							html += '<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title' + metadata['page'] + i + '" data-id="qnaid' + metadata['page'] + i + '" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>';
+						}
+					}
+					if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
+						if(item['follow'] == "-1"){
+							html += '<button type="button" class="btn btn-default button_blue" id="followBtn' + metadata['page'] + i + '" onclick="follow(\'' + item['qnaid'] + '\',\'' + metadata['page'] + i + '\');this.disabled=\'disabled\';" style="margin-left:30px;font-size: 0.8em; height: 2em"><i class="am-icon-star-o"></i> 收藏问题</button>';
+						}else{
+							html += '<button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>';
+						}
+					}
+				html += '</div><input type="hidden" id="qna_title' + metadata['page'] + i + '" value="' + item['title'] + '"><input type="hidden" id="qnaid' + metadata['page'] + i + '" value="' + item['qnaid'] + '"><div style="clear:both;"></div></div>';
+	
+					html += '<hr style="height:1px; color:#CCC;">';
+				}
+			}
             
             $(".loadAjax").remove();
             $('#content').append(html);
@@ -146,95 +146,98 @@ if(closeToBottom && window.loadState == null) {
 
         }
     });
+  }else{
+	  $(".loadAjax").remove();
  }
 }
 </script>
-<div style="">
+
+
+<div style="background-color:#F2F2F2;">
     <div style="margin:0 auto; width:1200px;">
         <div style="text-align:left;">
             <div style="height:10px";></div>
             <div class="content_box" id="loading" style="height:2000px; text-align:center">
-                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
             </div>
-            <div class="content_box" id="content" style="width: 1200px;">
-            {volist name="list" id="qnaid" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有问答数据</div>"}
-            <div class="header_title /static/mobile/js/eft" style="float: left;">
-            <img src="{if condition="!$qnaid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href='/mobile/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span>
+            <div class="content_box" id="content">
+            {volist name="list" id="qnaid" key="k" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有问答数据</div>"}
+            <div class="header_title split_left">
+            <img src="{if condition="!$qnaid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title_article" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span> <a href="javascript:void(0);" user-reveal-id="tag_box" data-animation="fade" data-user="{$qnaid.username}" data-user-id="{$qnaid['userinfo']['userid']}" data-type="user_tags"><span class="am-icon-tags am-icon-sm header_title_arctile" style="color:#06C;" title="用户标签报告"></span></a>
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $qnaid.userid"}
             {if condition="$qnaid['attention'] == '-1'"}
-            <button type="button" class="btn btn-default button_grey" id="attBtn{$i}" onclick="attUser('{$qnaid.userid}','{$i}');this.disabled='disabled';" style="margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-plus"></i> 关注TA</button>
+            <button type="button" class="btn btn-default button_grey" id="attBtn{$k}" onclick="attUser('{$qnaid.userid}','{$k}');this.disabled='disabled';" style="margin-left:20px;"><i class="am-icon-plus"></i> 关注TA</button>
             {else /}
-            <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-user-plus"></i> 已关注</button>
+            <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;"><i class="am-icon-user-plus"></i> 已关注</button>
             {/if}
             {/if}
             {/if}
             </div>
-            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;float: right; padding-right: 10px">{if condition="$qnaid.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$qnaid.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be qna type icon --></div>
             <div style="clear:both;"></div>
             <div style="height:10px;"></div>
             <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/mobile/qnadetails?id={$qnaid.qnaid}'">{$qnaid.title}</div>
             <div style="height:10px;"></div>
             {if condition="$qnaid.thumb_img neq ''"}
-            <div style="width:100%" id="content_text_{$i}">
-                <div style="width:15%; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$qnaid.thumb_img}" class="thumb_img"></div>
-                <div style="width:80%; float:right;" class="format_text">{$qnaid.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            <div style="width:100%" id="content_text_{$k}">
+                <div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$qnaid.thumb_img}" class="thumb_img"></div>
+                <div style="width:770px; float:left;" class="format_text">{$qnaid.content_text} <a href="javascript:void(0)" onclick="viewAll({$k});">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
             </div>
             <div style="clear:both;"></div>
             {else /}
-            <div id="content_text_{$i}" class="format_text">{$qnaid.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            <div id="content_text_{$k}" class="format_text">{$qnaid.content_text} <a href="javascript:void(0)" onclick="viewAll({$k});">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
             {/if}
-            <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
+            <div id="content_html_{$k}" style="display:none; overflow-x:auto;" class="format_text">
                 <div>{$qnaid.content}</div>
-                <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$i});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+                <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$k});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
             </div>
             <div style="height:20px;"></div>
             <div>
-            <div class="grey_text /static/mobile/js/eft" style="float: left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span id="followSpan{$i}" style="cursor:pointer;color:#999;" {if condition="$userid"}{if condition="$userid != $qnaid.userid"}{if condition="$qnaid.follow == -1"}onclick="follow('{$qnaid.qnaid}','{$i}');" title="收藏"{/if}{/if}{/if}><span id="followIcon{$i}" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$qnaid.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount{$i}" style="color:#999;">{$qnaid.followCount}</span>个收藏</span> <span id="likeSpan{$i}" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$qnaid.qnaid}',{$i});" title='{if condition="$qnaid.qna_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon{$i}" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$qnaid.qna_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount{$i}" style="color:#999;">{$qnaid.likeCountQna}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid{$i}" data-type="qna" style="color:#999;">举报</a>{/if}</div>
-            <div class="split_right" style="float: right;">
-                {if condition="$qnaid.coins > 0"}
-                    {if condition="$header_type == 'user'"}
-                    {if condition="$userid != $qnaid.userid"}
-                        {if condition="$qnaid['pendingid'] != ''"}
+            <div class="grey_text split_left"><!--<span class="am-icon-comments" style="color:#09F;"></span> 35个评论 --><span id="followSpan{$k}" style="cursor:pointer;color:#999;" {if condition="$userid"}{if condition="$userid != $qnaid.userid"}{if condition="$qnaid.follow == -1"}onclick="follow('{$qnaid.qnaid}','{$k}');" title="收藏"{/if}{/if}{/if}><span id="followIcon{$k}" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$qnaid.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount{$k}" style="color:#999;">{$qnaid.followCount}</span>个收藏</span> <span id="likeSpan{$k}" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$qnaid.qnaid}',{$k});" title='{if condition="$qnaid.qna_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon{$k}" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$qnaid.qna_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount{$k}" style="color:#999;">{$qnaid.likeCountQna}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-qna-id="qnaid{$k}" data-type="qna" style="color:#999;">举报</a>{/if}</div>
+            <div class="split_right">
+            	{if condition="$qnaid.coins > 0"}
+                	{if condition="$header_type == 'qna_user'"}
+                	{if condition="$userid != $qnaid.userid"}
+                    	{if condition="$qnaid['pendingid'] != ''"}
                         {switch name="qnaid['pending_status']"}
                         {case value = '0'"}
-                        <button type="button" class="btn btn-default button_grey" style="font-size: 0.8em; height: 2em"><i class="am-icon-hourglass-half"></i> 已申请回答</button>
+                        <button type="button" class="btn btn-default button_grey"><i class="am-icon-hourglass-half"></i> 已申请回答</button>
                         {/case}
                         {case value = '1'"}
-                        <a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title{$i}" data-pendingid="pendingid{$i}" data-id="qnaid{$i}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
+                        <a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title{$k}" data-pendingid="pendingid{$k}" data-id="qnaid{$k}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
                         {/case}
                         {/switch}
-                        <input type="hidden" id="pendingid{$i}" value="{$qnaid['pendingid']}"> 
+                        <input type="hidden" id="pendingid{$k}" value="{$qnaid['pendingid']}"> 
                         {else /}
-                        <button type="button" class="btn btn-default button_blue" id="apply{$i}" onclick="applyQna({$i})" style="font-size: 0.8em; height: 2em"><i class="am-icon-hand-paper-o"></i> 申请回答</button>
+                        <button type="button" class="btn btn-default button_blue" id="apply{$k}" onclick="applyQna({$k})"><i class="am-icon-hand-paper-o"></i> 申请回答</button>
                         {/if}
                     {/if}
                     {/if}
                 {else /}
-                    {if condition="$header_type == 'user'"}
-                    {if condition="$userid != $qnaid.userid"}
-                    <a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title{$i}" data-id="qnaid{$i}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
+                	{if condition="$header_type == 'qna_user'"}
+                	{if condition="$userid != $qnaid.userid"}
+                	<a href="javascript:void(0);" qna-reveal-id="answer_box" data-title="qna_title{$k}" data-id="qnaid{$k}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要回答</a>
                     {/if}
                     {/if}
                 {/if}
-            {if condition="$header_type == 'user'"}
+            {if condition="$header_type == 'qna_user'"}
             {if condition="$userid != $qnaid.userid"}
             {if condition="$qnaid['follow'] == '-1'"}
-            <button type="button" class="btn btn-default button_blue" id="followBtn{$i}" onclick="follow('{$qnaid.qnaid}','{$i}');this.disabled='disabled';" style="margin-left:30px;font-size: 0.8em; height: 2em"><i class="am-icon-star-o"></i> 收藏问题</button>
+            <button type="button" class="btn btn-default button_blue" id="followBtn{$k}" onclick="qna_follow('{$qnaid.qnaid}','{$k}');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏问题</button>
             {else /}
             <button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>
             {/if}
             {/if}
             {/if}
             </div>
-            <input type="hidden" id="qna_title{$i}" value="{$qnaid.title}"> 
-            <input type="hidden" id="qnaid{$i}" value="{$qnaid.qnaid}"> 
+            <input type="hidden" id="qna_title{$k}" value="{$qnaid.title}"> 
+            <input type="hidden" id="qnaid{$k}" value="{$qnaid.qnaid}"> 
             <div style="clear:both;"></div>
             </div>
             <hr style="height:1px; color:#CCC;">
             {/volist}
             </div>
-            
             <div style="clear:both;"></div>
             <div style="height:20px;"></div>
         </div>
@@ -252,9 +255,8 @@ if(closeToBottom && window.loadState == null) {
 <div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px;">
     <div id="box_title" class="header_title">子标签列表</div>
     <div style="height:20px;"></div>
-    <div style="line-height:50px;">当前标签：<span id="current_tag"></span></div>
+    <div style="line-height:50px;"><span id="current_text">当前标签</span>：<span id="current_tag"></span></div>
     <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
-    <div id="notLogin" style="color:#900; display:none;">对不起，您尚未登录，请 <a href="/mobile/login" style="font-weight:bold;">登录</a> 后添加标签。</div>
     <hr style="color:#999; height:1px; width:90%;">
     <div id="data_list" style="line-height:50px;"></div>
     <div style="height:15px;"></div>
@@ -287,7 +289,7 @@ if(closeToBottom && window.loadState == null) {
 <input type="hidden" name="content_text" id="content_text" value="" />
 <input type="hidden" id="userid" value="{$userid}">
 <input type="hidden" id="recommandTags_text" value="">
-<script src="/static/mobile/js/index.js"></script>
+<script src="/static/mobile/js/index_qna.js?1"></script>
 <script src="/static/mobile/js/qnalist_tags.js"></script>
-<script type="text/javascript" src="/static/mobile/js/jquery.reveal.index.js"></script>
-<script type="text/javascript" src="/static/mobile/js/jquery.reveal.qnalisttag.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.index.js?1"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.qnalisttag.js?1"></script>

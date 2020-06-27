@@ -1,12 +1,12 @@
 {include file="header/index" header_type="$header_type" /}
-<link rel="stylesheet" href="/static/css/reveal.css">
-<script src="/static/mobile/js/wangEditor.min.js"></script>
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
+<script src="/static/js/wangEditor.min.js"></script>
 <div style="background-color:#F2F2F2;">
     <div style="margin:0 auto; width:1200px;">
         <div style="text-align:left;">
             <div style="height:10px";></div>
             <div class="content_box" id="loading" style="height:2000px; text-align:center">
-                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
             </div>
             <div class="content_box" id="content">
             {if condition="$no_result"}
@@ -14,7 +14,7 @@
             {/if}
             {volist name="list" id="qnaid" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有问答数据</div>"}
             <div class="header_title split_left">
-            <img src="{if condition="$qnaid['userinfo']['personal_pic'] == ''"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/index/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span>
+            <img src="{if condition="$qnaid['userinfo']['personal_pic'] == ''"}/static/images/profile_pic.jpg{else /}{$qnaid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$qnaid['userinfo']['userid']}';">{$qnaid.username}</span>
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $qnaid.userid"}
             {if condition="$qnaid['attention'] == '-1'"}
@@ -28,7 +28,7 @@
             <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;">{if condition="$qnaid.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$qnaid.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
             <div style="clear:both;"></div>
             <div style="height:10px;"></div>
-            <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/index/qnadetails?id={$qnaid.qnaid}'">{$qnaid.title}</div>
+            <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/mobile/qnadetails?id={$qnaid.qnaid}'">{$qnaid.title}</div>
             <div style="height:10px;"></div>
             {if condition="$qnaid.thumb_img neq ''"}
             <div style="width:100%" id="content_text_{$i}">
@@ -89,19 +89,6 @@
             <hr style="height:1px; color:#CCC;">
             {/volist}
             <div style="text-align:center;">{$list->render()}</div>
-            </div>
-            <div class="right_column">
-            {if condition="$ad1.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad1.ads_id}" {if condition="$ad1.new_window=='1'"}target="_blank"{/if}><img src="{$ad1.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
-            <div class="right_box header_title">
-            <p class="header_title">最新提问</p>
-            {volist name="list" id="qnaid"}
-            	<div><a href="/index/qnadetails?id={$qnaid.qnaid}">{$qnaid.shortTitle}</a></div>
-            {/volist}
-            </div>
-            {if condition="$ad2.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad2.ads_id}" {if condition="$ad2.new_window=='1'"}target="_blank"{/if}><img src="{$ad2.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
-            <div class="right_box header_title">
-            <p style="color:#666; font-size:12px;">下载比邻Call &middot; <a href="/Beelinton-qt.exe">下载比邻钱包</a><br /><br />联系我们 &copy;2018</p>
-            </div>
             </div>
             <div style="clear:both;"></div>
             <div style="height:20px;"></div>

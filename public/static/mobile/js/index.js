@@ -28,7 +28,7 @@ editor.customConfig.menus = [
     'undo',  // 撤销
     'redo'  // 重复
 ]
-editor.customConfig.uploadImgServer = '/mobile/qna/uploadPic'
+editor.customConfig.uploadImgServer = '/mobile/article/uploadPic'
 editor.customConfig.uploadFileName = 'upFiles[]'
 // 限制一次最多上传 5 张图片
 editor.customConfig.uploadImgMaxLength = 5
@@ -45,10 +45,14 @@ document.getElementById('submitbtn').addEventListener('click', function () {
 		// 读取 html
 		$('#content').val(editor.txt.html()); 
 		$('#content_text').val(editor.txt.text());
-		$.post('/mobile/qna/saveReplyQna', {content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),qnaid:jQuery.trim($('#qnaid').val()),pendingid:jQuery.trim($('#pendingid').val())}, function(msg) {
+		$.post('/mobile/article/saveReplyArticle', {content:jQuery.trim($('#content').val()),content_text:jQuery.trim($('#content_text').val()),articleid:jQuery.trim($('#articleid').val()),replyid:jQuery.trim($('#replyid').val())}, function(msg) {
 			if(msg=='ok'){
-				xcsoft.success('回答发布成功！',3000);
-				setTimeout("window.location.reload(true)", 1000 ); //3秒后刷新
+				xcsoft.success('评论发布成功！',3000);
+				if(jQuery.trim($('#reply_type').val())=='detail'){
+					setTimeout("window.location.href='/index/articledetails?id="+jQuery.trim($('#articleid').val())+"'", 1000 ); //3秒后刷新
+				}else{
+					setTimeout("window.location.reload(true)", 1000 );
+				}
 				return true;
 			}else{
 				xcsoft.error(msg,3000);
@@ -67,7 +71,7 @@ document.getElementById('reportbtn').addEventListener('click', function () {
 	chkReportType();
 	if(isReportTypeOK){
 		document.getElementById("reportbtn").disabled = true;
-		$.post('/mobile/qna/report', {qnaid:jQuery.trim($('#qnaid').val()),report_type:jQuery.trim($('#report_type').val()),qna_type:jQuery.trim($('#qna_type').val()),report_comment:jQuery.trim($('#report_comment').val())}, function(msg) {
+		$.post('/mobile/article/report', {articleid:jQuery.trim($('#articleid').val()),report_type:jQuery.trim($('#report_type').val()),article_type:jQuery.trim($('#article_type').val()),report_comment:jQuery.trim($('#report_comment').val())}, function(msg) {
 			if(msg=='ok'){
 				xcsoft.success('举报提交成功！',3000);
 				setTimeout("window.location.reload(true)", 1000 ); //3秒后刷新
@@ -85,6 +89,12 @@ document.getElementById('reportbtn').addEventListener('click', function () {
 	}
 }, false)
 
+function addView(articleid){
+		$.post('/mobile/article/addView', {articleid:articleid}, function(msg) {
+			return true;
+		});
+}
+
 function chkReportComment(){
 	var tmpStr = $("#report_comment").val();
 	tmpStr = cutstr(tmpStr, 200);
@@ -96,22 +106,6 @@ function chkReportType(){
 	}else{
 		isReportTypeOK = true;
 	}
-}
-function applyQna(btn){
-	document.getElementById('apply'+btn).disabled = true;
-	$.post('/mobile/index/saveApplyQna', {qnaid:jQuery.trim($('#qnaid'+btn).val())}, function(msg) {
-		if(msg=='ok'){
-			xcsoft.success('申请成功！',2000);
-			document.getElementById('apply'+btn).innerHTML = "<i class=\"am-icon-hourglass-half am-icon-sm\"></i> 已申请回答";
-			document.getElementById('apply'+btn).setAttribute('class','btn btn-default button_grey');
-			document.getElementById('apply'+btn).setAttribute('onclick','');
-			return true;
-		}else{
-			xcsoft.error(msg,3000);
-			document.getElementById('apply'+btn).disabled = false;
-			return false;
-		}
-	});
 }
 
 function chkContent(){
@@ -168,7 +162,31 @@ function hideAll(i){
 	html_box.style.display = 'none';
 }
 
-function follow(qnaid,i){
+function follow(articleid,i){
+	$.post('/mobile/article/follow', {articleid:articleid}, function(msg) {
+		if(msg=='ok'){
+			var span = document.getElementById('followSpan'+i);
+			var icon = document.getElementById('followIcon'+i);
+			var count = document.getElementById('followCount'+i);
+			xcsoft.success('收藏成功！',2000);
+			var btn = document.getElementById('followBtn'+i);
+			btn.className = "btn btn-default button_white";
+			btn.style = "margin-left:30px;";
+			btn.innerHTML = "<i class=\"am-icon-star am-icon-sm\"></i> 已收藏";
+			btn.disabled = "";
+			btn.onclick = "";
+			span.onclick = "";
+			icon.style.color = "#09F";
+			count.innerHTML = parseInt(count.innerHTML)+1;
+			return true;
+		}else{
+			xcsoft.error(msg,3000);
+			return false;
+		}
+	});
+}
+
+function qna_follow(qnaid,i){
 	$.post('/mobile/qna/follow', {qnaid:qnaid}, function(msg) {
 		if(msg=='ok'){
 			var span = document.getElementById('followSpan'+i);
@@ -192,8 +210,8 @@ function follow(qnaid,i){
 	});
 }
 
-function chkLike(qnaid,i){
-	$.post('/mobile/qna/like', {qnaid:qnaid}, function(msg) {
+function chkLike(articleid,i){
+	$.post('/mobile/article/like', {articleid:articleid}, function(msg) {
 		xcsoft.success(msg,2000);
 		if(msg=='点赞成功'||msg=='取消点赞成功'){
 			var span = document.getElementById('likeSpan'+i);
@@ -216,7 +234,7 @@ function chkLike(qnaid,i){
 }
 
 function attUser(userid,i){
-	$.post('/mobile/userqnas/attUser', {userid:userid}, function(msg) {
+	$.post('/mobile/userarticles/attUser', {userid:userid}, function(msg) {
 		if(msg=='ok'){
 			xcsoft.success('关注成功！',2000);
 			//setTimeout("window.location.reload(true)", 2000 ); //3秒后刷新
@@ -235,7 +253,7 @@ function attUser(userid,i){
 }
 
 function attReplyUser(userid,i){
-	$.post('/mobile/userqnas/attUser', {userid:userid}, function(msg) {
+	$.post('/mobile/userarticles/attUser', {userid:userid}, function(msg) {
 		if(msg=='ok'){
 			xcsoft.success('关注成功！',2000);
 			//setTimeout("window.location.reload(true)", 2000 ); //3秒后刷新
@@ -284,6 +302,6 @@ if(thisHref.indexOf("index") > 0 && thisHref.indexOf("index/") < 0){
 	$("#index_header").attr("class","form-group header_title current_header");
 }else if(thisHref.indexOf("index/qnalist") > 0){
 	$("#qnalist_header").attr("class","form-group header_title current_header");
-}else if(thisHref.indexOf("index/feature") > 0){
-	$("#feature_header").attr("class","form-group header_title current_header");
+}else if(thisHref.indexOf("index/articlelist") > 0){
+	$("#articlelist_header").attr("class","form-group header_title current_header");
 }

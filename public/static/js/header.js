@@ -19,11 +19,29 @@ function searchQnas(){
 	}
 }
 
-function chkSearch(e){
+function searchArticles(){
+	if(jQuery.trim($("#search_items").val())==''){
+		xcsoft.error('请输入您想搜索的问题关键词',2000);
+	}else{
+		var url = "/index/articlesearch?keywords="+jQuery.trim($("#search_items").val());
+		$(location).attr('href', url);
+	}
+}
+
+function chkSearchQna(e){
 	var e = e || event;
 	var currKey = e.keyCode || e.which || e.charCode;//支持IE,FireFox
 	if (currKey == 13) {
 		searchQnas();
+		return false;
+	}
+}
+
+function chkSearchArticle(e){
+	var e = e || event;
+	var currKey = e.keyCode || e.which || e.charCode;//支持IE,FireFox
+	if (currKey == 13) {
+		searchArticles();
 		return false;
 	}
 }

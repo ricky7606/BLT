@@ -15,19 +15,20 @@
 		var tagId = $(this).attr('data-tag-id');
 		var type = $(this).attr('data-type');
 		var page = $(this).attr('data-page');
+		$("#current_text").html("当前标签");
 		if(type=='tags'){
 			$("#current_tag").html("<a href=\"javascript:void(0);\" class='tag' title=\"点击查看添加该标签的用户\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+tag+"\" data-tag-id=\""+tagId+"\" data-type=\"users\">"+tag+"</a>");
 		}else if($("#userid").val() != ''){
-			$("#current_tag").html("<span class='tag' onclick='chkTag(\""+tagId+"\")' title=\"点击添加该标签\">"+tag+"</span>"); 
+			$("#current_tag").html("<span class='tag'>"+tag+"</span>"); 
 		}else{
-			$("#current_tag").html("<span class='tag' onclick='showNoLogin();'>"+tag+"</span> ");
+			$("#current_tag").html("<span class='tag'>"+tag+"</span> ");
 		}
 		if(type == 'tags'){
 			$("#box_title").html('子标签列表');
 			$("#tips").html('tips: 也可以点击该父标签查看添加该标签的用户');
 		}else{
 			$("#box_title").html('标签用户列表');
-			$("#tips").html('tips: 可以直接点击该标签添加');
+			$("#tips").html('');
 		}
 		$("#data_list").html("<img src='/static/images/loading.gif'>");
 		
@@ -99,7 +100,44 @@
 		}
 		
 		$('#'+modalLocation).reveal($(this).data());
-		$("html,body").css({overflow:"hidden"}); //禁用滚动条
+		//$("html,body").css({overflow:"hidden"}); //禁用滚动条
+	});
+
+	$('a[user-reveal-id]').live('click', function(e) {
+		//e.preventDefault();
+		var modalLocation = $(this).attr('user-reveal-id');
+		var user = $(this).attr('data-user');
+		var userId = $(this).attr('data-user-id');
+		var type = $(this).attr('data-type');
+		if(type=='user_tags'){
+			$("#box_title").html('用户标签报告');
+			$("#current_text").html("当前用户");
+			$("#current_tag").html("<span class=\"header_title_arctile\" style=\"cursor:pointer;\" onclick=\"window.location.href='/index/userreplydetail?userid="+userId+"';\">"+user+"</span> &nbsp;&nbsp;<button type=\"button\" name=\"qnabtn\" id=\"qnabtn\" class=\"btn btn-default button_blue\" style=\"height:35px;\" onclick=\"window.location.href='/index/qna?invite_user="+userId+"'\"><i class=\"am-icon-question-circle\"></i> 向TA提问</button>");
+			$("#tips").html('tips: 也可以点击该标签查看标签使用详情');
+		}
+		$("#data_list").html("<img src='/static/images/loading.gif'>");
+		
+		if(type == 'user_tags'){
+			//获取标签列表
+			$.post('/index/usertags/getTagsByUserId', {userid:userId}, function(msg) {
+				if(msg == ''){
+					xcsoft.error('该用户没有添加过标签',2000);
+					$("#data_list").html("没有标签记录");
+				}else{
+					tmpStr = "";
+					msg.forEach(function(value){
+						tmpStr += " <a href=\"$('.close-reveal-modal').click();\" class='tag' title=\"点击查看标签详情\" data-reveal-id=\"tag_box\" data-animation=\"fade\" data-tag=\""+value['tag']+"\" data-tag-id=\""+value['tagid']+"\" data-type=\"users\">";
+						tmpStr += value['tag'];
+						tmpStr += "</a> ";
+					});
+					tmpStr += "<div style=\"padding-top:20px;\"></div>";
+					$("#data_list").html(tmpStr);
+				}
+			});
+		}
+		
+		$('#'+modalLocation).reveal($(this).data());
+		//$("html,body").css({overflow:"hidden"}); //禁用滚动条
 	});
 
 /*---------------------------
@@ -211,19 +249,22 @@
 			//Close Modal Listeners
 			var closeButton = $('.' + options.dismissmodalclass).bind('click.modalEvent', function () {
 			  modal.trigger('reveal:close');
-			  $("html,body").css({overflow:"auto"}); //启动滚动条
+			  //$("html,body").css({overflow:"auto"}); //启动滚动条
 			});
 			
 			if(options.closeonbackgroundclick) {
 				modalBG.css({"cursor":"pointer"})
 				modalBG.bind('click.modalEvent', function () {
 				  modal.trigger('reveal:close');
-				  $("html,body").css({overflow:"auto"}); //启动滚动条
+				  //$("html,body").css({overflow:"auto"}); //启动滚动条
 
 				});
 			}
 			$('body').keyup(function(e) {
-        		if(e.which===27){ modal.trigger('reveal:close'); $("html,body").css({overflow:"auto"});} // 27 is the keycode for the Escape key
+        		if(e.which===27){ 
+					modal.trigger('reveal:close'); 
+					//$("html,body").css({overflow:"auto"});
+				} // 27 is the keycode for the Escape key
 			});
 			
 			

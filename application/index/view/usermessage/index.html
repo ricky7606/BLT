@@ -27,6 +27,7 @@
             <div id="menu_items" style="background-color:#FFF;width:1160px;float: left;margin-bottom: 10px;">
             	<div class="inactive_menu" onclick="window.location.href='/index/userpending'">等我回答{if condition="$userinfo.pending_reminder>0"}<span class="reminder">{$userinfo.pending_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userqnas'">我的提问{if condition="$userinfo.reply_apply_reminder>0"}<span class="reminder">{$userinfo.reply_apply_reminder}</span>{/if}</div>
+                <div class="inactive_menu" onclick="window.location.href='/index/userarticles'">我的发布</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userreply'">我的回答{if condition="$userinfo.answer_reminder>0"}<span class="reminder">{$userinfo.answer_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userattention'">我的关注{if condition="$userinfo.attention_reminder>0"}<span class="reminder">{$userinfo.attention_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userfollow'">我的收藏</div>

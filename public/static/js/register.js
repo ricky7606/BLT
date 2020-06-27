@@ -6,7 +6,7 @@ xcsoft.tipsCss = {
 //隐藏、显示速度 ，默认 fast
 xcsoft.tipsHide=xcsoft.tipsShow=300;
 
-var isUsernameOK=false, isMobileOK=false, isPasswordOK=false, isPassword2OK=false, isImgcodeOK=false, isSmscodeOK=false, isAgreementOK=false;
+var isUsernameOK=false, isEmailOK=false, isPasswordOK=false, isPassword2OK=false, isImgcodeOK=false, isEmailcodeOK=false, isAgreementOK=false;
 function refreshVerify() {
 	var ts = Date.parse(new Date())/1000;
 	var img = document.getElementById('verify_img');
@@ -102,6 +102,28 @@ function chkMobile(){
 		isMobileOK = false;
 	}
 }
+
+function chkEmail(){
+	var email = document.getElementById('email').value;
+    var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;  
+    if (!pattern.test(email)) { 
+		xcsoft.error('电子邮件格式错误',3000); 
+        return false;  
+    }else{
+		$.post('/index/register/chkEmail', {email:jQuery.trim($('#email').val())}, function(msg) {
+			if(msg=='exists'){
+				xcsoft.error('这个电子邮件地址已经被注册了，请换个别的吧！',3000);
+				yesNoImg('check_email','no');
+				return false;
+			}else{
+				yesNoImg('check_email','ok');
+				isEmailOK = true;
+				return true;
+			}
+		});		
+	}
+}
+
 function chkPassword(){
 	var pwd = document.getElementById('password').value;
 	if(pwd.length > 0){
@@ -194,6 +216,24 @@ function chkSmscode(){
 		isSmscodeOK = false;
 	}
 }
+function chkEmailcode(){
+	var emailcode = document.getElementById('emailcode').value;
+	if(emailcode.length > 0){
+        $.post('/index/register/chkEmailcode', {emailcode:jQuery.trim($('#emailcode').val()),email:jQuery.trim($('#email').val())}, function(msg) {
+			if(msg=='error'){
+				xcsoft.error('邮件验证码错误或者超时！',3000);
+				yesNoImg('check_emailcode','no');
+				return false;
+			}else{
+				yesNoImg('check_emailcode','ok');
+				isEmailcodeOK = true;
+				return true;
+			}
+        });		
+	}else{
+		isEmailcodeOK = false;
+	}
+}
 function chkAgreement(){
 	var agreement = document.getElementById('agreement');
 	if(agreement.checked==true){
@@ -208,9 +248,9 @@ function chkAgreement(){
 }
 function submitForm(){
 	document.getElementById("submitbtn").disabled = true;
-	if(isUsernameOK && isMobileOK && isPasswordOK && isPassword2OK && isImgcodeOK && isSmscodeOK && isAgreementOK){
+	if(isUsernameOK && isEmailOK && isPasswordOK && isPassword2OK && isImgcodeOK && isEmailcodeOK && isAgreementOK){
 		document.getElementById("submitbtn").innerHTML = "提交中，请稍后...";
-		$.post('/index/register/getRegister', {username:jQuery.trim($('#username').val()),mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {
+		$.post('/index/register/getRegister', {username:jQuery.trim($('#username').val()),email:jQuery.trim($('#email').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {
 			if(msg=='ok'){
 				xcsoft.success('信息已提交，谢谢您的注册！3秒后跳转',3000);
 				setTimeout("window.location.href='/index/login'", 3000 ); //4秒后跳转
@@ -234,16 +274,39 @@ function yesNoImg(imgname,isok){
 	field.style.display = "block";
 }
 function get_mobile_code(){
+	document.getElementById("zphone").disabled = true;
 	if(isUsernameOK && isMobileOK && isPasswordOK && isPassword2OK && isImgcodeOK){
 		$.post('/index/register/sendSms', {mobile:jQuery.trim($('#mobile').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
 			if(msg=='提交成功'){
+				xcsoft.success('短信发送成功，请检查您的邮箱',3000);
 				RemainTime();
 			}else{
+				document.getElementById("zphone").disabled = false;
 				xcsoft.error(msg,3000);
 				return false;
 			}
 		});
 	}else{
+		document.getElementById("zphone").disabled = false;
+		xcsoft.error('请先完善上方所有的信息',3000);
+		return false;
+	}
+};
+function get_email_code(){
+	document.getElementById("zemail").disabled = true;
+	if(isUsernameOK && isEmailOK && isPasswordOK && isPassword2OK && isImgcodeOK){
+		$.post('/index/register/sendEmail', {email:jQuery.trim($('#email').val()),username:jQuery.trim($('#username').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+			if(msg){
+				xcsoft.success('邮件发送成功，请检查您的邮箱',3000);
+				RemainTime();
+			}else{
+				document.getElementById("zemail").disabled = false;
+				xcsoft.error(msg,3000);
+				return false;
+			}
+		});
+	}else{
+		document.getElementById("zemail").disabled = false;
 		xcsoft.error('请先完善上方所有的信息',3000);
 		return false;
 	}
@@ -251,7 +314,7 @@ function get_mobile_code(){
 var iTime = 59;
 var Account;
 function RemainTime(){
-	document.getElementById('zphone').disabled = true;
+	document.getElementById('zemail').disabled = true;
 	var iSecond,sSecond="",sTime="";
 	if (iTime >= 0){
 		iSecond = parseInt(iTime%60);
@@ -268,7 +331,7 @@ function RemainTime(){
 			clearTimeout(Account);
 			sTime='获取验证码';
 			iTime = 59;
-			document.getElementById('zphone').disabled = false;
+			document.getElementById('zemail').disabled = false;
 		}else{
 			Account = setTimeout("RemainTime()",1000);
 			iTime=iTime-1;
@@ -276,5 +339,5 @@ function RemainTime(){
 	}else{
 		sTime='没有倒计时';
 	}
-	document.getElementById('zphone').innerText = sTime;
+	document.getElementById('zemail').innerText = sTime;
 }	

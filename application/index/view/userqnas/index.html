@@ -26,6 +26,7 @@
             <div id="menu_items" style="background-color:#FFF;width:1180px;margin-bottom: 10px;float: left;">
                 <div class="inactive_menu" onclick="window.location.href='/index/userpending'">等我回答{if condition="$userinfo.pending_reminder>0"}<span class="reminder">{$userinfo.pending_reminder}</span>{/if}</div>
                 <div class="active_menu">我的提问{if condition="$userinfo.reply_apply_reminder>0"}<span class="reminder">{$userinfo.reply_apply_reminder}</span>{/if}</div>
+                <div class="inactive_menu" onclick="window.location.href='/index/userarticles'">我的发布</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userreply'">我的回答{if condition="$userinfo.answer_reminder>0"}<span class="reminder">{$userinfo.answer_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userattention'">我的关注{if condition="$userinfo.attention_reminder>0"}<span class="reminder">{$userinfo.attention_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userfollow'">我的收藏</div>
@@ -45,14 +46,14 @@
 
                     <div style="width:180px; float:left; padding-left:20px; padding-right:20px; padding-top:10px; text-align:center;" id="thumb_img"><img src="{$qnaid.thumb_img}" class="thumb_img"></div>
                     <div style="width:960px; float:left;"><p style="text-align:left;">
-                        <span class="am-icon-bitcoin" style="color:#FC0;"></span> {$qnaid.formatCoins}<span style="width: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <!--<span class="am-icon-bitcoin" style="color:#FC0;"></span> {$qnaid.formatCoins}<span style="width: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
                         <a href="/index/qnadetails?id={$qnaid.qnaid}" class="content_title" target="_blank">{$qnaid.title}</a></p>
                     <div class="format_text">{$qnaid.content_text} <a href="javascript:void(0);" style="font-size:0.8em" onclick="viewAll({$i});">阅读全文 <span class="am-icon-angle-down am-icon-sm" style="color:#09F;"></span></a></div> </div>
                 </div>
                 {else /}
                 <div style="width:100%" id="content_text_{$i}" class="content_html">
                 <div>
-                    <span class="am-icon-bitcoin" style="color:#FC0;"></span> {$qnaid.formatCoins}<span style="width: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <!--<span class="am-icon-bitcoin" style="color:#FC0;"></span> {$qnaid.formatCoins}<span style="width: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>-->
                     <a href="/index/qnadetails?id={$qnaid.qnaid}" class="content_title" target="_blank">{$qnaid.title}</a></div>
                 <div class="format_text">{$qnaid.content_text} <a href="javascript:void(0)"  style="font-size:0.8em" onclick="viewAll({$i});">阅读全文 <span class="am-icon-angle-down am-icon-sm" style="color:#09F;"></span></a></div>
                 </div>
@@ -159,13 +160,13 @@
                 <div style="text-align:right; padding-right:30px;font-size: 0.8em">
                 {switch name="reply_qna.pending_status"}
                 {case value = '3|33'}
-                 <span class="am-icon-users" style="color:#09F; margin-right:10px;"></span> <input id="share{$i}_{$j}" type="checkbox" value="share" checked="checked" /> 接受这个回答时分享答案<span class="am-icon-question-circle" style="color:#09F;" title="接受这个回答，并分享这个答案，让浏览者都能完整的查看回答的详细内容。同时，为了奖励您的分享行为，系统将返还9.5%的佣金，即这个悬赏将只收取您0.5%的佣金。"></span><button type="button" onclick="reply_update('{$reply_qna.replyid}',1,'{$i}_{$j}');" class="btn btn-default user_button_blue_small" style="width:auto;" id="acceptBtn{$i}_{$j}"><span class="am-icon-thumbs-o-up" style="color:#FFF;"></span> 接受这个回答</button> <a href="javascript:void(0);" data-reveal-id="addition_box" data-pendingid="pendingid{$i}_{$j}" data-id="replyid{$i}_{$j}" data-animation="fade" class="btn btn-default user_button_blue_small"><span class="am-icon-commenting" style="color:#FFF;"></span> 要求补充回答</a> <button type="button" onclick="reply_update('{$reply_qna.replyid}',2,'{$i}_{$j}');" class="btn btn-default le_button" style="width:auto;" id="refuseBtn{$i}_{$j}"><span class="am-icon-thumbs-o-down"></span> 拒绝这个回答</button>
+                 <span class="am-icon-users" style="color:#09F; margin-right:10px;"></span> <input id="share{$i}_{$j}" type="checkbox" value="share" checked="checked" /> 接受这个回答时分享答案<span class="am-icon-question-circle" style="color:#09F;" title="接受这个回答，并分享这个答案，让浏览者都能完整的查看回答的详细内容。"></span><button type="button" onclick="reply_update('{$reply_qna.replyid}',1,'{$i}_{$j}');" class="btn btn-default user_button_blue_small" style="width:auto;" id="acceptBtn{$i}_{$j}"><span class="am-icon-thumbs-o-up" style="color:#FFF;"></span> 接受这个回答</button> <a href="javascript:void(0);" data-reveal-id="addition_box" data-pendingid="pendingid{$i}_{$j}" data-id="replyid{$i}_{$j}" data-animation="fade" class="btn btn-default user_button_blue_small"><span class="am-icon-commenting" style="color:#FFF;"></span> 要求补充回答</a> <button type="button" onclick="reply_update('{$reply_qna.replyid}',2,'{$i}_{$j}');" class="btn btn-default le_button" style="width:auto;" id="refuseBtn{$i}_{$j}"><span class="am-icon-thumbs-o-down"></span> 拒绝这个回答</button>
                 {/case}
                 {case value = '31'}
                 <div style="padding-right:30px;"><span class="am-icon-commenting" style="color:#666;"></span> <span style="color:#666; font-weight:bold;">等待用户补充回答。</span></div>
                 {/case}
                 {case value = '32'}
-                <span style="color:#900; margin-right:20px;"><span class="am-icon-toggle-off"></span> 用户已拒绝补充回答</span> <span class="am-icon-users" style="color:#09F; margin-right:10px;"></span> <input id="share{$i}_{$j}" type="checkbox" value="share" checked="checked" /> 接受这个回答时分享答案<span class="am-icon-question-circle" style="color:#09F;" title="接受这个回答，并分享这个答案，让浏览者都能完整的查看回答的详细内容。同时，为了奖励您的分享行为，系统将返还9.5%的佣金，即这个悬赏将只收取您0.5%的佣金。"></span><button type="button" onclick="reply_update('{$reply_qna.replyid}',1,'{$i}_{$j}');" class="btn btn-default user_button_blue_small" style="width:auto;" id="acceptBtn{$i}_{$j}"><span class="am-icon-thumbs-o-up" style="color:#FFF;"></span> 接受这个回答</button> <button type="button" onclick="reply_update('{$reply_qna.replyid}',2,'{$i}_{$j}');" class="btn btn-default user_button_grey_small" style="width:auto;" id="refuseBtn{$i}_{$j}"><span class="am-icon-thumbs-o-down"></span> 拒绝这个回答</button>
+                <span style="color:#900; margin-right:20px;"><span class="am-icon-toggle-off"></span> 用户已拒绝补充回答</span> <span class="am-icon-users" style="color:#09F; margin-right:10px;"></span> <input id="share{$i}_{$j}" type="checkbox" value="share" checked="checked" /> 接受这个回答时分享答案<span class="am-icon-question-circle" style="color:#09F;" title="接受这个回答，并分享这个答案，让浏览者都能完整的查看回答的详细内容。"></span><button type="button" onclick="reply_update('{$reply_qna.replyid}',1,'{$i}_{$j}');" class="btn btn-default user_button_blue_small" style="width:auto;" id="acceptBtn{$i}_{$j}"><span class="am-icon-thumbs-o-up" style="color:#FFF;"></span> 接受这个回答</button> <button type="button" onclick="reply_update('{$reply_qna.replyid}',2,'{$i}_{$j}');" class="btn btn-default user_button_grey_small" style="width:auto;" id="refuseBtn{$i}_{$j}"><span class="am-icon-thumbs-o-down"></span> 拒绝这个回答</button>
                 {/case}
                 {case value = '4'}
                 <div style="padding-right:15px;"><span class="am-icon-thumbs-o-up am-icon-sm" style="color:#060;"></span> <span style="color:#060; font-weight:bold;">已接受这个回答。{if condition="$qnaid.formatCoins > 0"}<span class="am-icon-bitcoin am-icon-sm" style="color:#FC0;" title="悬赏"></span> 支付悬赏：{$qnaid.formatCoins}{/if}</span></div>

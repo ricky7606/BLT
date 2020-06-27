@@ -77,7 +77,7 @@ class QnasReply extends Model {
 		$userinfo = $user->getUserDetails($userid);
 		$qna = new Qnas;
 		$qnainfo = $qna->getQnaDetailsByQnaId($qnaid);
-		$message_text = "用户“<a href=\"\\index\\userreplydetail?userid=".$userid."\" target=\"_blank\">".$userinfo->username."</a>”刚刚回答了您的问题：“<a href=\"\\index\\qnadetails?id=".$qnaid."\" target=\"_blank\">".$qnainfo->title."</a>”。";
+		$message_text = "用户 “<a href=\"\\index\\userreplydetail?userid=".$userid."\" target=\"_blank\">".$userinfo->username."</a>” 刚刚回答了您的问题：“<a href=\"\\index\\qnadetails?id=".$qnaid."\" target=\"_blank\">".$qnainfo->title."</a>”。";
 		$message = new Message;
 		$result_message = $message->saveNewMessage($qnainfo->userid, $message_text);
 		

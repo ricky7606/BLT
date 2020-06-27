@@ -9,12 +9,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="cleartype" content="on">
 <title>比邻小镇</title>
-<link rel="stylesheet" href="/static/css/mobileregister.css">
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/mobileregister.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 
 <script src='http://libs.baidu.com/jquery/1.6.2/jquery.min.js'></script>
-<script type="text/javascript" src="/static/js/mobileregister.js"></script>
-<script type="text/javascript" src="/static/js/jquery.xctips.js"></script>
+<script type="text/javascript" src="/static/mobile/js/mobileregister.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.xctips.js"></script>
 
 </head>
 
@@ -33,7 +33,7 @@
                         <div style="height:20px;"></div>
                         <div style="width: 100%;display: inline;">
                             <div id="tags_recommand" style="padding-left:10px; padding-right:10px; line-height:40px;font-size: 0.9em">点击随机推荐热门标签：<br><span id="recommandTags"></span><p style="font-size:0.8em; color:#666;">我们还有<span style="font-weight: bold;color: #06C">多达数万</span>的各类标签等待您的发掘！(<span style="font-size:12px;"><a href='javascript:void(0);' onclick='getRandomTags();'><i class="am-icon-refresh"></i> 换一批推荐标签</a></span>)</p></div>
-                        <div id="tag_searched" class="txtwrap" style="padding-left:20px; padding-right:20px; line-height:50px; display:none;font-size: 0.9em"><img src="/static/images/loading.gif"></div>
+                        <div id="tag_searched" class="txtwrap" style="padding-left:20px; padding-right:20px; line-height:50px; display:none;font-size: 0.9em"><img src="/static/images/loading.gif" width="600"></div>
                         <div style="height:20px;"></div>
                         </div>
                         </div>
@@ -45,7 +45,7 @@
             <div style="height:20px;"></div>
             <div style="line-height:50px;">当前标签：<span id="current_tag"></span></div>
             <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
-            <div id="notLogin" style="color:#900; display:none;">对不起，您尚未登录，请 <a href="/index/login" style="font-weight:bold;">登录</a> 后添加标签。</div>
+            <div id="notLogin" style="color:#900; display:none;">对不起，您尚未登录，请 <a href="/mobile/login" style="font-weight:bold;">登录</a> 后添加标签。</div>
             <hr style="color:#999; height:1px; width:90%;">
             <div id="data_list" style="line-height:50px;"></div>
             <div style="height:15px;"></div>
@@ -68,7 +68,7 @@
 <input type="hidden" name="content_text" id="content_text" value="" />
 <input type="hidden" id="userid" value="{$userid}">
 <input type="hidden" id="recommandTags_text" value="">
-<script type="text/javascript" src="/static/js/jquery.reveal.qnalisttag.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.qnalisttag.js"></script>
 
 </div>
 </body>

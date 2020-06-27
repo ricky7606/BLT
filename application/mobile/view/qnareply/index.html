@@ -1,16 +1,16 @@
 {include file="header/index" header_type="$header_type" /}
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 <script src="/static/mobile/js/wangEditor.min.js"></script>
-<div style="">
+<div style="background-color:#F2F2F2;">
     <div style="margin:0 auto; width:1200px;">
         <div style="text-align:left;">
             <div style="height:10px";></div>
             <div class="content_box" id="loading" style="height:2000px; text-align:center">
-                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
             </div>
             <div class="content_box" id="content">
-            <div class="header_title split_left" style="width: 70%;"><span class="am-icon-comment" style="color:#900;"></span> 提问者：
-            <img src="{if condition="$reply_detail.qna_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.qna_personal_pic}{/if}" class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;    font-size: 1em;" onclick="window.location.href='/index/userreplydetail?userid={$reply_detail.qna_userid}';">{$reply_detail.qna_username}</span> {if condition="$qna_userinfo.gender"}{if condition="$qna_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
+            <div class="header_title split_left"><span class="am-icon-comment" style="color:#900;"></span> 提问者：
+            <img src="{if condition="$reply_detail.qna_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.qna_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$reply_detail.qna_userid}';">{$reply_detail.qna_username}</span> {if condition="$qna_userinfo.gender"}{if condition="$qna_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $reply_detail.qna_userid"}
             {if condition="$reply_detail['qna_user_att'] == '-1'"}
@@ -21,10 +21,10 @@
             {/if}
             {/if}
             </div>
-            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;width: 30%">{if condition="$reply_detail.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$reply_detail.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;">{if condition="$reply_detail.formatCoins > 0"}<span class="am-icon-bitcoin" style="color:#FC0;" title="悬赏"></span> {$reply_detail.formatCoins}{else /}<span class="am-icon-send" style="color:#06C;" title="公开"></span>{/if}</div>
             <div style="clear:both;"></div>
             {if condition="$qna_userinfo.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：{$qna_userinfo.brief}</div>{/if}
-            {if condition="$qna_tag_list != ''"}<div style="line-height:2.5em;" class="tagwrap"><span class="am-icon-tags" style="color:#06C;"></span> TA的标签： {volist name="qna_tag_list" id="usertag"}{if condition="$i==6"} <span class="tag_more" onclick="showAllTags('qna');" id="qna_tag_more">更多...</span> <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /}{if condition="$i>5"} <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /} <span class="tag">{$usertag.tag}</span>{/if}{/if}{/volist} <span class="tag_more" onclick="hideAllTags('qna');" id="qna_tag_less" style="display:none;">收起</span></div>{/if}
+            {if condition="$qna_tag_list != ''"}<div style="line-height:50px;" class="tagwrap"><span class="am-icon-tags" style="color:#06C;"></span> TA的标签： {volist name="qna_tag_list" id="usertag"}{if condition="$i==6"} <span class="tag_more" onclick="showAllTags('qna');" id="qna_tag_more">更多...</span> <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /}{if condition="$i>5"} <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /} <span class="tag">{$usertag.tag}</span>{/if}{/if}{/volist} <span class="tag_more" onclick="hideAllTags('qna');" id="qna_tag_less" style="display:none;">收起</span></div>{/if}
             <div style="height:10px;"></div>
             <div class="content_title">{$reply_detail.title}</div>
             <div style="height:10px;"></div>
@@ -85,7 +85,7 @@
             <div style="height:20px;"></div>
             <!--answer section -->
             <div class="header_title"><span class="am-icon-comments-o" style="color:#06C;"></span> 回答者：
-            <img src="{if condition="$reply_detail.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.reply_personal_pic}{/if}" class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href='/mobile/userreplydetail?userid={$reply_detail.userid}';">{$reply_detail.reply_username}</span> {if condition="$reply_userinfo.gender != ''"}{if condition="$reply_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}<span style="font-size:12px; color:#999; padding-left:10px;">({$reply_detail.create_date})</span>
+            <img src="{if condition="$reply_detail.reply_personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$reply_detail.reply_personal_pic}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$reply_detail.userid}';">{$reply_detail.reply_username}</span> {if condition="$reply_userinfo.gender != ''"}{if condition="$reply_userinfo.gender == '1'"}<span class="am-icon-mars" style="color:#06C;" title="男"></span> {else /}<span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}<span style="font-size:12px; color:#999; padding-left:10px;">({$reply_detail.create_date})</span>
             {if condition="$header_type == 'user'"} 
             {if condition="$userid != $reply_detail.userid"}
             {if condition="$reply_detail['reply_user_att'] == '-1'"}

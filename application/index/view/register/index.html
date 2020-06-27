@@ -14,9 +14,9 @@ input { background-color:#f7f8fa;}
         <td width="40"><img id="check_username" /></td>
       </tr>
       <tr>
-        <td align="right">手机号</td>
-        <td colspan="2"><input type="text" class="form-control" name="mobile" id="mobile" width="11" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="11位中国大陆手机号码" onblur="chkMobile();" onkeyup="this.value=this.value.replace(/\D/g,'');" /></td>
-        <td><img id="check_mobile" /></td>
+        <td align="right">电子邮箱</td>
+        <td colspan="2"><input type="text" class="form-control" name="email" id="email" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="电子邮件地址" onblur="chkEmail();" onkeyup="value=value.replace(/[^0-9a-zA-z.@_-]/g,'')" /></td>
+        <td><img id="check_email" /></td>
       </tr>
       <tr>
         <td align="right">密码</td>
@@ -36,11 +36,11 @@ input { background-color:#f7f8fa;}
         <td><img id="check_imgcode" /></td>
       </tr>
       <tr>
-        <td align="right">短信码</td>
-        <td width="202" align="left"><input type="text" class="form-control form-inline" name="smscode" id="smscode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入短信中的验证码" onblur="chkSmscode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        <td align="right">邮箱验证码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="emailcode" id="emailcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入验证邮件中的验证码" onblur="chkEmailcode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
         </td>
-        <td width="130" align="left"><button type="button" id="zphone" onClick="get_mobile_code();" class="btn btn-default" style="width:120px; height:45px; background-color:#748ba5; color:#FFF;">获取短信码</button></td>
-        <td width="48" align="left"><img id="check_smscode" /></td>
+        <td width="130" align="left"><button type="button" id="zemail" onClick="get_email_code();" class="btn btn-default" style="width:120px; height:45px; background-color:#748ba5; color:#FFF;">获取验证码</button></td>
+        <td width="48" align="left"><img id="check_emailcode" /></td>
       </tr>
       
       <tr>
@@ -57,4 +57,4 @@ input { background-color:#f7f8fa;}
 
   </div>
 <input type="hidden" name="register_token" id="register_token" value="{$register_token}" />
-<script type="text/javascript" src="/static/js/register.js"></script>
+<script type="text/javascript" src="/static/js/register.js?3"></script>

@@ -1,0 +1,109 @@
+{include file="header/index" header_type="$header_type" /}
+<link rel="stylesheet" href="/static/css/reveal.css">
+<script src="/static/js/wangEditor.min.js"></script>
+<div style="background-color:#F2F2F2;">
+    <div style="margin:0 auto; width:1200px;">
+        <div style="text-align:left;">
+            <div style="height:10px";></div>
+            <div class="content_box" id="loading" style="height:2000px; text-align:center">
+                <div style="height:200px;"><img src="/static/images/loading.gif"></div>
+            </div>
+            <div class="content_box" id="content">
+            <div class="userdetail_split_left">
+            <img src="{if condition="$userdetail.personal_pic == ''"}/static/images/profile_pic.jpg{else /}{$userdetail.personal_pic}{/if}" class="index_profile_pic" style="margin-right:20px;">  
+            </div>
+            <div class="header_title userdetail_split_right" style="padding-top:18px;">
+            {$userdetail.username} {if condition="$userdetail.gender == 1 || $userdetail.gender == 0"}{if condition="$userdetail.gender == 1"} <span class="am-icon-mars" style="color:#06C;" title="男"></span>{else /} <span class="am-icon-venus" style="color:#900;" title="女"></span> {/if}{/if}
+            {if condition="$header_type == 'user'"} 
+            {if condition="$login_userid != $userdetail.userid"}
+            {if condition="$user_att == '-1'"}
+            <button type="button" class="btn btn-default button_grey" id="attBtn1" onclick="attUser('{$userdetail.userid}','1');this.disabled='disabled';" style="margin-left:20px;"><i class="am-icon-plus"></i> 关注TA</button>
+            {else /}
+            <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;"><i class="am-icon-user-plus"></i> 已关注</button>
+            {/if}
+            <button type="button" class="btn btn-default button_blue am-fr" style="width:auto; margin-left:20px;" onclick="window.location.href='/index/qna?invite_user={$userdetail.userid}'"><i class="am-icon-question-circle"></i> 向TA提问</button>
+            {/if}
+            {/if}
+            {if condition="$userdetail.brief != ''"}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#03C;">{$userdetail.brief}</span></div>{else /}<div style="padding-top:10px; padding-bottom:10px;">自我简介：<span style="color:#666;">还没有想好该怎么来介绍自己</span></div>{/if}
+            <div style="line-height:50px;" class="tagwrap"><i class="am-icon-tags am-icon-fw" style="color:#06C; margin-right:10px;"></i>  TA的标签： {if condition="count($user_tag_list) > 0"}{volist name="user_tag_list" id="usertag"}{if condition="$i==6"} <span class="tag_more" onclick="showAllTags('qna');" id="qna_tag_more">更多...</span> <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /}{if condition="$i>5"} <span class="tag" id="qna_tag{$i}" style="display:none;">{$usertag.tag}</span>{else /} <span class="tag">{$usertag.tag}</span>{/if}{/if}{/volist}{else/}<span style="color:#666;">还没有选择任何标签</span>{/if} <span class="tag_more" onclick="hideAllTags('qna');" id="qna_tag_less" style="display:none;">收起</span></div>
+            {if condition="$userdetail.location"}<div style="padding-top:10px; padding-bottom:10px;"><i class="am-icon-map-marker am-icon-fw" style="color:#06C; margin-right:10px;"></i>  居住地：<span style="color:#03C;">{$userdetail.location}</span></div>{/if}
+            {if condition="$userdetail.industry"}<div style="padding-top:10px; padding-bottom:10px;"><i class="am-icon-suitcase am-icon-fw" style="color:#06C; margin-right:10px;"></i>  所在行业：<span style="color:#03C;">{$userdetail.industry}</span></div>{/if}
+            </div>
+            <div style="clear:both;"></div>
+            <div style="height:20px;"></div>
+            <div><span class="underlineBtnInactive" onclick="window.location.href='/index/userreplydetail?userid={$userdetail.userid}'"><i class="am-icon-comments-o" style="color:#06C; margin-right:10px;"></i> TA的回答</span> <span class="underlineBtnInactive" onclick="window.location.href='/index/userqnadetail?userid={$userdetail.userid}'"><i class="am-icon-comment" style="color:#900; margin-right:10px;"></i> TA的提问</span> <span class="underlineBtnActive"><i class="am-icon-file-text" style="color:#06C; margin-right:10px;"></i> TA的发布</span></div>
+            <!--answer section -->
+            {volist name="article_list" id="article" empty="<div style='width:100%;text-align:center; height:200px; padding-top:100px; font-size:18px; font-weight:bold;'>暂时没有任何发布</div>"}
+            <hr style="height:1px; color:#CCC;">
+            <span style="color:#999; font-size:12px;">发布了文章 ({$article.create_date}) {if condition="$login_userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该发布" report-reveal-id="report_box" data-animation="fade" data-article-id="articleid{$i}" data-type="article" style="color:#999;">举报</a>{/if}</span>
+            <div class="header_title" style="cursor:pointer;" onclick="window.location.href='/index/articledetails?id={$article.articleid}'">{$article.title}</div>
+            <div style="height:10px;"></div>
+            {if condition="$article.title_img neq ''"}
+            <div style="width:100%" id="content_text_{$i}">
+                <div style="width:180px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$article.title_img}" class="thumb_img"></div>
+                <div style="width:618px; float:left;" class="format_text">{$article.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            </div>
+            <div style="clear:both;"></div>
+            {else /}
+            <div id="content_text_{$i}">{$article.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            {/if}
+            <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
+                <div>{$article.content}</div>
+                <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$i});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+            </div>
+            <input type="hidden" id="articleid{$i}" value="{$article.articleid}"> 
+            {/volist}
+            <!-- answer srction end -->
+            <div style="clear:both;"></div>
+            </div>
+            <div class="right_column">
+            {if condition="$ad1.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad1.ads_id}" {if condition="$ad1.new_window=='1'"}target="_blank"{/if}><img src="{$ad1.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
+            <div class="right_box header_title">
+            <p class="header_title">TA的最新评论</p>
+            {volist name="reply_list" id="reply"}
+            	<div><a href="/index/articlereply?id={$reply.replyid}">{$reply.shortTitle}</a></div>
+            {/volist}
+            </div>
+            {if condition="$ad2.ads_image!=''"}<div class="right_banner_box"><a href="/index/ad?id={$ad2.ads_id}" {if condition="$ad2.new_window=='1'"}target="_blank"{/if}><img src="{$ad2.ads_image}" style="width:100%;" class="banner_img"></a></div>{/if}
+            <div class="right_box header_title">
+            <p style="color:#666; font-size:12px;">下载比邻Call &middot; <a href="/Beelinton-qt.exe">下载比邻钱包</a><br /><br />联系我们 &copy;2018</p>
+            </div>
+            </div>
+            <div style="clear:both;"></div>
+            <div style="height:20px;"></div>
+        </div>
+    </div>
+</div>
+<div id="answer_box" class="reveal-modal" style="width:700px;">
+    <div class="header_title" id="qna_title"></div>
+    <div style="height:20px;"></div>
+    <div id="editordiv" class="text">
+    </div>
+    <div style="height:20px;"></div>
+    <button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer">发布评论</button>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="report_box" class="reveal-modal" style="width:420px;overflow-y:scroll; overflow-x:hidden; height:360px;">
+    <div id="box_title" class="header_title">违规举报</div>
+    <div style="height:20px;"></div>
+    <div>
+    <select name="report_type" id="report_type" onchange="chkReportType();">
+    <option value="">选择举报类别</option>
+    <option value="1">辱骂、歧视、挑衅、骚扰等语言行为</option>
+    <option value="2">内容抄袭</option>
+    <option value="3">侵犯个人或企业权益</option>
+    <option value="4">垃圾广告信息</option>
+    <option value="5">色情、暴力、血腥等违法违规内容</option>
+    <option value="6">政治敏感内容</option>
+    <option value="7">诱导分享、投票等行为</option>
+    </select>
+    </div>
+    <div style="margin:20px;"><textarea name="report_comment" id="report_comment" style="width:280px;" rows="3" placeholder="举报说明（选填），可填写详细说明，如抄袭的原文链接等。（200字以内）" onblur="chkReportComment();" onkeyup="chkReportComment();"></textarea></div>
+    <div style="margin:20px;"><button type="button" name="reportbtn" id="reportbtn" class="btn btn-default user_button_blue_answer">我要举报</button></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+    <input type="hidden" name="articleid" id="articleid" value="" />
+    <input type="hidden" name="article_type" id="article_type" value="" />
+</div>
+<script src="/static/js/index.js"></script>
+<script type="text/javascript" src="/static/js/jquery.reveal.article.index.js"></script>

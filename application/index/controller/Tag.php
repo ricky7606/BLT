@@ -31,15 +31,22 @@ class Tag extends Controller
 		if(!Cookie::has('userid')){
 			return "notlogin";
 		}
+		if(trim($text)==''){
+			return "标签不能为空！";
+		}
 		$level = 2;
 		$parentid = '1';
 		$userid = Cookie::get('userid');
 		$tag = new Tags;
 		$tagid = $tag->addTag($level, $parentid, $text);
 		if($tagid != ''){
+			//不直接添加到用户标签集
+			/*
 			$usertag = new UsersTags;
 			$result = $usertag->addTag($userid, $tagid);
 			return $result;
+			*/
+			return "ok";
 		}else{
 			return "数据错误！";
 		}

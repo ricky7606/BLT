@@ -31,21 +31,10 @@ input { background-color:#f7f8fa;}
         </td>
         <td width="40">&nbsp;</td>
       </tr>
-      <tr>
-        <td style="width: 200px" align="left">悬赏比邻币（可选）：</td>
-        <td align="left"><input type="text" class="form-control" name="coins" id="coins" width="4" style="background-color:#f7f8fa; height:45px; width:160px;" placeholder="请输入比邻币数量" onblur="clearNoNum(this);chkCoins();" onkeyup="clearNoNum(this);chkCoins();" onafterpaste="clearNoNum(this);chkCoins();" /></td>
-        <td align="left"></td>
-        <td align="right">所需比邻币(包括10%佣金)：<span id="total_coins" style="color:#03F; font-weight:bold;">0</span></td>
-        <td align="right"><img src="/static/images/blank.png" alt="" width="30" height="29" id="check_coins" /></td>
-      </tr>
-      <tr>
-        <td colspan="4" align="left">现有比邻币：<span style="color:#03F; font-weight:bold;">{$coins;}</span>，冻结比邻币：<span style="color:#900; font-weight:bold;">{$frozen_coins;}</span>，可用余额：<span id="available_coins" style="color:#063; font-weight:bold;"></span></td>
-        <td>&nbsp;</td>
-      </tr>
-      <tr id="inviteRow" style="display:none;">
+      <tr id="inviteRow">
         <td colspan="5"><a href="javascript:void(0);" data-reveal-id="inviteUsers" data-animation="fade" style="padding-right:30px;">快速邀请用户回答</a> | <a href="javascript:void(0);" data-reveal-id="searchUsers" data-animation="fade" style="padding-left:30px; padding-right:30px;">搜索用户邀请回答</a> | <a href="javascript:void(0);" data-reveal-id="attUsers" data-animation="fade" style="padding-left:30px;">邀请关注用户回答</a></td>
       </tr>
-      <tr id="inviteResultRow" style="display:none;">
+      <tr id="inviteResultRow">
         <td colspan="5" style="text-align:left;">
         <p>已邀请用户：（您最多可以邀请10位用户来回答您的问题）</p>
         <p><div id="invitedUsers" class="invitedUsers">还未邀请任何用户</div></p>
@@ -122,5 +111,10 @@ input { background-color:#f7f8fa;}
 <input type="hidden" name="originalcoins" id="originalcoins" value="{$coins}" />
 <input type="hidden" name="frozencoins" id="frozencoins" value="{$frozen_coins}" />
 <div style="height:100px;"></div>
-<script type="text/javascript" src="/static/js/qna.js"></script>
+<script type="text/javascript" src="/static/js/qna.js?3"></script>
 <script type="text/javascript" src="/static/js/jquery.reveal.js"></script>
+{if condition="$invite_user neq ''"}
+<script>
+inviteUser('{$invite_user}',0,'direct');
+</script>
+{/if}

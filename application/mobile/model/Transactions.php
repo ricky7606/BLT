@@ -46,6 +46,7 @@ class Transactions extends Model {
         $trans_list = $trans->where('userid', $userid)
 		->field("*,DATE_FORMAT(transaction_date,'%Y-%m-%d %H:%i:%s') as format_date")
 		->order('transaction_date','desc')
+		->order('transactionid','desc')
 		->paginate(10);          // 查询所有用户的所有字段资料
         if (empty($trans_list)) {                 // 判断是否出错
             return false;
@@ -77,7 +78,8 @@ class Transactions extends Model {
 //	13 - 提现冻结；
 //	14 - 提现成功（扣除）；
 //	15 - 提现失败（解冻返回）；
-//	16 - 充值
+//	16 - 邀请；
+//	17 - 发布阅读数奖励；
 //	99 - 其它；
 	public function saveTransaction($userid, $coins, $transaction_type, $qnaid = NULL, $reference_userid = NULL, $reference_pendingid = NULL, $wallet = NULL, $comments = NULL, $serial_number = NULL){
 		$this->startTrans();
@@ -181,6 +183,11 @@ class Transactions extends Model {
 				break;
 			//invite
 			case 16:
+				$coins_after = bcadd($coins_before, $coins, 8);
+				$result_user = $user->where('userid', $userid)->update(['coins' => $coins_after]);
+				break;
+			//发布阅读数奖励
+			case 17:
 				$coins_after = bcadd($coins_before, $coins, 8);
 				$result_user = $user->where('userid', $userid)->update(['coins' => $coins_after]);
 				break;

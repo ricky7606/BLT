@@ -2,25 +2,25 @@
 /* CSS Document */
 body{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
 td{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
-div{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
+div{ font-size:1em; line-height:1.2em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
 p{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
 span{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
 pre{ font-size:1em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
 .content_title{ font-size:2.5em; color:#262626; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif; font-weight:bold;}
-.header_title{ font-size:2.5em; font-weight: normal; color:#666666; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif; }
+.header_title{ font-size:2.5em; font-weight: bold; color:#666666; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif; }
 .header_title_arctile{ font-size:0.9em; font-weight: normal; color:#666666; font-family:-apple-system,BLinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif; }
 input[type="button"], input[type="submit"], input[type="reset"] {
 -webkit-appearance: none;
 }
 .index_profile_pic { border-radius:3px; border:#ccc solid; border-width:8px; position:relative; height:230px; width:230px; overflow:hidden;}
 .txtwrap{word-break:keep-all ;}
-.tagwrap{word-wrap : break-word ;font-size: 2em; line-height: 2em}
-.tab, .tag{ background-color:#dfe5ec; border-radius:20px; padding:5px; padding-left:10px; padding-right:10px; margin-right:15px; font-weight:normal; white-space:nowrap; cursor:pointer;}
-.tag_remove{ background-color:#dfe5ec; border-radius:20px; padding:5px; padding-left:20px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer;background-image:url(/static/images/remove.png); background-position:5px 5px; background-repeat:no-repeat;}
-.tag_parent{ background-color:#3CF; border-radius:20px; padding:5px; padding-left:10px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer; color:#FFF;}
-.tag_more{ background-color:#004d9d; border-radius:20px; padding:5px; padding-left:10px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer; color:#FFF;}
-.split_left {width:50%; float:left; text-align:left;}
-.split_right {width:50%; float:left; text-align:right; font-size: 2.5em}
+.tagwrap{word-wrap : break-word ;font-size: 1.8em; line-height: 2.3em}
+.tab, .tag{ background-color:#dfe5ec; font-size:1.8em; line-height:2.3em; margin-top:25px; margin-bottom:25px; border-radius:30px; padding:10px; padding-left:15px; padding-right:15px; margin-right:15px; font-weight:normal; white-space:nowrap; cursor:pointer;}
+.tag_remove{ background-color:#dfe5ec; font-size:1.8em; line-height:2.3em; border-radius:30px; padding:5px; padding-left:20px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer;background-image:url(/static/images/remove.png); background-position:5px 5px; background-repeat:no-repeat;}
+.tag_parent{ background-color:#3CF; font-size:1.8em; line-height:2.3em; border-radius:30px; padding:10px; padding-left:10px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer; color:#FFF;}
+.tag_more{ background-color:#004d9d; font-size:1.8em; line-height:2.3em; border-radius:30px; padding:10px; padding-left:10px; padding-right:10px; margin-right:15px; font-weight:bold; white-space:nowrap; cursor:pointer; color:#FFF;}
+.split_left {width:60%; float:left; text-align:left;}
+.split_right {width:40%; float:left; text-align:right; font-size: 2.5em}
 .userdetail_split_left {width:35%; float:left; text-align:center;}
 .userdetail_split_right {width:65%; float:left; text-align:left;}
 .button_blue {width:auto; height:40px; background-color:#004d9d; color:#FFF;}
@@ -46,7 +46,7 @@ input[type="button"], input[type="submit"], input[type="reset"] {
 .reminder_top {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:0px; right:20px; font-size:10px; color:#FFF;  width:25px; height:25px; text-align:center; padding-top:2px; padding-bottom:4px; text-align:center;}
 .reminder {background-image:url(/static/images/reminder.png); background-repeat:no-repeat; position:absolute; top:5px; font-size:10px; color:#FFF; padding:5px; padding-top:2px; padding-bottom:4px; width:25px; height:25px; text-align:center;}
 .prevNextBtn {width:auto; border-color:#06C; border-width:1px; border-radius:2px; border-style:solid; margin-left:20px; margin-right:20px; padding:10px; cursor:pointer;}
-.thumb_img { max-height:100px; max-width:130px; margin:5px; overflow:hidden;}
+.thumb_img { max-height:200px; max-width:260px; margin:5px; overflow:hidden;}
 .underlineBtnActive {font-size:2em; border-bottom-color:#03C; border-bottom-width:1px; border-bottom-style:solid; padding-top:20px; padding-bottom:10px; margin:15px; font-weight:bold;}
 .underlineBtnInactive {font-size: 2em; padding-top:20px; padding-bottom:10px; margin:15px; color:#03C; cursor:pointer; font-weight:bold;}
 .underlineBtnInactive:hover {border-bottom-color:#03C; border-bottom-width:1px; border-bottom-style:solid;}

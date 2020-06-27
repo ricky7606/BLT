@@ -9,6 +9,7 @@ use think\captcha\Captcha;
 use think\Cookie;
 use app\mobile\model\Transactions;
 use app\mobile\model\Message;
+use PHPMailer\SendEmail;
 
 class Register extends Controller
 {
@@ -41,6 +42,15 @@ class Register extends Controller
 		$user = new Users();
 		// 查询单个数据
 		return $user->chkMobile($mobile);
+	}
+	
+	public function chkEmail(){
+		$email = Request::instance()->post('email');
+		$map['email']=$email;
+		//实例化模型后调用查询
+		$user = new Users();
+		// 查询单个数据
+		return $user->chkEmail($email);
 	}
 	
 	public function chkImgcode(){
@@ -127,6 +137,45 @@ class Register extends Controller
 		}
 		return $gets['SubmitResult']['msg'];
 	}
+
+	public function sendEmail(){
+		//开启SESSION
+		session_start();
+		//获取邮件地址
+		$email = Request::instance()->post('email');
+		$username = Request::instance()->post('username');
+		//获取token
+		$register_token = Request::instance()->post('register_token');
+		//生成的随机数
+		$email_code = random(4,1);
+		if(empty($email)){
+		exit('电子邮件地址不能为空');
+		}
+		//防用户恶意请求
+		if(empty($_SESSION['register_token']) or $register_token != $_SESSION['register_token']){
+			exit('请求超时，请刷新页面后重试');
+		}
+		
+		if($username!=''){
+			$htmlbody="<div style='padding:40px;'><p>您好：<strong>".$username."</strong>，欢迎您加入<strong>比邻小镇</strong>！</p>";
+		}else{
+			$htmlbody="<div style='padding:40px;'><p>您好，欢迎您加入<strong>比邻小镇</strong>！</p>";
+		}
+		$htmlbody.="<p>您的邮箱验证码为：<strong>".$email_code."</strong>。</p>";
+		$htmlbody.="<p>该验证码有效时间10分钟，请尽快返回网站页面完成操作！</p>";
+		$htmlbody.="<div style='height:30px'></div>";
+		$htmlbody.="<p style='color:#999999;'>发件时间：".date('Y-m-d H:i:s',time())."</p>";
+		$htmlbody.="<p style='color:#999999;'>此邮件为系统自动发出，请勿直接回复。</p>";
+		$htmlbody.="<img src='http://www.beelintown.com.cn/static/images/logo.jpg' /></div>";
+		
+		$res = SendEmail::SendEmail('比邻小镇邮箱验证码',$htmlbody,$email);
+        if(!$res){
+            return "邮件发送失败";
+        }
+		$_SESSION['email'] = $email;
+		$_SESSION['email_code'] = $email_code;
+        return true;
+	}
 	
 	public function chkSmscode(){
 		session_start();
@@ -143,11 +192,26 @@ class Register extends Controller
 		}
 	}
 	
+	public function chkEmailcode(){
+		session_start();
+		$emailcode = Request::instance()->post('emailcode');
+		$email = Request::instance()->post('email');
+		if($_SESSION['email_code'] && $_SESSION['email']){
+			if($emailcode == $_SESSION['email_code'] && $email == $_SESSION['email']){
+				return "ok";
+			}else{
+				return "error";
+			}
+		}else{
+			return "error";
+		}
+	}
+	
 	public function getRegister(){
 		session_start();
 		$username = Request::instance()->post('username');
 		$recommend = Request::instance()->post('recommend');
-		$mobile = Request::instance()->post('mobile');
+		$email = Request::instance()->post('email');
 		$password = Request::instance()->post('pwd');
 		$password = password_hash($password,PASSWORD_BCRYPT);
 		$imgcode = Request::instance()->post('imgcode');
@@ -161,22 +225,22 @@ class Register extends Controller
 		if(!$captcha->check($imgcode, $id)){
 			return "验证码错误或者请求超时";
 		}
-		if($username!="" && $mobile!="" && $password!="" && $register_token!=""){
+		if($username!="" && $email!="" && $password!="" && $register_token!=""){
 			$user = new Users;
-			$result = $user->userRegister($username, $password, $mobile);
+			$result = $user->userRegister($username, $password, $email);
 			if($result == "ok"){
 			//if(true){
 				Session::clear();
 				Cookie::delete('userid');
-				Cookie::delete('mobile');
+				Cookie::delete('email');
 				Cookie::delete('username');
 				//session_start();
-				$_SESSION['mobile_user_id'] = $mobile;
-				$_SESSION['mobile_password'] = Request::instance()->post('pwd');
+				$_SESSION['email_user_id'] = $email;
+				$_SESSION['email_password'] = Request::instance()->post('pwd');
 
 				if($recommend != ""){
 					$user = new Users();
-					$user->getLogin($mobile, Request::instance()->post('pwd'), "yes");
+					$user->getLogin($email, Request::instance()->post('pwd'), "yes");
 
 
 					$target = new Users;

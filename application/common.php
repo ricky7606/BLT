@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+//use think\Loader;
 
 //random() 函数返回随机整数。
 function random($length = 6 , $numeric = 0) {
@@ -29,7 +30,7 @@ function random($length = 6 , $numeric = 0) {
 
 //获取字符串中第一张图片的地址
 function getThumbImg($str){
-	$pattern="/<[img|IMG|Img].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png]))[\'|\"].*?[\/]?>/"; 
+	$pattern="/<[img|IMG|Img].*?src=[\'|\"](.*?)[\'|\"].*?[\/]?>/"; 
 	preg_match_all($pattern,$str,$match); 
 	if(count($match[1])>0){
 		return $match[1][0];
@@ -112,6 +113,9 @@ function getTransactionDesc($transaction_type){
 		case 16:
 			return "邀请奖励";
 			break;
+		case 17:
+			return "发布阅读数奖励";
+			break;
 		case 99:
 			return "系统操作扣除";
 			break;
@@ -169,4 +173,3 @@ case "s": $val = date("Y-m-d H:i:s", strtotime($date ." +$n second")); break;
 }
 return $val;
 }
-

@@ -37,8 +37,8 @@ class Follow extends Model {
 		return $follow_list;
 	}
 	
-	public function getFollowByQnaIdUserId($qnaid, $userid){
-		$result = $this->where('qnaid', $qnaid)
+	public function getFollowByQnaIdUserId($itemid, $userid){
+		$result = $this->where('qnaid', $itemid)
 		->where('userid', $userid)
 		->limit(1)
 		->find();
@@ -62,7 +62,7 @@ class Follow extends Model {
 				return "发生错误";
 			}
 		}else{
-			return "已经收藏了该问题";
+			return "已经收藏了该内容";
 		}
 	}
 	
@@ -75,6 +75,13 @@ class Follow extends Model {
 	public function getFollowCount($qnaid){
 		$result = $this->where('qnaid', $qnaid)
 		->field('count(*) as followCount')
+		->find();
+		return $result;
+	}
+
+	public function getUserFollowCount($userid){
+		$result = $this->where('userid', $userid)
+		->field('count(*) as userfollowCount')
 		->find();
 		return $result;
 	}

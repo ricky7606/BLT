@@ -40,17 +40,15 @@ class Userprofile extends Controller
 		if(!Cookie::has('userid')){
 			return $this->redirect('/index/login');
 		}
-		$mobile = Request::instance()->post('mobile');
 		$gender = (int)Request::instance()->post('gender');
 		$brief = Request::instance()->post('brief');
-		$email = Request::instance()->post('email');
 		$location = Request::instance()->post('location');
 		$industry = Request::instance()->post('industry');
 		$career = Request::instance()->post('career');
 		$education = Request::instance()->post('education');
 		$introduction = Request::instance()->post('introduction');
 		$user = new Users;
-		return $user->saveUserDetails($mobile, $gender, $brief, $email, $location, $industry, $career, $education, $introduction);
+		return $user->saveUserDetails(Cookie::get('userid'), $gender, $brief, $location, $industry, $career, $education, $introduction);
 	}
 
 	//上传照片到七牛云
@@ -100,7 +98,7 @@ class Userprofile extends Controller
 		list($ret, $err) = $uploadMgr->putFile($token, $newname, $filePath);
 		$tmpStr="http://images.beelintown.com.cn/$newname";
 		$user = new Users;
-		$user->mobile = $mobile;
+		$user->userid = $userid;
 		if($pictype == 'pic'){
 			$tmpStr .= "-personal_pic";
 			$user->personal_pic = $tmpStr;
@@ -126,7 +124,7 @@ class Userprofile extends Controller
 			return "用户名不能超过20个字符";
 		}
 		$user = new Users;
-		return $user->changeUsername($mobile, $username);
+		return $user->changeUsername(Cookie::get('userid'), $username);
 	}
 	
 	public function changePassword(){
@@ -140,7 +138,7 @@ class Userprofile extends Controller
 			return "数据有误";
 		}else{
 			$user = new Users;
-			return $user->changePassword($mobile, $password, $new_password);
+			return $user->changePassword(Cookie::get('userid'), $password, $new_password);
 		}
 	}
 	
@@ -149,27 +147,90 @@ class Userprofile extends Controller
 			return $this->redirect('/index/login');
 		}
 		session_start();
-		$old_mobile = Request::instance()->post('old_mobile');
 		$new_mobile = Request::instance()->post('new_mobile');
 		$register_token = Request::instance()->post('register_token');
-		$imgcode = Request::instance()->post('imgcode');
 		if(empty($_SESSION['register_token']) or $register_token != $_SESSION['register_token']){
 			return '请求超时，请刷新页面后重试';
 		}
-		$id = "";
-		$captcha = new Captcha();
-		$captcha->reset = false;
-		if(!$captcha->check($imgcode, $id)){
-			return "验证码错误或者请求超时";
-		}
-		if($old_mobile!="" && $new_mobile){
+		if($new_mobile!=""){
 			$user = new Users;
-			$result = $user->changeMobile($old_mobile, $new_mobile);
+			$result = $user->changeMobile(Cookie::get('userid'), $new_mobile);
 			if($result == "ok"){
 				Session::clear();
 				return "ok";
 			}else{
 				return "新手机号码绑定失败";
+			}
+		}else{
+			return "数据有误，请检查后重试";
+		}
+	}
+
+	public function setMobile(){
+		if(!Cookie::has('userid')){
+			return $this->redirect('/index/login');
+		}
+		session_start();
+		$mobile = Request::instance()->post('mobile');
+		$register_token = Request::instance()->post('register_token');
+		if(empty($_SESSION['register_token']) or $register_token != $_SESSION['register_token']){
+			return '请求超时，请刷新页面后重试';
+		}
+		if($mobile!=""){
+			$user = new Users;
+			$result = $user->changeMobile(Cookie::get('userid'), $mobile);
+			if($result == "ok"){
+				return "ok";
+			}else{
+				return "手机号码绑定失败";
+			}
+		}else{
+			return "数据有误，请检查后重试";
+		}
+	}
+
+	public function changeEmail(){
+		if(!Cookie::has('userid')){
+			return $this->redirect('/index/login');
+		}
+		session_start();
+		$email = Request::instance()->post('email');
+		$register_token = Request::instance()->post('register_token');
+		if(empty($_SESSION['register_token']) or $register_token != $_SESSION['register_token']){
+			return '请求超时，请刷新页面后重试';
+		}
+		if($email!=""){
+			$user = new Users;
+			$result = $user->changeEmail(Cookie::get('userid'), $email);
+			if($result == "ok"){
+				Session::clear();
+				return "ok";
+			}else{
+				return "新邮箱地址绑定失败";
+			}
+		}else{
+			return "数据有误，请检查后重试";
+		}
+	}
+
+	public function setEmail(){
+		if(!Cookie::has('userid')){
+			return $this->redirect('/index/login');
+		}
+		session_start();
+		$email = Request::instance()->post('email');
+		$register_token = Request::instance()->post('register_token');
+		if(empty($_SESSION['register_token']) or $register_token != $_SESSION['register_token']){
+			return '请求超时，请刷新页面后重试';
+		}
+		if($email!=""){
+			$user = new Users;
+			$result = $user->changeEmail(Cookie::get('userid'), $email);
+			if($result == "ok"){
+				Session::clear();
+				return "ok";
+			}else{
+				return "新邮箱地址绑定失败";
 			}
 		}else{
 			return "数据有误，请检查后重试";

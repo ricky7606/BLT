@@ -27,6 +27,7 @@
             <div id="menu_items" style="background-color:#FFF;width:1160px;float: left;margin-bottom: 10px;">
             	<div class="inactive_menu" onclick="window.location.href='/index/userpending'">等我回答{if condition="$userinfo.pending_reminder>0"}<span class="reminder">{$userinfo.pending_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userqnas'">我的提问{if condition="$userinfo.reply_apply_reminder>0"}<span class="reminder">{$userinfo.reply_apply_reminder}</span>{/if}</div>
+                <div class="inactive_menu" onclick="window.location.href='/index/userarticles'">我的发布</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userreply'">我的回答{if condition="$userinfo.answer_reminder>0"}<span class="reminder">{$userinfo.answer_reminder}</span>{/if}</div>
                 <div class="inactive_menu" onclick="window.location.href='/index/userattention'">我的关注{if condition="$userinfo.attention_reminder>0"}<span class="reminder">{$userinfo.attention_reminder}</span>{/if}</div>
                 <div class="active_menu">我的收藏</div>
@@ -40,23 +41,23 @@
             </div>
             <div class="content_section">
             	<div style='width:100%; padding:20px; height:100px; font-size:16px;'>
-                <img src="/static/images/attention.jpg"> 我收藏的问题数：<b>{$followcount}个</b>
+                <img src="/static/images/attention.jpg"> 我收藏的发布数：<b>{$follow_article_count}个</b> | <a href="/index/userqnafollow">我收藏的问题数：<b>{$follow_qna_count.userfollowCount}个</b></a>
                 <div style="height:20px"></div> 
                 <div class="table-responsive">
                 <table width="1000" class="table table-striped table-hover">
                   <thead>
                   <tr>
-                    <th>问题</th>
+                    <th>发布</th>
                     <th>收藏日期</th>
                     <th>用户</th>
                     <th>操作</th>
                   </tr>
                   </thead>
-                  {volist name="follow_list" id="follow" empty="<tr><td colspan='4' style='font-size:20px; color:#036; font-weight:bold;'>我还没有收藏任何问题</td></tr>"}
+                  {volist name="follow_list" id="follow" empty="<tr><td colspan='4' style='font-size:20px; color:#036; font-weight:bold;'>我还没有收藏任何发布</td></tr>"}
                   <tr>
-                    <td><a href="/index/qnadetails?id={$follow.qnaid}" target="_blank">{$follow.title}</a></td>
+                    <td><a href="/index/articledetails?id={$follow.articleid}" target="_blank">{$follow.title}</a></td>
                     <td>{$follow.follow_date}</td>
-                    <td><a href="/index/userreplydetail?userid={$follow.qna_userid}" target="_blank">{$follow.qna_username}</a></td>
+                    <td><a href="/index/userreplydetail?userid={$follow.article_userid}" target="_blank">{$follow.article_username}</a></td>
                     <td><a href="javascript:void(0);" onclick="delFollow('{$follow.followid}');">取消收藏</a></td>
                   </tr>
                   {/volist}

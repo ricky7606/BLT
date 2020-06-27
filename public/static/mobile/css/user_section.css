@@ -7,9 +7,9 @@ a:hover { text-decoration:none;}
 .management_section {padding:10px; background-color:#FFF; border-width:1px; border-color:#CCC;margin:0 auto; width:1200px; min-height:500px;}
 .content_section { text-align:left; min-height:500px;}
 .content_html{ width:100%; padding-left:30px;padding-top: 30px}
-.active_menu { float:left; position:relative; font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:1em; padding-right: 1em; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#03C; border-bottom-style:solid; border-bottom-width:2px;}
-.inactive_menu { float:left; position:relative; font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:1em; padding-right: 1em; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#EEE; border-bottom-width:1px; cursor:pointer;}
-.inactive_menu:hover { float:left; font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:50px; padding-right:50px; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#03C; border-bottom-style:solid; border-bottom-width:2px; color:#03C; cursor:pointer;}
+.active_menu { font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:30px; padding-right: 30px; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#03C; border-bottom-style:solid; border-bottom-width:2px;}
+.inactive_menu { font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:30px;; padding-right: 30px;; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#EEE; border-bottom-width:1px; cursor:pointer;}
+.inactive_menu:hover { font-size:0.9em; font-weight:normal; padding-top:10px; padding-bottom:10px; padding-left:30px; padding-right:30px; border-right-width:0px; border-right-style:solid; border-right-color:#CCC; background-color:#FFF; border-bottom-color:#03C; border-bottom-style:solid; border-bottom-width:2px; color:#03C; cursor:pointer;}
 .last_menu { border-right-width:0px;}
 .last_menu:hover { border-right-width:0px;}
 .user_list_left { width:60%; float:left; padding:10px; text-align:left; margin-top:10px;margin-left: 10px} 

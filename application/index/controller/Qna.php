@@ -37,7 +37,16 @@ class Qna extends Controller
 		$this->assign('coins', $coins);
 		$this->assign('frozen_coins', $frozen_coins);
         $this->assign('userid', Cookie::get('userid'));
-        $this->assign('header_type', 'user');
+        $this->assign('header_type', 'qna_user');
+		
+		$invite_user = Request::instance()->get('invite_user');
+		$invite_username = "";
+		if($invite_user!=''){
+			$user = new Users;
+			$invite_username=$user->getUserDetails($invite_user)->username;
+		}
+		$this->assign('invite_user', $invite_username);
+		
 		return $this->fetch();
 	}
 
@@ -50,8 +59,7 @@ class Qna extends Controller
 		$title = Request::instance()->post('title');
 		$content = Request::instance()->post('content');
 		$content_text = Request::instance()->post('content_text');
-		$coins = Request::instance()->post('coins');
-		if($coins == '') {$coins = 0;}
+		$coins = 0;
 		$invite_users = Request::instance()->post('invite_users');
 		$total_invite = 1;
 		if($invite_users != ''){
@@ -60,11 +68,6 @@ class Qna extends Controller
 			if($total_invite>10){
 				return '您最多只能邀请10位用户回答';
 			}
-		}
-		$user = new Users;
-		$userinfo = $user->getUserInfo($userid);
-		if(bcsub($userinfo->coins, $userinfo->frozen_coins) < bcmul($total_invite, $coins)){
-			return '比邻币余额不足';
 		}
 		$thumb_img = getThumbImg($content);
 		if($thumb_img != ''){

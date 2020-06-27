@@ -81,13 +81,13 @@ class UserQnaDetail extends Controller
 		$this->assign('qna_list',$qna_list);
 
 		if(Cookie::has('userid')){
-			$this->assign('header_type','user');
+			$this->assign('header_type','qna_user');
 			$user->chkReminder($login_userid);
 			$userinfo = $user->getUserInfo($login_userid);
 			$this->assign('userinfo',$userinfo);
 			$this->assign('login_userid',$login_userid);
 		}else{
-			$this->assign('header_type','normal');
+			$this->assign('header_type','qna_normal');
 			$this->assign('login_userid','');
 		}
 		$ads = new Ads;

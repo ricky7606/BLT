@@ -1,12 +1,12 @@
 <?php
-namespace app\index\controller;
+namespace app\mobile\controller;
 use think\Controller;
 use think\Request;
 use think\Cookie;
-use app\index\model\Users;
-use app\index\model\UsersTags;
-use app\index\model\UserTagDetails;
-use app\index\model\Tags;
+use app\mobile\model\Users;
+use app\mobile\model\UsersTags;
+use app\mobile\model\UserTagDetails;
+use app\mobile\model\Tags;
 
 class Tag extends Controller
 {
@@ -28,18 +28,25 @@ class Tag extends Controller
 	}
 
 	public function addCustomTag($text){
+		if(!Cookie::has('userid')){
+			return "notlogin";
+		}
+		if(trim($text)==''){
+			return "标签不能为空！";
+		}
 		$level = 2;
 		$parentid = '1';
-		if(!Cookie::has('userid')){
-			return $this->redirect('/index/login');
-		}
 		$userid = Cookie::get('userid');
 		$tag = new Tags;
 		$tagid = $tag->addTag($level, $parentid, $text);
 		if($tagid != ''){
+			//不直接添加到用户标签集
+			/*
 			$usertag = new UsersTags;
 			$result = $usertag->addTag($userid, $tagid);
 			return $result;
+			*/
+			return "ok";
 		}else{
 			return "数据错误！";
 		}

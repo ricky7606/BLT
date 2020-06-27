@@ -27,6 +27,12 @@ class Usertags extends Controller
         return $this->fetch();
 	}
 	
+	public function getTagsByUserId($userid){
+		$user_tag = new UserTagDetails;
+		$user_tag_list = $user_tag->getTagListByUserId($userid);
+		return $user_tag_list;
+	}
+	
 	public function getRandomTags(){
 		$tag = new Tags;
 		$tag_list = $tag->getRandomTags(15);
@@ -91,11 +97,12 @@ class Usertags extends Controller
 	
 	public function getTagUsers(){
 		$tagid = Request::instance()->post('tagid');
+		$page = Request::instance()->post('page');
 		if($tagid == ""){
 			return "";
 		}else{
 			$tag = new UserTagDetails;
-			return $tag->getTagUsers($tagid);
+			return $tag->getTagUsers($tagid,12,$page);
 		}
 	}
 }

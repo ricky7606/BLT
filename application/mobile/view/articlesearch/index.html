@@ -1,0 +1,128 @@
+{include file="header/index" header_type="$header_type" /}
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
+<script src="/static/mobile/js/wangEditor.min.js"></script>
+<div style="background-color:#F2F2F2;">
+    <div style="margin:0 auto; width:1200px;">
+        <div style="text-align:left;">
+            <div style="height:10px";></div>
+            <div class="content_box" id="loading" style="height:2000px; text-align:center">
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
+            </div>
+            <div class="content_box" id="content">
+            {if condition="$no_result"}
+            <div style='width:100%;text-align:center; padding:50px; font-size:18px; font-weight:bold;'><span class="am-icon-frown-o" style="color:#900;margin-right=10px;"></span> 没有找到相关发布，您可以浏览一下最新发布。</div>
+            {/if}
+            {volist name="list" id="articleid" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有发布数据</div>"}
+            <div class="header_title split_left">
+            <img src="{if condition="!$articleid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$articleid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title_article" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$articleid['userinfo']['userid']}';">{$articleid.username}</span> <a href="javascript:void(0);" user-reveal-id="tag_box" data-animation="fade" data-user="{$articleid.username}" data-user-id="{$articleid['userinfo']['userid']}" data-type="user_tags"><span class="am-icon-tags am-icon-sm header_title_article" style="color:#06C;" title="用户标签报告"></span></a>
+            {if condition="$header_type == 'user'"} 
+            {if condition="$userid != $articleid.userid"}
+            {if condition="$articleid['attention'] == '-1'"}
+            <button type="button" class="btn btn-default button_grey" id="attBtn{$i}" onclick="attUser('{$articleid.userid}','{$i}');this.disabled='disabled';" style="margin-left:20px;"><i class="am-icon-plus"></i> 关注TA</button>
+            {else /}
+            <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;"><i class="am-icon-user-plus"></i> 已关注</button>
+            {/if}
+            {/if}
+            {/if}
+            </div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be type icon --></div>
+            <div style="clear:both;"></div>
+            <div style="height:10px;"></div>
+            <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/mobile/articledetails?id={$articleid.articleid}'">{$articleid.title}</div>
+            <div style="padding-top:10px; padding-bottom:5px;">{volist name="articleid['tags']" id="tag_list" empty="<span style='color:#999; font-size:10px;'>没有添加标签</span>"}<a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="{$tag_list.tag}" data-tag-id="{$tag_list.tagid}" data-type="users">{$tag_list.tag}</a> {/volist}</div>
+            <div style="height:10px;"></div>
+            {if condition="$articleid.title_img neq ''"}
+            <div style="width:100%" id="content_text_{$i}">
+                <div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$articleid.title_img}" class="thumb_img"></div>
+                <div style="width:718px; float:left;" class="format_text">{$articleid.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});addView('{$articleid.articleid}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            </div>
+            <div style="clear:both;"></div>
+            {else /}
+            <div id="content_text_{$i}" class="format_text">{$articleid.content_text} <a href="javascript:void(0)" onclick="viewAll({$i});addView('{$articleid.articleid}');">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            {/if}
+            <div id="content_html_{$i}" style="display:none; overflow-x:auto;" class="format_text">
+            	<div style="width:100%; text-align:center;"><img src="{$articleid.title_img}" style="max-width:840px; max-height:800px; padding-bottom:20px;" /></div>
+                <div>{$articleid.content}</div>
+                <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$i});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+            </div>
+            <div style="height:20px;"></div>
+            <div>
+            <div class="grey_text split_left"><span class="am-icon-eye" style="color:#999;"></span> <span id="viewCount{$i}" style="color:#999;">{$articleid['view_count']}</span>次阅读</span> <span id="followSpan{$i}" style="cursor:pointer;margin-left:30px;color:#999;" {if condition="$userid"}{if condition="$userid != $articleid.userid"}{if condition="$articleid.follow == -1"}onclick="follow('{$articleid.articleid}','{$i}');" title="收藏"{/if}{/if}{/if}><span id="followIcon{$i}" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$articleid.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount{$i}" style="color:#999;">{$articleid.followCount}</span>个收藏</span> <span id="likeSpan{$i}" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$articleid.articleid}',{$i});" title='{if condition="$articleid.article_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon{$i}" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$articleid.article_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount{$i}" style="color:#999;">{$articleid.likeCount}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-article-id="articleid{$i}" data-type="article" style="color:#999;">举报</a>{/if}</div>
+            <div class="split_right">
+                {if condition="$header_type == 'user'"}
+                {if condition="$userid != $articleid.userid"}
+                <a href="javascript:void(0);" article-reveal-id="comment_box" data-title="article_title{$i}" data-id="articleid{$i}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要评论</a>
+                {/if}
+                {/if}
+            {if condition="$header_type == 'user'"}
+            {if condition="$userid != $articleid.userid"}
+            {if condition="$articleid['follow'] == '-1'"}
+            <button type="button" class="btn btn-default button_blue" id="followBtn{$i}" onclick="follow('{$articleid.articleid}','{$i}');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏发布</button>
+            {else /}
+            <button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>
+            {/if}
+            {/if}
+            {/if}
+            </div>
+            <input type="hidden" id="article_title{$i}" value="{$articleid.title}"> 
+            <input type="hidden" id="articleid{$i}" value="{$articleid.articleid}"> 
+            <div style="clear:both;"></div>
+            </div>
+            <hr style="height:1px; color:#CCC;">
+            {/volist}
+            <div style="text-align:center;">{$list->render()}</div>
+            </div>
+            <div style="clear:both;"></div>
+            <div style="height:20px;"></div>
+        </div>
+    </div>
+</div>
+<div id="comment_box" class="reveal-modal" style="width:700px;">
+    <div class="header_title" id="article_title"></div>
+    <div style="height:20px;"></div>
+    <div id="editordiv" class="text">
+    </div>
+    <div style="height:20px;"></div>
+    <button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer">发布评论</button>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px;">
+    <div id="box_title" class="header_title">子标签列表</div>
+    <div style="height:20px;"></div>
+    <div style="line-height:50px;"><span id="current_text">当前标签</span>：<span id="current_tag"></span></div>
+    <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
+    <hr style="color:#999; height:1px; width:90%;">
+    <div id="data_list" style="line-height:50px;"></div>
+    <div id="article_list" style="line-height:30px;"></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="report_box" class="reveal-modal" style="width:420px;overflow-y:scroll; overflow-x:hidden; height:360px;">
+    <div id="box_title" class="header_title">违规举报</div>
+    <div style="height:20px;"></div>
+    <div>
+    <select name="report_type" id="report_type" onchange="chkReportType();">
+    <option value="">选择举报类别</option>
+    <option value="1">辱骂、歧视、挑衅、骚扰等语言行为</option>
+    <option value="2">内容抄袭</option>
+    <option value="3">侵犯个人或企业权益</option>
+    <option value="4">垃圾广告信息</option>
+    <option value="5">色情、暴力、血腥等违法违规内容</option>
+    <option value="6">政治敏感内容</option>
+    <option value="7">诱导分享、投票等行为</option>
+    </select>
+    </div>
+    <div style="margin:20px;"><textarea name="report_comment" id="report_comment" style="width:280px;" rows="3" placeholder="举报说明（选填），可填写详细说明，如抄袭的原文链接等。（200字以内）" onblur="chkReportComment();" onkeyup="chkReportComment();"></textarea></div>
+    <div style="margin:20px;"><button type="button" name="reportbtn" id="reportbtn" class="btn btn-default user_button_blue_answer">我要举报</button></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+    <input type="hidden" name="articleid" id="articleid" value="" />
+</div>
+<input type="hidden" name="content" id="content" value="" />
+<input type="hidden" name="content_text" id="content_text" value="" />
+<input type="hidden" id="userid" value="{$userid}">
+<input type="hidden" id="recommandTags_text" value="">
+<input type="hidden" name="reply_type" id="reply_type" value="detail" />
+<script src="/static/mobile/js/index.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.article.index.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.articlelisttag.js?8"></script>

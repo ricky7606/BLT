@@ -1,0 +1,140 @@
+@charset "utf-8";
+.checked
+{
+	background-image: url(lc.jpg);
+	height: 16px;
+	width: 16px;
+	background-repeat: no-repeat;
+	text-indent: 20px;
+}
+.unchecked
+{
+	background-image: url(lb.jpg);
+	height: 16px;
+	width: 16px;
+	background-repeat: no-repeat;
+	text-indent: 20px;
+}
+.selected
+{
+	background-image: url(lc.jpg);
+	height: 16px;
+	width: 16px;
+	background-repeat: no-repeat;
+	text-indent: 20px;
+}
+.unselected
+{
+	background-image: url(lb.jpg);
+	height: 16px;
+	width: 16px;
+	background-repeat: no-repeat;
+	text-indent: 20px;
+}
+.font {
+	LINE-HEIGHT: 18px; FONT-FAMILY: Arial; FONT-SIZE: 14px; TEXT-DECORATION: none
+}
+.fonts {
+	FONT-FAMILY: Arial; FONT-SIZE: 13px; TEXT-DECORATION: none
+}
+.titfont {
+	LINE-HEIGHT: 18px; FONT-FAMILY: Arial; FONT-SIZE: 14px;  TEXT-DECORATION: none
+}
+.titfontb {
+	LINE-HEIGHT: 20px; FONT-FAMILY: Arial; COLOR: #bd0000; FONT-SIZE: 15px;  TEXT-DECORATION: none;
+}
+.midbg {
+	BACKGROUND-IMAGE: url(images/mid_03.jpg); BACKGROUND-ATTACHMENT: fixed; BACKGROUND-REPEAT: no-repeat; BACKGROUND-POSITION: 50% top
+}
+.midbg2 {
+	BACKGROUND-IMAGE: url(images/mid_04.jpg); BACKGROUND-ATTACHMENT: fixed; BACKGROUND-REPEAT: no-repeat; BACKGROUND-POSITION: 50% top
+}
+.btstyle {
+	BACKGROUND-IMAGE: url(images/mebg.jpg); BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: Arial; COLOR: #ffffff; FONT-SIZE: 14px
+}
+.inputtext {
+	border: 1px solid #000000;
+    LINE-HEIGHT: 12px;
+	WIDTH: 90%;
+	FONT-FAMILY: Arial;
+	FONT-SIZE: 13px;
+	color:#AC111C;
+	font-weight:bold;
+	padding-top: 4px;
+	padding-left: 5px;
+}
+A:link {
+	COLOR: #003399
+}
+A:visited {
+	COLOR: #003399
+}
+A:hover {
+	COLOR: red
+}
+SPAN.navbar A:link {
+	FONT-FAMILY: verdana, arial, helvetica; COLOR: #ffffff; FONT-SIZE: 10pt;  TEXT-DECORATION: none
+}
+SPAN.navbar A:visited {
+	FONT-FAMILY: verdana, arial, helvetica; COLOR: #efefef; FONT-SIZE: 10pt;  TEXT-DECORATION: none
+}
+SPAN.navbar A:hover {
+	COLOR: #ffcc00; TEXT-DECORATION: none
+}
+SPAN.more A:link {
+	FONT-FAMILY: MS Sans Serif; COLOR: #000088; FONT-SIZE: 9pt;  TEXT-DECORATION: none
+}
+SPAN.more A:visited {
+	FONT-FAMILY: vMS Sans Serif; COLOR: #000077; FONT-SIZE: 9pt;  TEXT-DECORATION: none
+}
+SPAN.more A:hover {
+	COLOR: #3cb371; TEXT-DECORATION: none
+}
+SPAN.footbar A:link {
+	FONT-FAMILY: verdana, arial, helvetica; COLOR: #000080; FONT-SIZE: 10pt;  TEXT-DECORATION: underline
+}
+SPAN.footbar A:visited {
+	FONT-FAMILY: verdana, arial, helvetica; COLOR: #000080; FONT-SIZE: 10pt;  TEXT-DECORATION: underline
+}
+SPAN.footbar A:hover {
+	COLOR: #ff0000; TEXT-DECORATION: underline
+}
+.SRFormReqTxtLRTB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #FFFFFF; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 14px; BORDER-TOP: #696969 1px solid; BORDER-RIGHT: #696969 1px solid; PADDING-TOP: 4px
+}
+.SRFormHdrLRB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #000088; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; COLOR: #ffffff; FONT-SIZE: 14px;  BORDER-RIGHT: #696969 1px solid; PADDING-TOP: 4px
+}
+.SRFormHdrLRTB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #000088; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; COLOR: #ffffff; FONT-SIZE: 14px; BORDER-TOP: #696969 1px solid;  BORDER-RIGHT: #696969 1px solid; PADDING-TOP: 4px
+}
+.SRFormLTB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #FFFFFF; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px; BORDER-TOP: #696969 1px solid;  PADDING-TOP: 4px
+}
+.SRFormLB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #FFFFFF; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px;  PADDING-TOP: 4px
+}
+.SRFormLRTB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #FFFFFF; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px; BORDER-TOP: #696969 1px solid;  BORDER-RIGHT: #696969 1px solid; PADDING-TOP: 4px
+}
+.SRFormLRB {
+	BORDER-BOTTOM: #FFFFFF 1px solid; BORDER-LEFT: #FFFFFF 1px solid; PADDING-BOTTOM: 4px; BACKGROUND-COLOR: #FFFFFF; PADDING-LEFT: 4px; PADDING-RIGHT: 4px; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px;  BORDER-RIGHT: #696969 1px solid; PADDING-TOP: 4px
+}
+.SRFormTxt {
+	BACKGROUND-COLOR: #FFFFFF; FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px;  height:18px;
+}
+.SRFormTxtNB {
+	BACKGROUND-COLOR: #FFFFFF; FONT-FAMILY: verdana, arial, helvetica; MARGIN-LEFT: 0px; FONT-SIZE: 12px; height:18px;
+}
+.SRFormTxtNB2 {
+	FONT-FAMILY: verdana, arial, helvetica; FONT-SIZE: 12px;
+}
+.SRFormTxtCirc {
+	BACKGROUND-COLOR: #FFFFFF; FONT-FAMILY: helvetica, arial; COLOR: #FFFFFF; FONT-SIZE: 15px; height:18px;
+}
+.SRFormSelect {
+	FONT-FAMILY: arial, verdana, helvetica; FONT-SIZE: 13px
+}
+.SRHdrTxt {
+	FONT-STYLE: italic; FONT-FAMILY: arial; COLOR: #bd0000; FONT-SIZE: 20px; FONT-WEIGHT: bolder
+}

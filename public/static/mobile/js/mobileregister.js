@@ -88,7 +88,7 @@ function chkUsername(){
 			});
 			return false;
 		}
-        $.post('/index/register/chkUsername', {username:jQuery.trim($('#username').val())}, function(msg) {
+        $.post('/mobile/register/chkUsername', {username:jQuery.trim($('#username').val())}, function(msg) {
 			if(msg=='exists'){
 				$("#message").html("用户名已经存在了，请换个别的吧！");
 				$("#username").css('border-color','#F00');
@@ -113,7 +113,7 @@ function chkUsername(){
 function chkRecommend(){
 	var recommend = document.getElementById('recommend').value;
 	if(recommend.length > 0){
-			$.post('/index/register/chkUsername', {username:jQuery.trim($('#recommend').val())}, function(msg) {
+			$.post('/mobile/register/chkUsername', {username:jQuery.trim($('#recommend').val())}, function(msg) {
 				if(msg=='exists'){
 					$("#username").css('border-color','#093');
 					$("#username").css('color','');
@@ -134,7 +134,7 @@ function chkMobile(){
 	var mobile = document.getElementById('mobile').value;
 	if(mobile.length > 0){
 		if(chkCellphone()){
-			$.post('/index/register/chkMobile', {mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+			$.post('/mobile/register/chkMobile', {mobile:jQuery.trim($('#mobile').val())}, function(msg) {
 				if(msg=='exists'){
 					$("#message").html("手机号码已经被注册了");
 					$("#mobile").css('border-color','#F00');
@@ -235,7 +235,7 @@ function chkPassword2(){
 function chkImgcode(){
 	var imgcode = document.getElementById('imgcode').value;
 	if(imgcode.length > 0){
-        $.post('/index/register/chkImgcode', {imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {
+        $.post('/mobile/register/chkImgcode', {imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {
 			if(msg=='error'){
 				$("#message").html("图形验证码错误");
 				$("#imgcode").css('border-color','#F00');
@@ -258,7 +258,7 @@ function chkImgcode(){
 function chkSmscode(){
 	var smscode = document.getElementById('smscode').value;
 	if(smscode.length > 0){
-        $.post('/index/register/chkSmscode', {smscode:jQuery.trim($('#smscode').val()),mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+        $.post('/mobile/register/chkSmscode', {smscode:jQuery.trim($('#smscode').val()),mobile:jQuery.trim($('#mobile').val())}, function(msg) {
 			if(msg=='error'){
 				$("#message").html("短信验证码错误");
 				$("#smscode").css('border-color','#F00');
@@ -285,7 +285,7 @@ function submitForm(){
 	//if(true){
 		document.getElementById('error').innerHTML = "";
 		document.getElementById("submitbtn").innerHTML = "提交中，请稍后...";
-		$.post('/index/register/getRegister', {recommend:jQuery.trim($('#recommend').val()),username:jQuery.trim($('#username').val()),mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {			if(msg=='ok'){
+		$.post('/mobile/register/getRegister', {recommend:jQuery.trim($('#recommend').val()),username:jQuery.trim($('#username').val()),mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()),imgcode:jQuery.trim($('#imgcode').val())}, function(msg) {			if(msg=='ok'){
 				alert("信息已经提交，感谢您的注册");
 		
 				window.location.href='/index/mobileregister/regOK';
@@ -300,7 +300,7 @@ function submitForm(){
 }
 function get_mobile_code(){
 	if(isUsernameOK && isMobileOK && isPasswordOK && isPassword2OK && isImgcodeOK){
-		$.post('/index/register/sendSms', {mobile:jQuery.trim($('#mobile').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+		$.post('/mobile/register/sendSms', {mobile:jQuery.trim($('#mobile').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
 			if(msg=='提交成功'){
 				RemainTime();
 			}else{
@@ -352,7 +352,7 @@ function RemainTime(){
 
 function getRandomTags(){
 	$("#recommandTags").html("正在为您生成随机推荐，请稍候...<i class=\"am-icon-spinner am-icon-spin\"></i>");
-	$.post('/index/usertags/getRandomTags', {}, function(msg) {
+	$.post('/mobile/usertags/getRandomTags', {}, function(msg) {
 		if(msg==''){
 			$("#recommandTags").html('没有推荐给您的标签数据了');
 		}else{
@@ -395,7 +395,7 @@ function searchTags(new_page){
 	$("#tag_searched").css('display','block');
 	$("#tag_searched").html('<img src="/static/images/loading.gif">');
 	if(new_page<0 || new_page == ''){new_page=1;}
-	$.post('/index/usertags/searchTags', {tag:jQuery.trim($('#search_tags').val()),page:new_page}, function(msg) {
+	$.post('/mobile/usertags/searchTags', {tag:jQuery.trim($('#search_tags').val()),page:new_page}, function(msg) {
 		if(msg == ''){
 			xcsoft.error('没有找到您想要的标签',2000);
 			$("#tags_recommand").css('display','block');
@@ -441,7 +441,7 @@ function searchTags(new_page){
 }
 
 function chkTag(tagid){
-	$.post('/index/usertags/addTag', {tagid:tagid}, function(msg) {
+	$.post('/mobile/usertags/addTag', {tagid:tagid}, function(msg) {
 		if(msg.substr(0,2) == 'ok'){
 			alert('标签添加成功！');
 			lefttag--;
@@ -464,7 +464,7 @@ function chkTag(tagid){
 
 function delTag(user_tagid){
 	if(confirm("您确定要删除这个标签吗？")){
-		$.post('/index/usertags/delTag', {user_tagid:user_tagid}, function(msg) {
+		$.post('/mobile/usertags/delTag', {user_tagid:user_tagid}, function(msg) {
 			if(msg.substr(0,2) == 'ok'){
 				xcsoft.success('标签删除成功！',2000);
 				tmpArr = msg.split(",");

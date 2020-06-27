@@ -1,0 +1,282 @@
+{include file="header/index" header_type="$header_type" /}
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
+<script src="/static/mobile/js/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var handler = null;
+    $(function(){
+       //绑定滚动事件
+      $(document).bind('scroll', onScroll);
+      
+  })
+
+//定义滚动函数
+page = 1;
+loadState = null;//记录加载状态的变量
+loadedAll = false; //是否全部加载完毕
+
+function onScroll(event) {
+//是否到底部（这里是判断离底部还有100px开始载入数据）.
+var closeToBottom = ($(window).scrollTop() + $(window).height() > $(document).height() - 200);
+// var screen = window.screen.height;//可视区域高度
+// var compare = document.body.clientHeight-document.body.scrollTop;//可视区域顶部距离整个网页的底部距离
+//if(screen+100 >= compare && window.loadState == null){
+if(closeToBottom && window.loadState == null && loadedAll == false) {
+    //$("#loading").show();
+    window.loadState = 1;
+    var p = window.page + 1
+    window.page = p;
+    $("#content").append('<div class="loadAjax" style="text-align: center"><img src="/static/images/loading.gif" width="600"></div>')
+
+    $.ajax({
+        type: "get",
+        url:'/mobile/articlelist/ajaxMessage',
+        data:{page:p},
+        success:function(data){
+            html = "";
+            //$("#loading").hide();
+
+            content = data.list;
+            metadata = data.meta;
+			if(content.length==0){
+				loadedAll = true;
+				return false;
+			}else{
+				for(i = 0; i < content.length; i++){
+					item = content[i];
+					tags = content[i]['tags'];
+					html += '<div class="header_title" style="float: left;">';
+					if(item['userinfo']['personal_pic'] != "null" && item['userinfo']['personal_pic'] != null && item['userinfo']['personal_pic'] != ""){
+						html += '<img src="' + item['userinfo']['personal_pic'] + '"';
+					} else {
+						html += '<img src="/static/images/profile_pic.jpg"';
+					}
+					html += 'class="user_pic" style="margin-right:20px;">  <span class="header_title" style="cursor:pointer;font-size: 1em" onclick="window.location.href="/mobile/userreplydetail?userid=' + item['userinfo']['userid'] + '">' + item['userinfo']['username'] + "</span> <a href=\"javascript:void(0);\" user-reveal-id=\"tag_box\" data-animation=\"fade\" data-user=\"" + item['userinfo']['username'] + "\" data-user-id=\"" + item['userinfo']['userid'] +"\" data-type=\"user_tags\"><span class=\"am-icon-tags am-icon-sm header_title_arctile\" style=\"color:#06C;\" title=\"用户标签报告\"></span></a>";
+					if(metadata['header_type'] == 'user' && item['userid'] != metadata['selfuserid']){
+						if(item['attention'] == '-1'){
+							html += '<button type="button" class="btn btn-default button_grey" id="attBtn'+ metadata['page'] + i +'" onclick="attUser(\'' + item['userid'] + '\',' + metadata['page'] + i + ');this.disabled=\'disabled\';" style="margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-plus"></i> 关注TA</button>';
+						}else{
+							html += '<button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;font-size: 0.8em;height: 2em"><i class="am-icon-user-plus"></i> 已关注</button>'
+						}
+					}
+					html += '</div>';
+	
+					html += '<div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be type icon --></div>';
+					html += '<div style="clear:both;"></div><div style="height:10px;"></div>';
+	
+					
+					html += '<div class="content_title" style="cursor:pointer;" onclick="window.location.href=\'/mobile/articledetails?id=' + item['articleid'] + '\'">' + item['title'] + '<span style="color:#999; font-size:0.8em;">&nbsp; <i class="am-icon-comments"></i> 评论数' + item['reply_count'] + '</span></div><div style="height:10px;"></div>';
+					
+					//Tags
+					html += '<div style="height:20px;"></div>';
+					html += '<div style="padding-top:10px; padding-bottom:5px;">';
+					if(tags.length>0){
+						for(j=0;j<tags.length;j++){
+							html += '<a href="javascript:void(0);" class="tag" title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="' + tags[j].tag + '" data-tag-id="' + tags[j].tagid + '" data-type="users">' + tags[j].tag + '</a> ';
+						}
+					}else{
+						html += '<span style="color:#999; font-size:10px;">没有添加标签</span>';
+					}
+					html += '</div>';
+					html += '<div style="height:20px;"></div>';
+	
+	
+					if(item['title_img'] != ''){
+						html += '<div style="width:100%" id="content_text_' + metadata['page'] + i + '"><div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="title_img"><img src="' + item['title_img'] + '" class="thumb_img"></div><div style="width:770px; float:right;" class="format_text"> ' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div></div><div style="clear:both;"></div>';
+					} else {
+						html += '<div id="content_text_' + metadata['page'] + i + '" class="format_text">' + item['content_text'] + ' <a href="javascript:void(0)" onclick="viewAll(' + metadata['page'] + i + ');">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>';
+					}
+				
+					html += '<div id="content_html_' + metadata['page'] + i + '" style="display:none; overflow-x:auto;" class="format_text"><div style="width:100%; text-align:center;"><img src="' + item['title_img']+ '" style="max-width:840px; max-height:800px; padding-bottom:20px;" /></div><div>' + item['content'] + '</div><div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll(' + metadata['page'] + i + ');">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div></div><div style="height:20px;"></div><div><div class="grey_text" style="float: left"><span class="am-icon-eye" style="color:#999;"></span> <span id="viewCount' + metadata['page'] + i + '" style="color:#999;">' + item['view_count'] + '次阅读</span> <span id="followSpan' + metadata['page'] + i + '" style="cursor:pointer;color:#999;margin-left:30px;"';
+	
+					if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid'] && item['follow'] == -1){
+						html += 'onclick="follow("' + item['articleid'] + '","' + metadata['page'] + i + '");" title="收藏"';
+					}
+					html += '><span id="followIcon' + metadata['page'] + i + '" class="am-icon-star" style="cursor:pointer; color:';
+					if(metadata['header_type'] == 'user'){
+						if(item['follow'] == 1){
+							html += '#09F';
+						} else {
+							html += '#999';
+						}
+					} else {
+						html += '#999';
+					}
+					html += ';"></span> <span id="followCount' + metadata['page'] + i + '" style="color:#999;">' + item['followCount'] + '</span>个收藏</span> <span id="likeSpan' + metadata['page'] + i + '" style="cursor:pointer; margin-left:30px;color:#999;"';
+					if(metadata['header_type'] == 'user'){
+						html += 'onclick="chkLike(\'' + item['articleid'] + '\',' + metadata['page'] + i + ');" title="';
+						if(item['article_like'] == -1){
+							html += '点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999";>';
+						} else {
+							html += '取消点赞"><span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#09F";>';
+						}
+					} else {
+						html += '<span id="likeIcon' + metadata['page'] + i + '" class="am-icon-thumbs-up" style="color:#999;>';
+					}
+					html += '</span><span id="likeCount' + metadata['page'] + i + '" style="color:#999;">' + item['likeCount'] + '</span>个赞</span></span>';
+	
+					if(metadata['header_type'] == 'user'){
+						html += '<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该发布" report-reveal-id="report_box" data-animation="fade" data-article-id="articleid' + metadata['page'] + i+ '" data-type="article" style="color:#999;">举报</a>';
+					}
+					html += '</div>';
+					
+					html += '<div class="split_right" style="float: right;">';
+					if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
+						html += '<a href="javascript:void(0);" article-reveal-id="comment_box" data-title="article_title' + metadata['page'] + i +'" data-id="articleid'+ i +'" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要评论</a>';
+					}
+					if(metadata['header_type'] == 'user' && metadata['selfuserid'] != item['userid']){
+						if(item['follow'] == "-1"){
+							html += '<button type="button" class="btn btn-default button_blue" id="followBtn' + metadata['page'] + i + '" onclick="follow(\'' + item['articleid'] + '\',\'' + metadata['page'] + i + '\');this.disabled=\'disabled\';" style="margin-left:30px;font-size: 0.8em; height: 2em"><i class="am-icon-star-o"></i> 收藏问题</button>';
+						}else{
+							html += '<button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>';
+						}
+					}
+				html += '</div><input type="hidden" id="article_title' + metadata['page'] + i + '" value="' + item['title'] + '"><input type="hidden" id="articleid' + metadata['page'] + i + '" value="' + item['articleid'] + '"><div style="clear:both;"></div></div>';
+	
+					html += '<hr style="height:1px; color:#CCC;">';
+				}
+			}
+            
+            $(".loadAjax").remove();
+            $('#content').append(html);
+            window.loadState = null;//设置为空,否则清除掉也没用
+
+
+
+
+        }
+    });
+  }else{
+	  $(".loadAjax").remove();
+ }
+}
+</script>
+
+
+<div style="background-color:#F2F2F2;">
+    <div style="margin:0 auto; width:1200px;">
+        <div style="text-align:left;">
+            <div style="height:10px";></div>
+            <div class="content_box" id="loading" style="height:2000px; text-align:center">
+                <div style="height:200px;"><img src="/static/images/loading.gif" width="600"></div>
+            </div>
+            <div class="content_box" id="content">
+            {volist name="list" id="articleid" key="k" empty="<div style='width:100%;text-align:center; padding:200px; font-size:18px; font-weight:bold;'>暂时没有发布数据</div>"}
+            <div class="header_title split_left">
+            <img src="{if condition="!$articleid['userinfo']['personal_pic']"}/static/images/profile_pic.jpg{else /}{$articleid['userinfo']['personal_pic']}{/if}" class="user_pic_small" style="margin-right:20px;">  <span class="header_title_article" style="cursor:pointer;" onclick="window.location.href='/mobile/userreplydetail?userid={$articleid['userinfo']['userid']}';">{$articleid.username}</span> <a href="javascript:void(0);" user-reveal-id="tag_box" data-animation="fade" data-user="{$articleid.username}" data-user-id="{$articleid['userinfo']['userid']}" data-type="user_tags"><span class="am-icon-tags am-icon-sm header_title_article" style="color:#06C;" title="用户标签报告"></span></a>
+            {if condition="$header_type == 'user'"} 
+            {if condition="$userid != $articleid.userid"}
+            {if condition="$articleid['attention'] == '-1'"}
+            <button type="button" class="btn btn-default button_grey" id="attBtn{$k}" onclick="attUser('{$articleid.userid}','{$k}');this.disabled='disabled';" style="margin-left:20px;"><i class="am-icon-plus"></i> 关注TA</button>
+            {else /}
+            <button type="button" class="btn btn-default button_white" style="width:auto; margin-left:20px;"><i class="am-icon-user-plus"></i> 已关注</button>
+            {/if}
+            {/if}
+            {/if}
+            </div>
+            <div class="split_right" style="padding-top:18px; color:#03C; font-weight:bold;"><!-- used to be type icon --></div>
+            <div style="clear:both;"></div>
+            <div style="height:10px;"></div>
+            <div class="content_title" style="cursor:pointer;" onclick="window.location.href='/mobile/articledetails?id={$articleid.articleid}'">{$articleid.title}
+            <!-- 回复数 -->
+            <span style="color:#999; font-size:0.8em;">&nbsp; <i class="am-icon-comments"></i> 评论数：{$articleid['reply_count']}</span>
+            <!-- 回复数结束 -->
+            </div>
+            <div style="height:20px;"></div>
+            <div style="padding-top:10px; padding-bottom:5px;">{volist name="articleid['tags']" id="tag_list" empty="<span style='color:#999; font-size:10px;'>没有添加标签</span>"}<a href="javascript:void(0);" class='tag' title="点击查看添加该标签的用户" data-reveal-id="tag_box" data-animation="fade" data-tag="{$tag_list.tag}" data-tag-id="{$tag_list.tagid}" data-type="users">{$tag_list.tag}</a> {/volist}</div>
+            <div style="height:20px;"></div>
+            {if condition="$articleid.title_img neq ''"}
+            <div style="width:100%" id="content_text_{$k}">
+                <div style="width:380px; float:left; padding-left:20px; padding-right:20px; padding-top:5px; text-align:center;" id="thumb_img"><img src="{$articleid.title_img}" class="thumb_img"></div>
+                <div style="width:770px;float:left;" class="format_text">{$articleid.content_text} <a href="javascript:void(0)" onclick="viewAll({$k});addView('{$articleid.articleid}');">阅读全文 <span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            </div>
+            <div style="clear:both;"></div>
+            {else /}
+            <div id="content_text_{$k}" class="format_text" style="font-size:1.2em; line-height:1.4em;">{$articleid.content_text} <a href="javascript:void(0)" onclick="viewAll({$k});addView('{$articleid.articleid}');">阅读全文<span class="am-icon-angle-down" style="color:#09F;"></span></a></div>
+            {/if}
+            <div id="content_html_{$k}" style="display:none; overflow-x:auto;" class="format_text">
+            	<div style="width:100%; text-align:center;"><img src="{$articleid.title_img}" style="max-width:840px; max-height:800px; padding-bottom:20px;" /></div>
+                <div>{$articleid.content}</div>
+                <div style="text-align:right"><a href="javascript:void(0)" onclick="hideAll({$k});">收起 <span class="am-icon-angle-up" style="color:#09F;"></span></a></div>
+            </div>
+            <div style="height:20px;"></div>
+            <div>
+            <div class="grey_text split_left"><span class="am-icon-eye" style="color:#999;"></span> <span id="viewCount{$k}" style="color:#999;">{$articleid['view_count']}次阅读</span> <span id="followSpan{$k}" style="cursor:pointer;margin-left:30px;color:#999;" {if condition="$userid"}{if condition="$userid != $articleid.userid"}{if condition="$articleid.follow == -1"}onclick="follow('{$articleid.articleid}','{$k}');" title="收藏"{/if}{/if}{/if}><span id="followIcon{$k}" class="am-icon-star" style="cursor:pointer; color:{if condition="$userid"}{if condition="$articleid.follow == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="followCount{$k}" style="color:#999;">{$articleid.followCount}</span>个收藏</span> <span id="likeSpan{$k}" style="cursor:pointer; margin-left:30px;color:#999;" {if condition="$userid"}onclick="chkLike('{$articleid.articleid}',{$k});" title='{if condition="$articleid.article_like == -1"}点赞{else /}取消点赞{/if}'{/if}><span id="likeIcon{$k}" class="am-icon-thumbs-up" style="color:{if condition="$userid"}{if condition="$articleid.article_like == 1"}#09F{else /}#999{/if}{else /}#999{/if};"></span> <span id="likeCount{$k}" style="color:#999;">{$articleid.likeCount}</span>个赞</span> {if condition="$userid"}<i class="am-icon-warning" style="color:#9999; margin-left:30px;"></i> <a href="javascript:void(0);" title="举报该提问" report-reveal-id="report_box" data-animation="fade" data-article-id="articleid{$k}" data-type="article" style="color:#999;">举报</a>{/if}</div>
+            <div class="split_right">
+                {if condition="$header_type == 'user'"}
+                {if condition="$userid != $articleid.userid"}
+                <a href="javascript:void(0);" article-reveal-id="comment_box" data-title="article_title{$k}" data-id="articleid{$k}" data-animation="fade" class="btn btn-default button_grey"><i class="am-icon-comment"></i> 我要评论</a>
+                {/if}
+                {/if}
+            {if condition="$header_type == 'user'"}
+            {if condition="$userid != $articleid.userid"}
+            {if condition="$articleid['follow'] == '-1'"}
+            <button type="button" class="btn btn-default button_blue" id="followBtn{$k}" onclick="follow('{$articleid.articleid}','{$k}');this.disabled='disabled';" style="margin-left:30px;"><i class="am-icon-star-o"></i> 收藏发布</button>
+            {else /}
+            <button type="button" class="btn btn-default button_white" style="margin-left:30px;"><i class="am-icon-star"></i> 已收藏</button>
+            {/if}
+            {/if}
+            {/if}
+            </div>
+            <input type="hidden" id="article_title{$k}" value="{$articleid.title}"> 
+            <input type="hidden" id="articleid{$k}" value="{$articleid.articleid}"> 
+            <div style="clear:both;"></div>
+            </div>
+            <hr style="height:1px; color:#CCC;">
+            {/volist}
+            </div>
+            <div style="clear:both;"></div>
+            <div style="height:20px;"></div>
+        </div>
+    </div>
+</div>
+<div id="comment_box" class="reveal-modal" style="width:700px;">
+    <div class="header_title" id="article_title"></div>
+    <div style="height:20px;"></div>
+    <div id="editordiv" class="text">
+    </div>
+    <div style="height:20px;"></div>
+    <button type="button" name="submitbtn" id="submitbtn" class="btn btn-default user_button_blue_answer">发布评论</button>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px;">
+    <div id="box_title" class="header_title">子标签列表</div>
+    <div style="height:20px;"></div>
+    <div style="line-height:50px;"><span id="current_text">当前标签</span>：<span id="current_tag"></span></div>
+    <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
+    <hr style="color:#999; height:1px; width:90%;">
+    <div id="data_list" style="line-height:50px;"></div>
+    <div id="article_list" style="line-height:30px;"></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="report_box" class="reveal-modal" style="width:420px;overflow-y:scroll; overflow-x:hidden; height:360px;">
+    <div id="box_title" class="header_title">违规举报</div>
+    <div style="height:20px;"></div>
+    <div>
+    <select name="report_type" id="report_type" onchange="chkReportType();">
+    <option value="">选择举报类别</option>
+    <option value="1">辱骂、歧视、挑衅、骚扰等语言行为</option>
+    <option value="2">内容抄袭</option>
+    <option value="3">侵犯个人或企业权益</option>
+    <option value="4">垃圾广告信息</option>
+    <option value="5">色情、暴力、血腥等违法违规内容</option>
+    <option value="6">政治敏感内容</option>
+    <option value="7">诱导分享、投票等行为</option>
+    </select>
+    </div>
+    <div style="margin:20px;"><textarea name="report_comment" id="report_comment" style="width:280px;" rows="3" placeholder="举报说明（选填），可填写详细说明，如抄袭的原文链接等。（200字以内）" onblur="chkReportComment();" onkeyup="chkReportComment();"></textarea></div>
+    <div style="margin:20px;"><button type="button" name="reportbtn" id="reportbtn" class="btn btn-default user_button_blue_answer">我要举报</button></div>
+    <div style="height:15px;"></div>
+    <a class="close-reveal-modal">&#215;</a>
+    <input type="hidden" name="articleid" id="articleid" value="" />
+    <input type="hidden" name="article_type" id="article_type" value="" />
+</div>
+<input type="hidden" name="content" id="content" value="" />
+<input type="hidden" name="content_text" id="content_text" value="" />
+<input type="hidden" id="userid" value="{$userid}">
+<input type="hidden" id="recommandTags_text" value="">
+<input type="hidden" name="reply_type" id="reply_type" value="refresh" />
+<script src="/static/mobile/js/index.js?5"></script>
+<script src="/static/mobile/js/articlelist_tags.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.article.index.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.articlelisttag.js?3"></script>

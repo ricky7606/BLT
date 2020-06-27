@@ -6,6 +6,7 @@ use think\Db;
 use think\Cookie;
 use app\index\model\Users;
 use app\index\model\Follow;
+use app\index\model\ArticleFollow;
 use app\index\model\UserTagDetails;
 
 class Userfollow extends Controller
@@ -15,10 +16,13 @@ class Userfollow extends Controller
 		if(!Cookie::has('userid')){
 			return $this->redirect('/index/login');
 		}
-		$follow = new Follow;
+		$follow = new ArticleFollow;
 		$follow_info = $follow->getFollowDetailsByUserId(Cookie::get('userid'));
+		$qna_follow = new Follow;
+		$qna_follow_count = $qna_follow->getUserFollowCount(Cookie::get('userid'));
         $this->assign('follow_list',$follow_info);
-        $this->assign('followcount',count($follow_info));
+        $this->assign('follow_article_count',count($follow_info));
+        $this->assign('follow_qna_count',$qna_follow_count);
         $this->assign('username',Cookie::get('username'));
         $this->assign('header_type','user');
 		$user = new Users;
@@ -37,7 +41,7 @@ class Userfollow extends Controller
 		}
 		$followid = Request::instance()->post('followid');
 		if($followid != ''){
-			$follow = new Follow;
+			$follow = new ArticleFollow;
 			$follow_result = $follow->deleteFollow($followid);
 			if($follow_result){
 				return "ok";

@@ -52,13 +52,13 @@ input { background-color:#f7f8fa;}
                   </tr>
                   <tr>
                     <td align="right">手机号码</td>
-                    <td align="left">{$userinfo.mobile} <span style="padding-left:50px;color:#006699;"><a href="javascript:void(0);" data-reveal-id="mobile_box" data-animation="fade"><img src="/static/images/edit.png" style="padding-right:10px;"> 修改</a></span></td>
+                    <td align="left">{$userinfo.mobile} {if condition="$userinfo.mobile == ''"}<span style="padding-left:50px;color:#006699;"><a href="javascript:void(0);" data-reveal-id="set_mobile_box" data-animation="fade"><img src="/static/images/edit.png" style="padding-right:10px;"> 设置</a></span>{else /}<span style="padding-left:50px;color:#006699;"><a href="javascript:void(0);" data-reveal-id="change_mobile_box" data-animation="fade"><img src="/static/images/edit.png" style="padding-right:10px;"> 修改</a></span>{/if}</td>
                     <td></td>
                   </tr>
                   <tr>
                     <td align="right">Email</td>
-                    <td><input type="text" class="form-control" name="email" id="email" style="background-color:#f7f8fa; height:45px; width:450px;" placeholder="请输入电子邮件地址" onblur="chkEmail();" value="{$userinfo.email}" /></td>
-                    <td><img id="check_email" width="30" /></td>
+                    <td align="left">{$userinfo.email} {if condition="$userinfo.email == ''"}<span style="padding-left:50px;color:#006699;"><a href="javascript:void(0);" data-reveal-id="set_email_box" data-animation="fade"><img src="/static/images/edit.png" style="padding-right:10px;"> 设置</a></span>{else /}<span style="padding-left:50px;color:#006699;"><a href="javascript:void(0);" data-reveal-id="change_email_box" data-animation="fade"><img src="/static/images/edit.png" style="padding-right:10px;"> 修改</a></span>{/if}</td>
+                    <td></td>
                   </tr>
                   <tr>
                     <td align="right">居住地</td>
@@ -144,49 +144,120 @@ input { background-color:#f7f8fa;}
     <div style="height:15px;"></div>
     <a class="close-reveal-modal">&#215;</a>
 </div>
-<div id="mobile_box" class="reveal-modal" style="width:720px;">
+<div id="change_mobile_box" class="reveal-modal" style="width:700px;">
     <div class="header_title">请输入现手机的验证码和新手机验证码</div>
     <div style="height:20px;"></div>
     <table width="630" align="center">
-      <tr>
-        <td align="right">验证码</td>
-        <td><input type="text" class="form-control" name="imgcode" id="imgcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入图形验证码" onblur="chkImgcode();" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" /></td>
-        <td><img id="verify_img" src="{:captcha_src()}" width="150" alt="验证码" onclick="refreshVerify()" /><br />
-          <a href="javascript:void(0);" onclick="refreshVerify()">看不清？刷新<img src="/static/images/refresh.jpg"></a></td>
-        <td><img id="check_imgcode" width="30" /></td>
-      </tr>
       <tr>
         <td align="right">短信码</td>
         <td width="202" align="left"><input type="text" class="form-control form-inline" name="old_smscode" id="old_smscode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入短信中的验证码" onblur="chkSmscode('old');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
         </td>
         <td width="130" align="left"><button type="button" id="old_zphone" onClick="get_mobile_code('old');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取短信码</button></td>
-        <td width="48" align="left"><img id="check_smscode" width="30" /></td>
+        <td width="48" align="left"><img id="check_smscode_old" width="30" /></td>
       </tr>
       <tr>
         <td align="right">新手机号</td>
-        <td colspan="2"><input type="text" class="form-control" name="new_mobile" id="new_mobile" width="11" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="11位中国大陆手机号码" onblur="chkMobile();" onkeyup="this.value=this.value.replace(/\D/g,'');" /></td>
-        <td><img id="check_mobile" width="30" /></td>
+        <td colspan="2"><input type="text" class="form-control" name="new_mobile" id="new_mobile" width="11" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="11位中国大陆手机号码" onblur="chkMobile('new');" onkeyup="this.value=this.value.replace(/\D/g,'');" /></td>
+        <td><img id="check_mobile_new" width="30" /></td>
       </tr>
       <tr>
         <td align="right">短信码</td>
         <td width="202" align="left"><input type="text" class="form-control form-inline" name="new_smscode" id="new_smscode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入短信中的验证码" onblur="chkSmscode('new');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
         </td>
         <td width="130" align="left"><button type="button" id="new_zphone" onClick="get_mobile_code('new');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取短信码</button></td>
-        <td width="48" align="left"><img id="check_smscode2" width="30" /></td>
+        <td width="48" align="left"><img id="check_smscode_new" width="30" /></td>
       </tr>
       <tr>
         <td align="right">&nbsp;</td>
         <td colspan="3" align="left"><button type="submit" name="changeMobileBtn" id="changeMobileBtn" onclick="changeMobile();" class="btn btn-default" style="width:350px; height:45px; background-color:#004d9d; color:#FFF;">修改绑定手机</button></td>
       </tr>
     </table>
-    <input type="hidden" name="register_token" id="register_token" value="{$register_token}" />
     <input type="hidden" name="old_mobile" id="old_mobile" value="{$userinfo.mobile}" />
     <a class="close-reveal-modal">&#215;</a>
 </div>
+<div id="set_mobile_box" class="reveal-modal" style="width:680px;">
+    <div class="header_title">请输入手机号码及验证码</div>
+    <div style="height:20px;"></div>
+    <table width="630" align="center">
+      <tr>
+        <td align="right">手机号码</td>
+        <td colspan="2"><input type="text" class="form-control" name="mobile_set" id="mobile_set" width="11" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="11位中国大陆手机号码" onblur="chkMobile('set');" onkeyup="this.value=this.value.replace(/\D/g,'');" /></td>
+        <td><img id="check_mobile_set" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">短信码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="set_smscode" id="set_smscode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入短信中的验证码" onblur="chkSmscode('set');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        </td>
+        <td width="130" align="left"><button type="button" id="set_zphone" onClick="get_mobile_code('set');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取短信码</button></td>
+        <td width="48" align="left"><img id="check_smscode_set" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td colspan="3" align="left"><button type="submit" name="setMobileBtn" id="setMobileBtn" onclick="setMobile();" class="btn btn-default" style="width:350px; height:45px; background-color:#004d9d; color:#FFF;">绑定手机号码</button></td>
+      </tr>
+    </table>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="change_email_box" class="reveal-modal" style="width:700px;">
+    <div class="header_title">请输入原邮箱的验证码和新邮箱验证码</div>
+    <div style="height:20px;"></div>
+    <table width="630" align="center">
+      <tr>
+        <td align="right">原邮箱验证码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="old_emailcode" id="old_emailcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入邮件中的验证码" onblur="chkEmailcode('old');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        </td>
+        <td width="130" align="left"><button type="button" id="old_zemail" onClick="get_email_code('old');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取验证码</button></td>
+        <td width="48" align="left"><img id="check_emailcode_old" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">新邮箱地址</td>
+        <td colspan="2"><input type="text" class="form-control" name="new_email" id="new_email" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="" onblur="chkEmail('new');" onkeyup="value=value.replace(/[^0-9a-zA-z.@_-]/g,'')" /></td>
+        <td><img id="check_email_new" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">新邮箱验证码码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="new_emailcode" id="new_emailcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入邮件中的验证码" onblur="chkEmailcode('new');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        </td>
+        <td width="130" align="left"><button type="button" id="new_zemail" onClick="get_email_code('new');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取验证码</button></td>
+        <td width="48" align="left"><img id="check_emailcode_new" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td colspan="3" align="left"><button type="submit" name="changeEmailBtn" id="changeEmailBtn" onclick="changeEmail();" class="btn btn-default" style="width:350px; height:45px; background-color:#004d9d; color:#FFF;">修改绑定邮箱</button></td>
+      </tr>
+    </table>
+    <input type="hidden" name="old_email" id="old_email" value="{$userinfo.email}" />
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="set_email_box" class="reveal-modal" style="width:680px;">
+    <div class="header_title">请输入邮箱地址及验证码</div>
+    <div style="height:20px;"></div>
+    <table width="630" align="center">
+      <tr>
+        <td align="right">邮箱地址</td>
+        <td colspan="2"><input type="text" class="form-control" name="set_email" id="set_email" style="background-color:#f7f8fa; height:45px; width:350px;" placeholder="" onblur="chkEmail('set');" onkeyup="value=value.replace(/[^0-9a-zA-z.@_-]/g,'')" /></td>
+        <td><img id="check_email_set" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">新邮箱验证码码</td>
+        <td width="202" align="left"><input type="text" class="form-control form-inline" name="set_emailcode" id="set_emailcode" style="background-color:#f7f8fa; height:45px; width:200px;" placeholder="请输入邮件中的验证码" onblur="chkEmailcode('set');" onkeyup="value=value.replace(/[^\w\.\/]/ig,'');" />
+        </td>
+        <td width="130" align="left"><button type="button" id="set_zemail" onClick="get_email_code('set');" class="btn btn-default" style="width:auto; height:45px; background-color:#748ba5; color:#FFF;">获取验证码</button></td>
+        <td width="48" align="left"><img id="check_emailcode_set" width="30" /></td>
+      </tr>
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td colspan="3" align="left"><button type="submit" name="setEmailBtn" id="setEmailBtn" onclick="setEmail();" class="btn btn-default" style="width:350px; height:45px; background-color:#004d9d; color:#FFF;">修改绑定邮箱</button></td>
+      </tr>
+    </table>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+<input type="hidden" name="register_token" id="register_token" value="{$register_token}" />
 <form name="pictureForm" id="pictureForm" action="/index/userprofile/uploadPic" method="post" enctype="multipart/form-data">
 <input type="file" name="upFiles" id="upFiles" onchange="chkPic();" style="opacity:0;filter:alpha(opacity:0);">
 <input type="hidden" id="pictype" name="pictype" value="" />
 <input type="hidden" id="gender" value="{$userinfo.gender}">
+<input type="hidden" id="current_username" value="{$userinfo.username}">
 </form>
-<script src="/static/js/profile.js"></script>
+<script src="/static/js/profile.js?13"></script>
 <script type="text/javascript" src="/static/js/jquery.reveal.js"></script>

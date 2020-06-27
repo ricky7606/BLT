@@ -27,6 +27,27 @@ class Tags extends Model {
 	   $this->pk = $this->db()->getTableInfo('', 'pk');     
 	}
 
+	public function addCustomTag($text){
+		addTag(2, '1', $text);
+	}
+	public function addTag($level, $parentid, $text){
+		$this->startTrans();
+		$tag = new Tags;
+		$u = uuid();
+		$this->id = $u;
+		$this->tag = $text;
+		$this->level = $level;
+		$this->parentid = $parentid;
+		$result = $this->isUpdate(false)->save();
+		if($result === false){
+			$this->rollBack();
+			return '';
+		}else{
+			$this->commit();
+			return $u;
+		}
+	}
+
 	public function getRandomTags($num){
 		$tag_list = $this->limit($num)
 		->order('ROUND(RAND()*1000)','desc')

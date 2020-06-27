@@ -19,7 +19,7 @@
 		$("#qnaid").val($('#'+qnaId).val());
 		$("#qna_title").html($('#'+qnaTitle).val());
 		$('#'+modalLocation).reveal($(this).data());
-		$("html,body").css({overflow:"hidden"}); //禁用滚动条
+		//$("html,body").css({overflow:"hidden"}); //禁用滚动条
 	});
 
 	$('a[report-reveal-id]').live('click', function(e) {
@@ -31,7 +31,7 @@
 		$("#qna_type").val(type);
 		
 		$('#'+modalLocation).reveal($(this).data());
-		$("html,body").css({overflow:"hidden"}); //禁用滚动条
+		//$("html,body").css({overflow:"hidden"}); //禁用滚动条
 	});
 
 /*---------------------------
@@ -142,19 +142,22 @@
 			//Close Modal Listeners
 			var closeButton = $('.' + options.dismissmodalclass).bind('click.modalEvent', function () {
 			  modal.trigger('reveal:close');
-			  $("html,body").css({overflow:"auto"}); //启动滚动条
+			  //$("html,body").css({overflow:"auto"}); //启动滚动条
 			});
 			
 			if(options.closeonbackgroundclick) {
 				modalBG.css({"cursor":"pointer"})
 				modalBG.bind('click.modalEvent', function () {
 				  modal.trigger('reveal:close');
-				  $("html,body").css({overflow:"auto"}); //启动滚动条
+				  //$("html,body").css({overflow:"auto"}); //启动滚动条
 
 				});
 			}
 			$('body').keyup(function(e) {
-        		if(e.which===27){ modal.trigger('reveal:close'); $("html,body").css({overflow:"auto"});} // 27 is the keycode for the Escape key
+        		if(e.which===27){ 
+					modal.trigger('reveal:close'); 
+					//$("html,body").css({overflow:"auto"});
+				} // 27 is the keycode for the Escape key
 			});
 			
 			

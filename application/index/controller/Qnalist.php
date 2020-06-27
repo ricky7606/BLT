@@ -82,14 +82,14 @@ class Qnalist extends Controller
 		$this->assign('list',$qna_list);
 		$this->assign('userid',Cookie::get('userid'));
 		if(Cookie::has('userid')){
-			$this->assign('header_type', 'user');
+			$this->assign('header_type', 'qna_user');
 			$this->assign('userid', Cookie::get('userid'));
 			$user = new Users;
 			$user->chkReminder(Cookie::get('userid'));
 			$userinfo = $user->getUserInfo(Cookie::get('userid'));
 			$this->assign('userinfo',$userinfo);
 		}else{
-			$this->assign('header_type', 'normal'); 
+			$this->assign('header_type', 'qna_normal'); 
 		}
 		$ads = new Ads;
 		$ad1 = $ads->getAdsByPosition(1);

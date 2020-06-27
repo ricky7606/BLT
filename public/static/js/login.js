@@ -6,7 +6,7 @@ xcsoft.tipsCss = {
 //隐藏、显示速度 ，默认 fast
 xcsoft.tipsHide=xcsoft.tipsShow=300;
 
-var isMobileOK=false, isPasswordOK=false, isPassword2OK=false, isImgcodeOK=false, isSmscodeOK=false;
+var isMobileOK=false, isEmailOK=false, isPasswordOK=false, isPassword2OK=false, isImgcodeOK=false, isSmscodeOK=false, isEmailcodeOK=false;
 function refreshVerify() {
 	var ts = Date.parse(new Date())/1000;
 	var img = document.getElementById('verify_img');
@@ -41,6 +41,20 @@ function chkMobile(){
 		isMobileOK = false;
 	}
 }
+function chkEmail(){
+	var email = document.getElementById('email').value;
+    var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;  
+    if (!pattern.test(email)) { 
+		xcsoft.error('电子邮件格式错误',3000); 
+		yesNoImg('check_email','no');
+		isEmailOK = false;
+        return false;  
+    }else{
+		yesNoImg('check_email','ok');
+		isEmailOK = true;
+		return true;
+	}
+}
 function chkMobileExist(){
 	var mobile = document.getElementById('mobile').value;
 	if(mobile.length > 0){
@@ -63,6 +77,30 @@ function chkMobileExist(){
 		}
 	}else{
 		isMobileOK = false;
+	}
+}
+function chkEmailExist(){
+	var email = document.getElementById('email').value;
+	if(email.length > 0){
+		if(chkEmail()){
+			$.post('/index/register/chkEmail', {email:jQuery.trim($('#email').val())}, function(msg) {
+				if(msg=='exists'){
+					yesNoImg('check_email','ok');
+					isEmailOK = true;
+					return true;
+				}else{
+					xcsoft.error('该电子邮箱并未注册',3000);
+					yesNoImg('check_email','no');
+					return false;
+				}
+			});		
+		}else{
+			xcsoft.error('电子邮箱错误',3000);
+			yesNoImg('check_email','no');
+			return false;
+		}
+	}else{
+		isEmailOK = false;
 	}
 }
 function chkPassword(){
@@ -145,7 +183,7 @@ function chkImgcode(){
 function chkSmscode(){
 	var smscode = document.getElementById('smscode').value;
 	if(smscode.length > 0){
-        $.post('/index/register/chkSmscode', {smscode:jQuery.trim($('#smscode').val()),mobile:jQuery.trim($('#mobile').val())}, function(msg) {
+        $.post('/index/register/chkSmscode', {smscode:jQuery.trim($('#smscode').val()),mobile:jQuery.trim($('#mobile').val()), t:new Date()}, function(msg) {
 			if(msg=='error'){
 				xcsoft.error('短信验证码错误或者超时！',3000);
 				yesNoImg('check_smscode','no');
@@ -160,7 +198,57 @@ function chkSmscode(){
 		isSmscodeOK = false;
 	}
 }
+function chkEmailcode(){
+	var emailcode = document.getElementById('emailcode').value;
+	if(emailcode.length > 0){
+        $.post('/index/register/chkEmailcode', {emailcode:jQuery.trim($('#emailcode').val()),email:jQuery.trim($('#email').val()), t:new Date()}, function(msg) {
+			if(msg=='error'){
+				xcsoft.error('邮箱验证码错误或者超时！',3000);
+				yesNoImg('check_emailcode','no');
+				return false;
+			}else{
+				yesNoImg('check_emailcode','ok');
+				isEmailcodeOK = true;
+				return true;
+			}
+        });		
+	}else{
+		isEmailcodeOK = false;
+	}
+}
 function submitForm(){
+	var ok_login = false;
+	document.getElementById("loginbtn").disabled = true;
+	if(isEmailOK && isPasswordOK && isImgcodeOK){
+		var ok_login = true;
+	}else{
+		chkImgcode();
+		chkPassword();
+		chkEmail();
+		if(!(isEmailOK && isPasswordOK && isImgcodeOK)){
+			ok_login = false;
+			document.getElementById("loginbtn").disabled = false;
+			xcsoft.error('请正确填写电子邮件地址、密码及图形验证码',3000);
+			return false;
+		}else{
+			ok_login = true;
+		}
+	}
+	if(ok_login){
+		$.post('/index/login/getLogin', {email:jQuery.trim($('#email').val()),pwd:jQuery.trim($('#password').val()),imgcode:jQuery.trim($('#imgcode').val()),isonemonth:jQuery.trim($('#isOneMonthLogin').val())}, function(msg) {
+			if(msg=='ok'){
+				xcsoft.success('登录成功！2秒后跳转',2000);
+				setTimeout("window.location.href='/index'", 2000 ); //3秒后跳转
+				return true;
+			}else{
+				xcsoft.error(msg,3000);
+				document.getElementById("loginbtn").disabled = false;
+				return false;
+			}
+		});
+	}
+}
+function submitFormMobile(){
 	var ok_login = false;
 	document.getElementById("loginbtn").disabled = true;
 	if(isMobileOK && isPasswordOK && isImgcodeOK){
@@ -179,15 +267,21 @@ function submitForm(){
 		}
 	}
 	if(ok_login){
-		$.post('/index/login/getLogin', {mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),imgcode:jQuery.trim($('#imgcode').val()),isonemonth:jQuery.trim($('#isOneMonthLogin').val())}, function(msg) {
+		$.post('/index/login/getMobileLogin', {mobile:jQuery.trim($('#mobile').val()),pwd:jQuery.trim($('#password').val()),imgcode:jQuery.trim($('#imgcode').val()),isonemonth:jQuery.trim($('#isOneMonthLogin').val()), t:new Date()}, function(msg) {
 			if(msg=='ok'){
 				xcsoft.success('登录成功！2秒后跳转',2000);
 				setTimeout("window.location.href='/index'", 2000 ); //3秒后跳转
 				return true;
 			}else{
-				xcsoft.error(msg,3000);
-				document.getElementById("loginbtn").disabled = false;
-				return false;
+				if(msg=='ok#noEmail'){
+					xcsoft.info('登录成功！请您完善邮箱地址信息',2000);
+					setTimeout("window.location.href='/index/userprofile'", 2000 ); //3秒后跳转
+					return true;
+				}else{
+					xcsoft.error(msg,3000);
+					document.getElementById("loginbtn").disabled = false;
+					return false;
+				}
 			}
 		});
 	}
@@ -195,23 +289,20 @@ function submitForm(){
 function resetpwd1(){
 	var ok_login = false;
 	document.getElementById("loginbtn").disabled = true;
-	if(isMobileOK && isImgcodeOK && isSmscodeOK){
-		var ok_login = true;
+	if(((isMobileOK && isSmscodeOK) || (isEmailOK && isEmailcodeOK)) && isImgcodeOK){
+		ok_login = true;
 	}else{
-		chkMobile();
-		chkImgcode();
-		chkSmscode();
-		if(!(isMobileOK && isSmscodeOK && isImgcodeOK)){
+		if(((isMobileOK && isSmscodeOK) || (isEmailOK && isEmailcodeOK)) && isImgcodeOK){
 			ok_login = false;
 			document.getElementById("loginbtn").disabled = false;
-			xcsoft.error('请正确填写手机号码图形验证码及短信验证码',3000);
+			xcsoft.error('请正确填写注册信息/图形验证码及验证码',3000);
 			return false;
 		}else{
 			ok_login = true;
 		}
 	}
 	if(ok_login){
-		$.post('/index/login/checkReset', {mobile:jQuery.trim($('#mobile').val()),imgcode:jQuery.trim($('#imgcode').val()),smscode:jQuery.trim($('#smscode').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+		$.post('/index/login/checkReset', {mobile:jQuery.trim($('#mobile').val()),imgcode:jQuery.trim($('#imgcode').val()),smscode:jQuery.trim($('#smscode').val()),register_token:jQuery.trim($('#register_token').val()),email:jQuery.trim($('#email').val()),emailcode:jQuery.trim($('#emailcode').val()), t:new Date()}, function(msg) {
 			if(msg=='ok'){
 				setTimeout("window.location.href='/index/login/forgetpassword2'", 0 ); 
 				return true;
@@ -224,36 +315,26 @@ function resetpwd1(){
 	}
 }
 function resetpwd2(){
-	var ok_login = false;
+	chkPassword();
+	chkPassword2();
+	if(!(isPasswordOK && isPassword2OK)){
+		xcsoft.error('请正确填写符合要求的密码',3000);
+		return false;
+	}
 	document.getElementById("loginbtn").disabled = true;
-	if(isPasswordOK && isPassword2OK){
-		var ok_login = true;
-	}else{
-		chkPassword();
-		chkPassword2();
-		if(!(isPasswordOK && isPassword2OK)){
-			ok_login = false;
-			document.getElementById("loginbtn").disabled = false;
-			xcsoft.error('请正确填写符合要求的密码',3000);
-			return false;
+	$.post('/index/login/resetPassword', {password:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val()), t:new Date()}, function(msg) {
+		if(msg=='ok'){
+			xcsoft.success('密码已经重设，请重新登录',2000);
+			setTimeout("window.location.href='/index/login'", 2000 ); //3秒后跳转
+			return true;
 		}else{
-			ok_login = true;
+			xcsoft.error(msg,3000);
+			document.getElementById("loginbtn").disabled = false;
+			return false;
 		}
-	}
-	if(ok_login){
-		$.post('/index/login/resetPassword', {password:jQuery.trim($('#password').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
-			if(msg=='ok'){
-				xcsoft.success('密码已经重设，请重新登录',2000);
-				setTimeout("window.location.href='/index/login'", 2000 ); //3秒后跳转
-				return true;
-			}else{
-				xcsoft.error(msg,3000);
-				document.getElementById("loginbtn").disabled = false;
-				return false;
-			}
-		});
-	}
+	});
 }
+
 function yesNoImg(imgname,isok){
 	var field = document.getElementById(imgname);
 	if(isok == 'ok'){
@@ -264,23 +345,46 @@ function yesNoImg(imgname,isok){
 	field.style.display = "block";
 }
 function get_mobile_code(){
+	document.getElementById("zphone").disabled = true;
 	if(isMobileOK && isImgcodeOK){
 		$.post('/index/register/sendSms', {mobile:jQuery.trim($('#mobile').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
 			if(msg=='提交成功'){
-				RemainTime();
+				xcsoft.success('短信发送成功',2000);
+				RemainTimeMobile();
 			}else{
+				document.getElementById("zphone").disabled = false;
 				xcsoft.error(msg,3000);
 				return false;
 			}
 		});
 	}else{
-		xcsoft.error('请先完善上方所有的信息',3000);
+		document.getElementById("zphone").disabled = false;
+		xcsoft.error('请填写注册手机号码及图形验证码',3000);
 		return false;
 	}
-};
+}
+function get_email_code(){
+	document.getElementById("zemail").disabled = true;
+	if(isEmailOK && isImgcodeOK){
+		$.post('/index/register/sendEmail', {email:jQuery.trim($('#email').val()),register_token:jQuery.trim($('#register_token').val())}, function(msg) {
+			if(msg){
+				xcsoft.success('邮件发送成功',2000);
+				RemainTimeEmail();
+			}else{
+				document.getElementById("zemail").disabled = false;
+				xcsoft.error(msg,3000);
+				return false;
+			}
+		});
+	}else{
+		document.getElementById("zemail").disabled = false;
+		xcsoft.error('请填写注册电子邮箱及图形验证码',3000);
+		return false;
+	}
+}
 var iTime = 59;
 var Account;
-function RemainTime(){
+function RemainTimeMobile(){
 	document.getElementById('zphone').disabled = true;
 	var iSecond,sSecond="",sTime="";
 	if (iTime >= 0){
@@ -300,11 +404,39 @@ function RemainTime(){
 			iTime = 59;
 			document.getElementById('zphone').disabled = false;
 		}else{
-			Account = setTimeout("RemainTime()",1000);
+			Account = setTimeout("RemainTimeMobile()",1000);
 			iTime=iTime-1;
 		}
 	}else{
 		sTime='没有倒计时';
 	}
 	document.getElementById('zphone').innerText = sTime;
+}	
+function RemainTimeEmail(){
+	document.getElementById('zemail').disabled = true;
+	var iSecond,sSecond="",sTime="";
+	if (iTime >= 0){
+		iSecond = parseInt(iTime%60);
+		iMinute = parseInt(iTime/60)
+		if (iSecond >= 0){
+			if(iMinute>0){
+				sSecond = iMinute + "分" + iSecond + "秒";
+			}else{
+				sSecond = iSecond + "秒";
+			}
+		}
+		sTime=sSecond;
+		if(iTime==0){
+			clearTimeout(Account);
+			sTime='获取验证码';
+			iTime = 59;
+			document.getElementById('zemail').disabled = false;
+		}else{
+			Account = setTimeout("RemainTimeEmail()",1000);
+			iTime=iTime-1;
+		}
+	}else{
+		sTime='没有倒计时';
+	}
+	document.getElementById('zemail').innerText = sTime;
 }	

@@ -2,12 +2,11 @@
 namespace app\index\controller;
 use think\Controller;//引入Controller类
 use think\Session;
-use app\index\model\QnasUser;
-use app\index\model\QnasPending;
-use app\index\model\QnasReply;
-use app\index\model\QnasReplyDetails;
-use app\index\model\Follow;
-use app\index\model\Likes;
+use app\index\model\ArticlesUser;
+use app\index\model\ArticlesReply;
+use app\index\model\ArticlesReplyDetails;
+use app\index\model\ArticleFollow;
+use app\index\model\ArticleLikes;
 use app\index\model\Attention;
 use think\Db;
 use think\Request;
@@ -17,79 +16,83 @@ use Qiniu\Storage\BucketManager;
 use Qiniu\Storage\UploadManager;
 use app\index\model\Users;
 use app\index\model\Tags;
-use app\index\model\ReplyAdditionDetails;
+use app\index\model\ArticleTagDetails;
 
 class Index extends Controller
 {
     public function index()
     {
-		$reply = new QnasReplyDetails;
-		$reply_list = $reply->getUpdateReplyDetails(true); 
-		if(count($reply_list)==0){
-			$reply_list = $reply->getUpdateReplyDetails(false); 
-		}
+		$articleuser=new ArticlesUser();
+		$article_list=$articleuser->getNewArticles();  
+		$user = new Users;   
+		$follow = new ArticleFollow;
+		$likes = new ArticleLikes;
+		$attention = new Attention;
+		$article_tags = new ArticleTagDetails;
+		$reply = new ArticlesReply;
 		if(Cookie::has('userid')){
-			$user = new Users;
-			$userid = Cookie::get('userid');
-			$user->chkReminder($userid);
-			$userinfo = $user->getUserInfo($userid);
-			$this->assign('userid',$userid);
-			$this->assign('userinfo',$userinfo);
-			$this->assign('header_type','user');
-		}else{
-			$this->assign('userid','');
-			$this->assign('header_type','normal');
-		}
-		if($reply_list){
-			$follow = new Follow;
-			$att = new Attention;
-			$qna_pending=new QnasPending;
-			$addition = new ReplyAdditionDetails;
-			$likes = new Likes;
-			foreach ($reply_list as $n=>$reply){ 
-				if(Cookie::has('userid')){
-					$qna_follow = $follow->getFollowByQnaIdUserId($reply->qnaid, $userid);
-					$qna_like = $likes->getLikeByQnaIdUserId($reply->qnaid, $userid);
-					$pending_info = $qna_pending->getPendingByUserId($reply->qnaid, $userid );
-					if($pending_info){
-						$reply_list[$n]['pending_status'] = $pending_info->status;
-						$reply_list[$n]['pendingid'] = $pending_info->pendingid;
+			if($article_list){
+				foreach ($article_list as $n=>$article){ 
+					$follow_info = $follow->getFollowByArticleIdUserId($article->articleid, Cookie::get('userid'));
+					$article_like = $likes->getLikeByArticleIdUserId($article->articleid, Cookie::get('userid'));
+					$attention_info = $attention->getAttentionByUserId($article->userid, Cookie::get('userid'));
+					$tag_list = $article_tags->getTagsByArticleId($article->articleid);
+					$article_list[$n]['tags'] = $tag_list;
+					$reply_count = $reply->getReplyCountByArticleId($article->articleid)->replyCount;
+					$article_list[$n]['reply_count'] = $reply_count;
+					if($follow_info){
+						$article_list[$n]['follow'] = '1';
 					}else{
-						$reply_list[$n]['pending_status'] = '-1';
-						$reply_list[$n]['pendingid'] = '';
+						$article_list[$n]['follow'] = '-1';
 					}
-					if($qna_follow){
-						$reply_list[$n]['follow'] = 1;
+					if($article_like){
+						$article_list[$n]['article_like'] = 1;
 					}else{
-						$reply_list[$n]['follow'] = -1;
+						$article_list[$n]['article_like'] = -1;
 					}
-					if($qna_like){
-						$reply_list[$n]['like'] = 1;
+					if($attention_info){
+						$article_list[$n]['attention'] = '1';
 					}else{
-						$reply_list[$n]['like'] = -1;
+						$article_list[$n]['attention'] = '-1';
 					}
-					$reply_user_att = $att->getAttentionByUserId($reply->userid, $userid);
-					if($reply_user_att){
-						$reply_list[$n]['reply_user_att'] = 1;
-					}else{
-						$reply_list[$n]['reply_user_att'] = -1;
-					}
-					$qna_user_att = $att->getAttentionByUserId($reply->qna_userid, $userid);
-					if($qna_user_att){
-						$reply_list[$n]['qna_user_att'] = 1;
-					}else{
-						$reply_list[$n]['qna_user_att'] = -1;
-					}
+					$article_list[$n]['shortTitle'] = getContentText($article->title,40);
+					$article_list[$n]['formatCoins'] = floatval($article->coins);
+					$article_list[$n]['userinfo'] = $user->getUserDetails($article->userid);
+					$follow_count = $follow->getFollowCount($article->articleid);
+					$article_list[$n]['followCount'] = $follow_count->followCount;
+					$like_count = $likes->getLikeCount($article->articleid);
+					$article_list[$n]->likeCount = $like_count->likeCount;
 				}
-				$reply->formatCoins = floatval($reply_list[$n]['qna_coins']);
-				$follow_count = $follow->getFollowCount($reply->qnaid);
-				$reply->followCount = $follow_count->followCount;
-				$like_count = $likes->getLikeCount($reply->qnaid);
-				$reply->likeCount = $like_count->likeCount;
-				$reply->addition = $addition->getReplyAdditions($reply->replyid);
+			}
+		}else{
+			if($article_list){
+				foreach ($article_list as $n=>$article){ 
+					$tag_list = $article_tags->getTagsByArticleId($article->articleid);
+					$article_list[$n]['tags'] = $tag_list;
+					$reply_count = $reply->getReplyCountByArticleId($article->articleid)->replyCount;
+					$article_list[$n]['reply_count'] = $reply_count;
+					$article_list[$n]['shortTitle'] = getContentText($article->title,40);
+					$article_list[$n]['formatCoins'] = floatval($article->coins);
+					$article_list[$n]['userinfo'] = $user->getUserDetails($article->userid);
+					$follow_count = $follow->getFollowCount($article->articleid);
+					$article_list[$n]['followCount'] = $follow_count->followCount;
+					$like_count = $likes->getLikeCount($article->articleid);
+					$article_list[$n]->likeCount = $like_count->likeCount;
+				}
 			}
 		}
-		$this->assign('reply_list',$reply_list);
+		$this->assign('list',$article_list);
+		$this->assign('userid',Cookie::get('userid'));
+		if(Cookie::has('userid')){
+			$this->assign('header_type', 'user');
+			$this->assign('userid', Cookie::get('userid'));
+			$user = new Users;
+			$user->chkReminder(Cookie::get('userid'));
+			$userinfo = $user->getUserInfo(Cookie::get('userid'));
+			$this->assign('userinfo',$userinfo);
+		}else{
+			$this->assign('header_type', 'normal'); 
+		}
 		//获取顶级标签
 		$tags = new Tags;
 		$root_tags = $tags->getRootTags();
@@ -104,16 +107,6 @@ class Index extends Controller
 //		}
 //		$this->assign('qna_list',$qna_list);
         return $this->fetch(); 
-	}
-	
-	public function saveApplyQna(){
-		if(Cookie::has('userid')){
-			$qnaid = Request::instance()->post('qnaid');
-			$qna_pending=new QnasPending();
-			return $qna_pending->saveApply($qnaid, Cookie::get('userid'));
-		}else{
-			return $this->redirect('/index/login');
-		}
 	}
 	
 	public function aboutus(){

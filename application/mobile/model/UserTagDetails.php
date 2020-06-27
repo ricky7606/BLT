@@ -36,11 +36,22 @@ class UserTagDetails extends Model {
 		return $user_tag_list;
 	}
 
-	public function getTagUsers($tagid){
+	public function getTagUsers($tagid, $num = 12, $page = 1){
+		$user_count = $this->where('tagid',$tagid)
+		->field('count(*) as user_count')
+		->find();
+		if($user_count->user_count<1){
+            return "";
+        }
+		$total_page = ceil($user_count->user_count / $num);
+		if($page > $total_page){$page = $total_page;}
+		if($page <1){$page = 1;}
 		$user_list = $this->where('tagid', $tagid)
 		->field('userid,username,personal_pic')
+		->order('username','asc')
+		->limit($num*($page-1), $num)
 		->select();
-		$tmpStr = "";
+		$tmpStr = $total_page."###".$page."___";
 		if($user_list){
 			foreach($user_list as $user){
 				$tmpStr .= $user->userid."###".$user->username."###".$user->personal_pic."$$$";

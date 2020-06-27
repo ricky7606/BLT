@@ -3,8 +3,8 @@
 td { padding-right:30px; padding-bottom:20px;}
 input { background-color:#f7f8fa;}
 </style>
-<link rel="stylesheet" href="/static/css/user_section.css">
-<link rel="stylesheet" href="/static/css/reveal.css">
+<link rel="stylesheet" href="/static/mobile/css/user_section.css">
+<link rel="stylesheet" href="/static/mobile/css/reveal.css">
 <div style="background-color:#F2F2F2;">
     <div id="user_profile" class="user_profile">
         <div style="margin:0 auto; width:1200px;">
@@ -15,7 +15,7 @@ input { background-color:#f7f8fa;}
                 <div style="width:310px; float:left; text-align:center; height:190px;"><img src="{if condition='$userinfo.personal_pic' != ''}{$userinfo.personal_pic}{else /}/static/images/profile_pic.jpg{/if}" class="profile_pic">&nbsp;</div>
                 <div style="width:890px; float:left; text-align:left;">
                     <div style="width:590px; float:left; text-align:left;" class="content_title"> {$username}&nbsp;</div>
-                    <div style="width:300px; float:left; text-align:right;"><button type="button" class="btn btn-primary" style="height:45px; background-color:#004d9d; color:#FFF;" onclick="window.location.href='/index/userprofile'"><i class="am-icon-edit"></i> 编辑我的资料</button> <button type="button" class="btn btn-default" style="height:45px; " onclick="window.location.href='/index/login/Logout';"><i class="am-icon-sign-out"></i> 退出登录</button></div>
+                    <div style="width:300px; float:left; text-align:right;"><button type="button" class="btn btn-primary" style="height:45px; background-color:#004d9d; color:#FFF;" onclick="window.location.href='/mobile/userprofile'"><i class="am-icon-edit"></i> 编辑我的资料</button> <button type="button" class="btn btn-default" style="height:45px; " onclick="window.location.href='/mobile/login/Logout';"><i class="am-icon-sign-out"></i> 退出登录</button></div>
                     <div style="clear:both;"></div>
                     <div>{if condition="$userinfo.brief != ''"}<span style="color:#03C;">{$userinfo.brief}</span>{else /}还没想好该怎么来介绍自己{/if}</div>
                     <div style="height:20px";></div>
@@ -34,7 +34,7 @@ input { background-color:#f7f8fa;}
             <div style="width:100%; padding-left:60px; padding-right:40px; line-height:50px; text-align:left;" id="user_tag_list" class="tagwrap"><b><span class="am-icon-tags" style="color:#06C;"></span>&nbsp;&nbsp;您已选择的标签： </b>{volist name="user_tag_list" id="usertag" empty="<span style='color:#03C;' id='no_tag'>暂未选择标签</span>"}<span class="tag_remove" id="tag_{$usertag.user_tagid}" onclick="delTag('{$usertag.user_tagid}');">{$usertag.tag}</span> {/volist}<span style='color:#03C; display:none;' id='no_tag_remove'>暂未选择标签</span></div>
             <hr style="color:#CCC; height:1px; width:90%;">
             <div id="tags_recommand" style="padding-left:100px; padding-right:100px; line-height:50px;">为您随机推荐热门标签：<span id="recommandTags">正在为您生成随机推荐，请稍后...<i class="am-icon-spinner am-icon-spin"></i></span><p style="font-size:18px; color:#06C;">我们还有多达数万的各类标签等待您的发掘！(<span style="font-size:12px;"><a href='javascript:void(0);' onclick='getRandomTags();'><i class="am-icon-refresh"></i> 换一批推荐标签</a></span>)</p></div>
-            <div id="tag_searched" class="txtwrap" style="padding-left:40px; padding-right:40px; line-height:50px; display:none;"><img src="/static/images/loading.gif"></div>
+            <div id="tag_searched" class="txtwrap" style="padding-left:40px; padding-right:40px; line-height:50px; display:none;"><img src="/static/images/loading.gif" width="600"></div>
             <div style="height:20px;"></div>
         </div> 
         <div style="height:20px;"></div>
@@ -43,13 +43,14 @@ input { background-color:#f7f8fa;}
 <div id="tag_box" class="reveal-modal" style="width:720px;overflow-y:scroll; overflow-x:hidden; height:620px;">
     <div id="box_title" class="header_title">子标签列表</div>
     <div style="height:20px;"></div>
-    <div style="line-height:50px;">当前标签：<span id="current_tag"></span></div>
+    <div style="line-height:50px;"><span id="current_text">当前标签</span>：<span id="current_tag"></span></div>
     <div id="tips" style="color:#03C;">tips: 也可以直接点击选取该父标签查看选择该标签的用户</div>
     <hr style="color:#999; height:1px; width:90%;">
     <div id="data_list" style="line-height:50px;"></div>
+    <div id="article_list" style="line-height:30px;"></div>
     <div style="height:15px;"></div>
     <a class="close-reveal-modal">&#215;</a>
 </div>
 <input type="hidden" id="recommandTags_text" value="">
 <script src="/static/mobile/js/usertags.js"></script>
-<script type="text/javascript" src="/static/mobile/js/jquery.reveal.usertag.js"></script>
+<script type="text/javascript" src="/static/mobile/js/jquery.reveal.usertag.js?1"></script>
